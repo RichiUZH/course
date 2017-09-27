@@ -33,7 +33,8 @@ import com.agentecon.research.IInnovation;
 public class Hermit extends Consumer implements IFounder {
 
 	private IProductionFunction prodFun;
-	private double workFraction = 0.2;
+	private double workFraction = 0.5313999999999999;
+	private double globalMaxUtility =0; 
 
 	public Hermit(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
@@ -61,8 +62,11 @@ public class Hermit extends Consumer implements IFounder {
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
-		double plannedLeisureTime = currentManhours.getAmount() * 0.6;
-		workFraction = workFraction + 0.005;
+		double plannedLeisureTime;
+		plannedLeisureTime = currentManhours.getAmount()-(currentManhours.getAmount()*workFraction);
+		//workFraction = workFraction + 0.0001;
+		System.out.println("Hello"+workFraction);
+
 
 		// The hide function creates allows to hide parts of the inventory from the
 		// production function, preserving it for later consumption.
