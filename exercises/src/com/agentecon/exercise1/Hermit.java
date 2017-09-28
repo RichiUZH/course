@@ -33,8 +33,7 @@ import com.agentecon.research.IInnovation;
 public class Hermit extends Consumer implements IFounder {
 
 	private IProductionFunction prodFun;
-	private double workFraction = 0.5313999999999999;
-	private double globalMaxUtility =0; 
+	private double workFraction = 0.53125;
 
 	public Hermit(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);

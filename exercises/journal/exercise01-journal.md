@@ -9,3 +9,5 @@ This file is in markdown format and rendered nicely in the web. See [this link](
 
 As a first approach the given code was used to find a convergence point. As Far as I tested the maximum utility is somewhere around 0.5313999999999999 work time either working more or working less results in a decreased utility.
 
+After maximizing the Utility function a global maximum was found at 0.53125 as we can see with the try and error approach we got very close to the actual maximum.
+
