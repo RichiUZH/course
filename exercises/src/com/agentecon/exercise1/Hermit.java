@@ -64,7 +64,7 @@ public class Hermit extends Consumer implements IFounder {
 		double plannedLeisureTime;
 		plannedLeisureTime = currentManhours.getAmount()-(currentManhours.getAmount()*workFraction);
 		//workFraction = workFraction + 0.0001;
-		System.out.println("Hello"+workFraction);
+		System.out.println("Hello"+workFraction); 
 
 
 		// The hide function creates allows to hide parts of the inventory from the
