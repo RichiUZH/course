@@ -17,3 +17,4 @@ Following the three approaches chosen for the first exercise:
 
 3. After that we set up a function that would return the leisure fraction with the maximum utility.
 
+The highest utility was reached with the last approach.
