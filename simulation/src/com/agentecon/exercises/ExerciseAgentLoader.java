@@ -8,47 +8,56 @@
  */
 package com.agentecon.exercises;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.agentecon.IAgentFactory;
+import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.classloader.GitSimulationHandle;
-import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.configuration.AgentFactoryMultiplex;
-import com.agentecon.configuration.CompilingAgentFactory;
+import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.IUtility;
+import com.agentecon.sim.SimulationConfig;
 
 public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 
-	private static final Collection<String> TEAMS = createRepos(15);
+	private static final Collection<String> TEAMS = createRepos(1,2,3,4,5,7,10);
+	
+	private IAgentFactory defaultFactory;
+	
+	public ExerciseAgentLoader(String classname) throws SocketTimeoutException, IOException {
+		this(classname, SimulationConfig.isServerConfig());
+	}
 
 	public ExerciseAgentLoader(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
 		super(createFactories(classname, remoteTeams));
+		if (remoteTeams) {
+			defaultFactory = new ExerciseAgentFactory(classname, "meisser", "course");
+		} else {
+			defaultFactory = new ExerciseAgentFactory(classname);
+		}
 	}
 
-	private static Collection<String> createRepos(int count) {
-		assert count < 100;
-		String[] repos = new String[count];
-		for (int i = 0; i < repos.length; i++) {
+	private static Collection<String> createRepos(int... numbers) {
+		ArrayList<String> repos = new ArrayList<>();
+		for (int i: numbers) {
 			String number = Integer.toString(i);
-			repos[i] = "team" + (number.length() == 1 ? "00" : "0") + number;
+			repos.add("team" + (number.length() == 1 ? "00" : "0") + number);
 		}
-		return Arrays.asList(repos);
+		return repos;
 	}
 
 	private static IAgentFactory[] createFactories(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
-		ArrayList<CompilingAgentFactory> factories = new ArrayList<>();
-		CompilingAgentFactory defaultFactory = new CompilingAgentFactory(classname, "meisser", "course");
-		factories.add(defaultFactory);
+		ArrayList<ExerciseAgentFactory> factories = new ArrayList<>();
 		if (remoteTeams) {
-			Stream<CompilingAgentFactory> stream = TEAMS.parallelStream().map(team -> {
+			Stream<ExerciseAgentFactory> stream = TEAMS.parallelStream().map(team -> {
 				try {
-					CompilingAgentFactory factory = new CompilingAgentFactory(classname, new GitSimulationHandle("meisser", team));
+					ExerciseAgentFactory factory = new ExerciseAgentFactory(classname, new GitSimulationHandle("meisser", team, false));
 					factory.preload();
 					return factory;
 				} catch (IOException e) {
@@ -58,11 +67,13 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 				}
 			}).filter(factory -> factory != null);
 			factories.addAll(stream.collect(Collectors.toList()));
-		} else {
-			LocalSimulationHandle local = new LocalSimulationHandle(new File("../exercises/src"));
-			factories.add(new CompilingAgentFactory(classname, local));
 		}
 		return factories.toArray(new IAgentFactory[factories.size()]);
+	}
+	
+	@Override
+	protected IConsumer createDefault(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
+		return defaultFactory.createConsumer(id, endowment, utilityFunction);
 	}
 
 }

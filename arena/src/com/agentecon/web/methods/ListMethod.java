@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
 import com.agentecon.classloader.SimulationHandle;
+import com.agentecon.runner.NothingChangedException;
 import com.agentecon.runner.SimulationLoader;
 import com.agentecon.runner.SimulationStepper;
 import com.agentecon.web.data.JsonData;
@@ -35,7 +36,7 @@ public class ListMethod extends WebApiMethod {
 	}
 
 	public void add(SimulationHandle handle) {
-		this.handles.put(handle.getBranch(), handle);
+		this.handles.put(handle.getIdentifier(), handle);
 	}
 
 	protected synchronized void update(SimulationHandle handle, SimulationStepper stepper) {
@@ -60,6 +61,8 @@ public class ListMethod extends WebApiMethod {
 								simulationUpdateExecutor.execute(this);
 							} catch (IOException e) {
 								e.printStackTrace();
+							} catch (NothingChangedException e) {
+								// good, no need to update
 							}
 						} catch (InterruptedException e) {
 						}
@@ -82,12 +85,12 @@ public class ListMethod extends WebApiMethod {
 	}
 
 	public SimulationStepper getSimulation(String name) throws IOException {
-		SimulationHandle handle = handles.get(name);
+		SimulationHandle handle = getHandle(name);
 		return getSimulation(handle);
 	}
 
-	public SimulationHandle getHandle(String simulation) {
-		return handles.get(simulation);
+	public SimulationHandle getHandle(String name) {
+		return handles.get(SimulationHandle.toIdentifier(name));
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class ListMethod extends WebApiMethod {
 	}
 
 	class SimulationInfo {
-		
+
 		public String owner;
 		public String path;
 		public String sourceUrl;
@@ -117,6 +120,6 @@ public class ListMethod extends WebApiMethod {
 			this.path = handle.getBranch();
 			this.sourceUrl = handle.getBrowsableURL(SimulationLoader.SIM_CLASS).toExternalForm();
 		}
-		
+
 	}
 }

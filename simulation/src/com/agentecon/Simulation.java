@@ -11,8 +11,9 @@ import java.util.concurrent.PriorityBlockingQueue;
 import com.agentecon.agent.IAgents;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
-import com.agentecon.exercises.HermitConfiguration;
+import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.finance.StockMarket;
+import com.agentecon.goods.Good;
 import com.agentecon.market.IDiscountRate;
 import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IStatistics;
@@ -42,7 +43,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private MarketStatistics goodsMarketStats;
 
 	public Simulation() throws IOException {
-		this(new HermitConfiguration());
+		this(new FarmingConfiguration());
 	}
 	
 	public Simulation(IConfiguration metaConfig) {
@@ -185,6 +186,11 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	@Override
 	public IDiscountRate getDiscountRate() {
 		return config;
+	}
+
+	@Override
+	public Good getMoney() {
+		return config.getMoney();
 	}
 
 }

@@ -124,6 +124,9 @@ public class Hermit extends Consumer implements IFounder {
 		//Calculating the maximum utility with different leisure fractions
 		plannedLeisureTime =  currentManhours.getAmount() * getLeisureFraction(inventory);
 
+		/*double plannedLeisureTime = currentManhours.getAmount() * 0.5;
+		workFraction = workFraction + 0.005;*/
+
 		// The hide function creates allows to hide parts of the inventory from the
 		// production function, preserving it for later consumption.
 		Inventory productionInventory = inventory.hide(HermitConfiguration.MAN_HOUR, plannedLeisureTime);

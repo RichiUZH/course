@@ -6,14 +6,16 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.consumer;
+package com.agentecon.exercise2;
 
+import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IUtility;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
-import com.agentecon.firm.Farm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;
@@ -47,13 +49,13 @@ public class Farmer extends Consumer implements IFounder {
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05){
+		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = Farmer.this;
-				IStock firmMoney = getMoney().hideRelative(0.5);
-				Firm farm = new Farm(id, owner, firmMoney, myLand, prod, statistics);
+				IStock startingCapital = getMoney().hideRelative(0.5);
+				Firm farm = new Farm(id, owner, startingCapital, myLand, prod, statistics);
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {
@@ -97,26 +99,27 @@ public class Farmer extends Consumer implements IFounder {
 		return super.consume();
 	}
 
-//	// The "static void main" method is executed when running a class
-//	public static void main(String[] args) throws SocketTimeoutException, IOException {
-//		FarmingConfiguration config = new FarmingConfiguration(new IAgentFactory() {
-//
-//			@Override
-//			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-//				return new Farmer(id, endowment, utilityFunction);
-//			}
-//		}, 10); // Create the configuration
-//		Simulation sim = new Simulation(config); // Create the simulation
-//		ConsumerRanking ranking = new ConsumerRanking(); // Create a ranking
-//		sim.addListener(ranking); // register the ranking as a listener
-//									// interested in what is going on
-//		while (!sim.isFinished()) {
-//			sim.forwardTo(sim.getDay() + 1);
-//			System.out.println("Market stats at end of day " + sim.getDay());
-//			sim.getStatistics().getGoodsMarketStats().print(System.out);
-//			System.out.println();
-//		}
-//		ranking.print(System.out); // print the resulting ranking
-//	}
+	// The "static void main" method is executed when running a class
+	public static void main(String[] args) {
+		// Create the simulation configuration and specify which agent classes should participate
+		// The simulation will create multiple instances of every class.
+		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
+		
+		// In case you want to test a setting with two different types of farmers, you configure the simulation like this:
+//		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class, AlternateFarmer.class);
+
+		System.out.print("Creating and running the simulation...");
+		// Create the simulation based on that configuration
+		Simulation sim = new Simulation(configuration);
+		sim.run(); // run the simulation
+
+		System.out.println(" done.");
+
+		// The configuration has a nice method to analyse the simulation for relevant metrics
+		configuration.diagnoseResult(System.out, sim);
+
+		System.out.println();
+		System.out.println("A more advanced way of running the simulation is to start the class com.agentecon.web.SimulationServer from the Arena project.");
+	}
 
 }

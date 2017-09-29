@@ -6,15 +6,18 @@ import java.net.URL;
 import java.util.Collection;
 
 public abstract class SimulationHandle {
-	
+
+	protected static final String SOURCE_FOLDER = "src";
+
 	public static final String JAVA_SUFFIX = ".java";
-	public static final String JAR_PATH = "simulation/jar/simulation.jar";
 
 	private String owner, name;
+	private String[] projects;
 
-	public SimulationHandle(String owner, String name) {
+	public SimulationHandle(String owner, String repo, boolean simulation) {
 		this.owner = owner;
-		this.name = name;
+		this.name = repo;
+		this.projects = simulation ? new String[] { "simulation" } : new String[] { "exercises" };
 	}
 
 	public String getRepo() {
@@ -24,21 +27,47 @@ public abstract class SimulationHandle {
 	public String getOwner() {
 		return owner;
 	}
+
+	protected String[] getProjects() {
+		return projects;
+	}
 	
+	public static String toIdentifier(String branchOrTag) {
+		int dash = branchOrTag.lastIndexOf('-');
+		if (dash >= 0 && branchOrTag.length() > dash + 1) {
+			for (int pos = dash + 1; pos < branchOrTag.length(); pos++) {
+				if (!Character.isDigit(branchOrTag.charAt(pos))) {
+					return branchOrTag;
+				}
+			}
+			return branchOrTag.substring(0, dash);
+		} else {
+			return branchOrTag;
+		}
+	}
+
+	public String getIdentifier() {
+		return toIdentifier(getBranch());
+	}
+
 	public abstract String getBranch();
-	
-	public abstract boolean isPresent() throws IOException;
-	
+
+	public abstract boolean isClassPresent(String path) throws IOException;
+
+	protected String toFilePath(String classname) {
+		int usdIndex = classname.indexOf('$');
+		if (usdIndex >= 0) {
+			classname = classname.substring(0, usdIndex);
+		}
+		return SOURCE_FOLDER + "/" + classname.replace('.', '/') + ".java";
+	}
+
 	public abstract String getPath();
-	
-	public abstract long getJarDate() throws IOException;
-	
-	public abstract InputStream openJar() throws IOException;
-	
+
 	public abstract URL getBrowsableURL(String classname);
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return name;
 	}
 
@@ -47,14 +76,14 @@ public abstract class SimulationHandle {
 	public abstract Collection<String> listSourceFiles(String packageName) throws IOException;
 
 	public abstract String getVersion() throws IOException;
-	
+
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return owner.hashCode() ^ name.hashCode();
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
+	public boolean equals(Object o) {
 		SimulationHandle other = (SimulationHandle) o;
 		return other.owner.equals(owner) && other.name.equals(name);
 	}
