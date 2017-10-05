@@ -101,7 +101,7 @@ public class Farmer extends Consumer implements IFounder {
 			// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
 			// the daily amount spent is the same, but more smooth over time.
 			change=change+0.01;
-			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.5);
+			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.6);
 			 System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
 		}else {
 	        super.workAtLeast(market, MINIMUM_WORKING_HOURS);
