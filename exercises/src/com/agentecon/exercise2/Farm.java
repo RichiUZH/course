@@ -74,13 +74,13 @@ public class Farm extends Producer {
 		} else {
 			daysWithProfit = 0;
 		}
-				if(money - reserves>100) {
+				if((money - reserves)/2>100) {
 					return 50;
 				}else {
 					if(daysWithProfit>3) {
-						return money - reserves+30;
+						return (money - reserves)/2+30;
 					}else {
-						return money - reserves;
+						return (money - reserves)/2;
 					}
 					
 				}
