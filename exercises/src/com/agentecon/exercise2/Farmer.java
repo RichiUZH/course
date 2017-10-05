@@ -85,7 +85,6 @@ public class Farmer extends Consumer implements IFounder {
 		// man-hours anyway, even if he cannot
 		// buy anything with the earned money.
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
-
 		// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
 		// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
 		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,

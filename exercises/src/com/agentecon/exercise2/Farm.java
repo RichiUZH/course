@@ -38,8 +38,13 @@ public class Farm extends Producer {
 	}
 
 	private double calculateBudget() {
-		return 100; // Why not spending 100? :)
+//		 double fixedCosts = getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
+//		 double manHoursPrice = marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
+//		 double availableCash = getMoney().getAmount();
+//System.out.println(availableCash);
 
+		return 100; // Why not spending 100? :)
+		
 		// Things that might or might not be useful here:
 		// double fixedCosts = getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
 		// double manHoursPrice = marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
@@ -60,8 +65,7 @@ public class Farm extends Producer {
 	@Override
 	protected double calculateDividends(int day) {
 		double money = getMoney().getAmount();
-		double dividendRate = 0.1;
-		return money * dividendRate; // Simply pay out 10% of the current cash reserves as dividends
+		return money - 1000;
 	}
 
 	private int daysWithoutProfit = 0;
