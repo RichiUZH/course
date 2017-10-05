@@ -90,18 +90,17 @@ public class Farm extends Producer {
 		} else {
 			daysWithProfit = 0;
 		}
-//				if((money - reserves)>100) {
-//					return 50;
-//				}else {
-//					if(this.getAge()%5==0) {
-//					
-//						return (money - reserves)+50;
-//					}else {
-//						return  (money - reserves);
-//					}
-//					
-//				}
-		return money - reserves;
+				if((money - reserves)>100) {
+					return 50;
+				}else {
+					if(this.getAge()%5==0) {
+					
+						return (money - reserves)+50;
+					}else {
+						return  (money - reserves);
+					}
+					
+				}
 	}
 
 	private int daysWithoutProfit = 0;
