@@ -42,7 +42,6 @@ public class Farm extends Producer {
 //		 double manHoursPrice = marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
 //		 double availableCash = getMoney().getAmount();
 //System.out.println(availableCash);
-
 		return 100; // Why not spending 100? :)
 		
 		// Things that might or might not be useful here:

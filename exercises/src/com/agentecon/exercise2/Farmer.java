@@ -39,7 +39,9 @@ public class Farmer extends Consumer implements IFounder {
 	public static final double MINIMUM_WORKING_HOURS = 5;
 
 	private Good manhours;
-
+	private IProductionFunction prodFun;
+	private boolean adaptive=true;
+ 
 	public Farmer(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
@@ -48,6 +50,9 @@ public class Farmer extends Consumer implements IFounder {
 
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
+		if (this.prodFun == null) {
+			this.prodFun = research.createProductionFunction(FarmingConfiguration.POTATOE);
+		}
 		IStock myLand = getStock(FarmingConfiguration.LAND);
 		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
@@ -79,17 +84,30 @@ public class Farmer extends Consumer implements IFounder {
 
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
+		IStock currentManhours = inv.getStock(FarmingConfiguration.MAN_HOUR);
 		// In the beginning, shelves can be empty and thus there is no incentive
 		// to work (sell man-hours) either.
 		// To kick-start the economy, we require the farmer to sell some of his
 		// man-hours anyway, even if he cannot
 		// buy anything with the earned money.
-		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
-		// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
-		// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
-		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
-		// the daily amount spent is the same, but more smooth over time.
-		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
+		Inventory reducedInv=null;
+		double change=0;
+		if(adaptive){
+			double weight = prodFun.getWeight(currentManhours.getGood()).weight;
+			double fixedCost = prodFun.getFixedCost(currentManhours.getGood());
+			super.workAtLeast(market, (currentManhours.getAmount() * weight + fixedCost) / (1 + weight));
+			// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
+			// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
+			// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
+			// the daily amount spent is the same, but more smooth over time.
+			change=change+0.01;
+			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.5);
+			 System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
+		}else {
+	        super.workAtLeast(market, MINIMUM_WORKING_HOURS);
+	         reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
+		}
+	
 		super.trade(reducedInv, market);
 	}
 
