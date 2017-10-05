@@ -77,10 +77,11 @@ public class Farm extends Producer {
 				if((money - reserves)/2>100) {
 					return 50;
 				}else {
-					if(daysWithProfit>3) {
-						return Math.sin((money - reserves)/2+30);
+					if(this.getAge()%5==0) {
+					
+						return (money - reserves)/2+50;
 					}else {
-						return Math.sin( (money - reserves)/2);
+						return  (money - reserves)/2;
 					}
 					
 				}
