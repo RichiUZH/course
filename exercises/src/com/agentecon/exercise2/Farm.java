@@ -97,7 +97,7 @@ public class Farm extends Producer {
 //					}
 //					
 //				}
-		return this.getDividendWallet().getAmount()-875;
+		return 9;//this.getDividendWallet().getAmount()-875;
 	}
 
 	private int daysWithoutProfit = 0;
@@ -113,7 +113,7 @@ public class Farm extends Producer {
 			daysWithoutProfit = 0;
 		}
 
-		return daysWithoutProfit > 1000;
+		return daysWithoutProfit > 50;
 	}
 
 }

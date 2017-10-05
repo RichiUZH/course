@@ -109,7 +109,7 @@ public class Farmer extends Consumer implements IFounder {
 			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.7);
 			// System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
 		}else {
-	        super.workAtLeast(market, 7);
+	        super.workAtLeast(market, 6.9);
 	         reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		}
 	
