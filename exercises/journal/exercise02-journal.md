@@ -14,4 +14,5 @@ By analyzing the simulations we found out that our dividends are more or less de
 Secondly we tried to change the budget in order to get a better result. We calculated the reserves as the sum of all profits minus the sum of all dividends. We had the idea that whenever the reserves go beyond a certain threshold we only use 80% of the budget in order to balance the budget. This had no big influence on our agent.
 In the simulation we can see that our firm is on the market from the second day on. For the first 21 days there are only 2 frims on the market. Beginning day 28, or dividends start do decrease after reaching a peek. This could be explained by the entry of the other farms into the market. 
 
-In this exercise mostly variable tuning was tried in order to get a high utility. Starting with the dividends, then man hour, budget. Unfortunately I could not see through the code quite yet. 
+In this exercise mostly variable tuning was tried in order to get a high utility. Starting with the dividends first with an own approach then with the suggested, then man hour, budget. Unfortunately I could not see through the code quite yet. A cheat sheet of the methods and their output would be helpful. What is the difference between money and cash? what is th use of the dividends wallet etc.
+
