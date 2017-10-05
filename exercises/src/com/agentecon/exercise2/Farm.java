@@ -22,7 +22,8 @@ import com.agentecon.production.IProductionFunction;
 public class Farm extends Producer {
 
 	private MarketingDepartment marketing;
-
+	private double allprofits=0;
+	private double alldividends=0;
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
@@ -43,7 +44,21 @@ public class Farm extends Producer {
 //		 double availableCash = getMoney().getAmount();
 //System.out.println(availableCash);
 		// Why not spending 100? :)
-		return 80; 
+		getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
+		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
+		double profits = fin.getProfits();
+		double dividends = calculateDividends(this.getAge());
+		allprofits=profits+allprofits;
+		alldividends=dividends+alldividends;
+		if((allprofits-alldividends)/this.getAge()>(profits-dividends)){
+			
+//			System.out.println((allprofits-alldividends)/this.getAge());
+			return 80; 
+		}else {
+//			System.out.println("hello"+this.getAge());
+			return 100; 
+		}
+		
 		// Things that might or might not be useful here:
 		// double fixedCosts = getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
 		// double manHoursPrice = marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
@@ -67,24 +82,26 @@ public class Farm extends Producer {
 		double money = getMoney().getAmount();
 		getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
 		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
-		double profits = fin.getProfits();		double reserves=1100;
+		double profits = fin.getProfits();		
+		double reserves=1100;
 		
 		if (profits >= 0) {
 			daysWithProfit++;
 		} else {
 			daysWithProfit = 0;
 		}
-				if((money - reserves)/2>100) {
-					return 50;
-				}else {
-					if(this.getAge()%5==0) {
-					
-						return (money - reserves)/2+50;
-					}else {
-						return  (money - reserves)/2;
-					}
-					
-				}
+//				if((money - reserves)>100) {
+//					return 50;
+//				}else {
+//					if(this.getAge()%5==0) {
+//					
+//						return (money - reserves)+50;
+//					}else {
+//						return  (money - reserves);
+//					}
+//					
+//				}
+		return money - reserves;
 	}
 
 	private int daysWithoutProfit = 0;
