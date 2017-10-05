@@ -66,7 +66,7 @@ public class Farm extends Producer {
 		double money = getMoney().getAmount();
 		getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
 		double divdends=1000;
-		return money - divdends;
+		return (money - divdends)/2;
 	}
 
 	private int daysWithoutProfit = 0;
