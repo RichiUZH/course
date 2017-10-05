@@ -40,7 +40,7 @@ public class Farmer extends Consumer implements IFounder {
 
 	private Good manhours;
 	private IProductionFunction prodFun;
-	private boolean adaptive=true;
+	private boolean adaptive=false;
  
 	public Farmer(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
@@ -91,6 +91,8 @@ public class Farmer extends Consumer implements IFounder {
 		// man-hours anyway, even if he cannot
 		// buy anything with the earned money.
 		Inventory reducedInv=null;
+		//TODO: exponential search of man hours
+//		exponentialSearch(this.getUtilityFunction().getLatestExperiencedUtility(),  this.getUtilityFunction().getUtility(currentManhours));
 		double change=0;
 		if(adaptive){
 			double weight = prodFun.getWeight(currentManhours.getGood()).weight;
@@ -100,11 +102,10 @@ public class Farmer extends Consumer implements IFounder {
 			// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
 			// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
 			// the daily amount spent is the same, but more smooth over time.
-			change=change+0.01;
-			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.6);
-			 System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
+			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.7);
+			// System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
 		}else {
-	        super.workAtLeast(market, MINIMUM_WORKING_HOURS);
+	        super.workAtLeast(market, 9);
 	         reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		}
 	
@@ -115,6 +116,24 @@ public class Farmer extends Consumer implements IFounder {
 	public double consume() {
 		return super.consume();
 	}
+	
+//	  int exponentialSearch(int number, int utility, int x)
+//	    {
+//		 this.getUtilityFunction().getLatestExperiencedUtility();
+//		 this.getUtilityFunction().getUtility(quantities);
+//	        // If x is present at firt location itself
+//	        if (arr[0] == x)
+//	            return 0;
+//	      
+//	        // Find range for binary search by
+//	        // repeated doubling
+//	        int i = 1;
+//	        while (i < n && arr[i] <= x)
+//	            i = i*2;
+//	      
+//	        //  Call binary search for the found range.
+//	        return hour;
+//	    }
 
 	// The "static void main" method is executed when running a class
 	public static void main(String[] args) {

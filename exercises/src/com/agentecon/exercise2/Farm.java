@@ -64,7 +64,9 @@ public class Farm extends Producer {
 	@Override
 	protected double calculateDividends(int day) {
 		double money = getMoney().getAmount();
-		return money - 1000;
+		getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
+		double divdends=1000;
+		return money - divdends;
 	}
 
 	private int daysWithoutProfit = 0;
@@ -79,7 +81,8 @@ public class Farm extends Producer {
 		} else {
 			daysWithoutProfit = 0;
 		}
-		return daysWithoutProfit > 100;
+
+		return daysWithoutProfit > 1000;
 	}
 
 }
