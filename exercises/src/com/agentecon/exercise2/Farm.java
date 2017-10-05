@@ -51,11 +51,8 @@ public class Farm extends Producer {
 		allprofits=profits+allprofits;
 		alldividends=dividends+alldividends;
 		if((allprofits-alldividends)/this.getAge()>(profits-dividends)){
-			
-//			System.out.println((allprofits-alldividends)/this.getAge());
 			return 80; 
 		}else {
-//			System.out.println("hello"+this.getAge());
 			return 100; 
 		}
 		
@@ -79,7 +76,6 @@ public class Farm extends Producer {
 	
 	@Override
 	protected double calculateDividends(int day) {
-		System.out.println();
 		double money = getMoney().getAmount();
 		getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
 		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
@@ -101,7 +97,7 @@ public class Farm extends Producer {
 //					}
 //					
 //				}
-		return this.getDividendWallet().getAmount()-1000;
+		return this.getDividendWallet().getAmount()-875;
 	}
 
 	private int daysWithoutProfit = 0;

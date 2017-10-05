@@ -58,7 +58,7 @@ public class Farmer extends Consumer implements IFounder {
 			this.prodFun = research.createProductionFunction(FarmingConfiguration.POTATOE);
 		}
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05) {
+		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.1) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
@@ -77,7 +77,7 @@ public class Farmer extends Consumer implements IFounder {
 
 	private boolean checkProfitability(IPriceProvider prices, IStock myLand, IProductionFunction prod) {
 		try {
-			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.2).getQuantity();
+			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.3).getQuantity();
 			Quantity output = prod.calculateOutput(new Quantity(HermitConfiguration.MAN_HOUR, 12), myLand.getQuantity());
 			double profits = prices.getPriceBelief(output) - prices.getPriceBelief(hypotheticalInput);
 			return profits > 0;
