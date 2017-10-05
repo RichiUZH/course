@@ -60,13 +60,30 @@ public class Farm extends Producer {
 	public void produce() {
 		super.produce();
 	}
-
+	private int daysWithProfit = 0;
+	
 	@Override
 	protected double calculateDividends(int day) {
 		double money = getMoney().getAmount();
 		getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
-		double divdends=1000;
-		return (money - divdends)/2;
+		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
+		double profits = fin.getProfits();		double reserves=1100;
+		
+		if (profits >= 0) {
+			daysWithProfit++;
+		} else {
+			daysWithProfit = 0;
+		}
+				if((money - reserves)/2>100) {
+					return 50;
+				}else {
+					if(daysWithProfit>3) {
+						return (money - reserves)/2+10;
+					}else {
+						return (money - reserves)/2;
+					}
+					
+				}
 	}
 
 	private int daysWithoutProfit = 0;
