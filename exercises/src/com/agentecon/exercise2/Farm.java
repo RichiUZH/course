@@ -85,11 +85,11 @@ public class Farm extends Producer {
 		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
 		double profits = fin.getProfits();		
 		double reserves=1100;
-		if (profits >= 0) {
-			daysWithProfit++;
-		} else {
-			daysWithProfit = 0;
-		}
+//		if (profits >= 0) {
+//			daysWithProfit++;
+//		} else {
+//			daysWithProfit = 0;
+//		}
 //				if((money - reserves)>100) {
 //					return 50;
 //				}else {

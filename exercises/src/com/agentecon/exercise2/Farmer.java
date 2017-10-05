@@ -36,9 +36,12 @@ import com.agentecon.research.IInnovation;
  */
 public class Farmer extends Consumer implements IFounder {
 
-	public static final double MINIMUM_WORKING_HOURS = 5;
+	public static final double MINIMUM_WORKING_HOURS = 8;
 
 	private  double oldUtility=0;
+	private double newUtility=0;
+	private boolean workmore=true;
+	private double workhours=12;
 	private Good manhours;
 	private IProductionFunction prodFun;
 	private boolean adaptive=false;
@@ -74,7 +77,7 @@ public class Farmer extends Consumer implements IFounder {
 
 	private boolean checkProfitability(IPriceProvider prices, IStock myLand, IProductionFunction prod) {
 		try {
-			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.5).getQuantity();
+			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.2).getQuantity();
 			Quantity output = prod.calculateOutput(new Quantity(HermitConfiguration.MAN_HOUR, 12), myLand.getQuantity());
 			double profits = prices.getPriceBelief(output) - prices.getPriceBelief(hypotheticalInput);
 			return profits > 0;
@@ -106,7 +109,7 @@ public class Farmer extends Consumer implements IFounder {
 			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.7);
 			// System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
 		}else {
-	        super.workAtLeast(market, this.getAge()%2+6);
+	        super.workAtLeast(market, 7);
 	         reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		}
 	
