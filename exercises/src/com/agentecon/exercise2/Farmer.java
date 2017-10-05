@@ -38,6 +38,7 @@ public class Farmer extends Consumer implements IFounder {
 
 	public static final double MINIMUM_WORKING_HOURS = 5;
 
+	private  double oldUtility=0;
 	private Good manhours;
 	private IProductionFunction prodFun;
 	private boolean adaptive=false;
@@ -105,7 +106,7 @@ public class Farmer extends Consumer implements IFounder {
 			 reducedInv = inv.hideRelative(getMoney().getGood(), 0.7);
 			// System.out.println(this.getUtilityFunction().getLatestExperiencedUtility());
 		}else {
-	        super.workAtLeast(market, 9);
+	        super.workAtLeast(market, this.getAge()%2+6);
 	         reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		}
 	
@@ -119,20 +120,11 @@ public class Farmer extends Consumer implements IFounder {
 	
 //	  int exponentialSearch(int number, int utility, int x)
 //	    {
-//		 this.getUtilityFunction().getLatestExperiencedUtility();
-//		 this.getUtilityFunction().getUtility(quantities);
-//	        // If x is present at firt location itself
-//	        if (arr[0] == x)
-//	            return 0;
-//	      
-//	        // Find range for binary search by
-//	        // repeated doubling
-//	        int i = 1;
-//	        while (i < n && arr[i] <= x)
-//	            i = i*2;
-//	      
-//	        //  Call binary search for the found range.
+//		double newUtility=this.getUtilityFunction().getLatestExperiencedUtility();
+//		 //
+//	        if(newUtility>oldUtility)
 //	        return hour;
+//	        oldUtility=this.getUtilityFunction().getLatestExperiencedUtility();
 //	    }
 
 	// The "static void main" method is executed when running a class
