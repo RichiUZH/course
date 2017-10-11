@@ -1,5 +1,7 @@
 # Lab Journal: Exercise 3
 
+*einträge mit Stern sind nicht zur Abgabe gedacht, sondern als Gedankenstütze während der Bearbeitung. 
+
 Authors: Merian, Sybilla; Mühlemann, Mark
 
 1. Velocity
