@@ -1,4 +1,5 @@
 # Lab Journal: Exercise 3
 
-Authors: Mühlemann, Mark
+Authors: Merian, Sybilla; Mühlemann, Mark
 
+# 1. Experimenting with the money supply
