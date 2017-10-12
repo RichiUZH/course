@@ -1,25 +1,24 @@
 # Lab Journal: Exercise 3
 Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
-*NB: The image and tables are not displaying properly on our end. The image is placed in team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png; and the tables are displayed more clearly when viewing the text in "raw"*
+*NB: The image and tables are not displaying properly on our end. The image is placed in team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png and the tables are displayed more clearly when viewing the text raw.*
 
 ## 1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions.
 
-The following table () shows the two different buffers and how they increase, the good shown is man hours. A buffer size of 1 would lead to no money changing hands in the economy. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
+The following table shows the two different buffers and how they increase, the good shown is man hours. A buffer size of 1 would lead to no money changing hands in the economy. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
 
 We ran the simulation multiple times and in each simulation the end volume and price were compared:
 
 ![Table of different buffer sizes](team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
 
+As visible in the lower half of the above table, there is an decreasing trend overall, with slight bumps, in the price of manhours as the respective buffers grow. 
 
-*Einfluss Money supply (gleichverteilt) festhalten. 
-
-*Since $V$ and $T$ ought to be constant and $M$ increases, the price level will have 
+Manhour volume on the other hand follows a less clear pattern. 
 
 ## 2. Interest Rates
-Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
-Interestingly a cap is reached in both products fast but once it is in prie and the other one in volume, while the other feature oscilates.
+The table below shows the interest rates and how the two products, man hour and potato, their prices and their volume act.
+Interestingly, a cap is reached in both products fast, but once it is in price and the other one in volume, while the other feature oscillates.
 
 Manhour
 | Interest	 | Volume | Price |
@@ -51,7 +50,7 @@ Interest	|Volume	|Price
 |0.091	|	85.45|99019.8
 |0.101	|	99.28|99019.8
 
-*Falls die Wirtschaft sich bei einer Geldmengenerhöhung nicht wie erwartet verhält, liegt der Grund vermutlich darin, dass, wie im WhatsApp Chat erwähnt, es keine Geldmultiplikatoren wie Geschäftsbanken o.ä. gibt. Diese können mehr Kredite vergeben als eigentlich Geld in der Wirtschaft zur Verfügung steht. Dadurch weitet sich die Geldmenge um 1/delta Mindesteinlagensatz aus.
+*Falls die Wirtschaft sich bei einer Geldmengenerhöhung nicht wie erwartet verhält, liegt der Grund vermutlich darin, dass es keine Geldmultiplikatoren wie Geschäftsbanken o.ä. gibt. Diese können mehr Kredite vergeben als eigentlich Geld in der Wirtschaft zur Verfügung steht. Dadurch weitet sich die Geldmenge um 1/delta Mindesteinlagensatz aus.
 
 ## 3. Lump Sum Subsidies
 By adding a fixed amount of money to the agents' account every day, he should, in theory, be willing to spend more (in absolute terms). This in turn would have to lead to other agents selling more goods, thus providing them with a higher utility. There are possibly some counteracting effects, such as certain agents disappearing from the market, because prices over time might rise, since in aggregate there is now more money in the economy. Additionaly, the agent will still maximize his utility and buy goods at the lowest price. This would favor efficient firms, and eliminate weaker firms that may not be able to compete in a price war. This of course is assuming that not all firms are producing at cost (yet).
