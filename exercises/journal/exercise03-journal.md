@@ -1,7 +1,7 @@
 # Lab Journal: Exercise 3
 Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
-##1. Velocity
+## 1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions.
 
 Following a table that shows the two different buffers and how they increase. The good shown is man hours. A buffer size of 1 is impossible because no money would flow. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
@@ -15,7 +15,7 @@ We ran the simulation multiple times and in each simulation the end volume and p
 
 *Since $V$ and $T$ ought to be constant and $M$ increases, the price level will have 
 
-##2. Interest Rates
+## 2. Interest Rates
 Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
 Interestingly a cap is reached in both products fast but once it is in prie and the other one in volume, while the other feature oscilates.
 
@@ -51,15 +51,15 @@ Interest	|Volume	|Price
 
 *Falls die Wirtschaft sich bei einer Geldmengenerhöhung nicht wie erwartet verhält, liegt der Grund vermutlich darin, dass, wie im WhatsApp Chat erwähnt, es keine Geldmultiplikatoren wie Geschäftsbanken o.ä. gibt. Diese können mehr Kredite vergeben als eigentlich Geld in der Wirtschaft zur Verfügung steht. Dadurch weitet sich die Geldmenge um 1/delta Mindesteinlagensatz aus.
 
-##3. Lump Sum Subsidies
+## 3. Lump Sum Subsidies
 By adding a fixed amount of money to the agents' account every day, he should, in theory, be willing to spend more (in absolute terms). This in turn would have to lead to other agents selling more goods, thus providing them with a higher utility. There are possibly some counteracting effects, such as certain agents disappearing from the market, because prices over time might rise, since in aggregate there is now more money in the economy. Additionaly, the agent will still maximize his utility and buy goods at the lowest price. This would favor efficient firms, and eliminate weaker firms that may not be able to compete in a price war. This of course is assuming that not all firms are producing at cost (yet).
 
 Interestingly the more amount of one person does not change the live of the others that much compared with the previous experiments.
 The average utility is more or less untouched, but somewhere between 950-20000 of the lump sum distribution the utility decreases harshly to a level of ~4.1.
 As expected the lumps sum distribution creates an inflation, therefore the prices are getting higher but also the wages. Bigger effects are visible after 20000 lump sum where both volumes are reduced but no convergence can be spotted in this area.
 
-Potatoe
-LumpSum 	Volume	Price	Avg. Utility
+Potato
+Lump-sum 	Volume	Price	Avg. Utility
 |0		240.03	4.21		Avg: 4.499272436171293
 |1		238.91	4.61		Avg: 4.496496000903647
 2		233.87	5.16		Avg: 4.498141169084105
