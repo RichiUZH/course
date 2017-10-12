@@ -1,14 +1,16 @@
 # Lab Journal: Exercise 3
 Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
+The tables 
+
 ## 1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions.
 
-Following a table that shows the two different buffers and how they increase. The good shown is man hours. A buffer size of 1 is impossible because no money would flow. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
+The following table shows the two different buffers and how they increase, the good shown is man hours. A buffer size of 1 would lead to no money changing hands in the economy. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
 
 We ran the simulation multiple times and in each simulation the end volume and price were compared:
 
-![Table of different buffer sizes](/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
+![Table of different buffer sizes](team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
 
 
 *Einfluss Money supply (gleichverteilt) festhalten. 
@@ -60,8 +62,8 @@ As expected the lumps sum distribution creates an inflation, therefore the price
 
 Potato
 Lump-sum 	Volume	Price	Avg. Utility
-|0		240.03	4.21		Avg: 4.499272436171293
-|1		238.91	4.61		Avg: 4.496496000903647
+0		240.03	4.21		Avg: 4.499272436171293
+1		238.91	4.61		Avg: 4.496496000903647
 2		233.87	5.16		Avg: 4.498141169084105
 3		232.25	5.58		Avg: 4.481351386194255
 4		240.15	5.82		Avg: 4.495751148018211
@@ -87,7 +89,7 @@ Lump-sum 	Volume	Price	Avg. Utility
 
 Man hour
 LumpSum 	Volume	Price	Avg. Utility
-|0		383.14	2.62		Avg: 4.499272436171293
+0		383.14	2.62		Avg: 4.499272436171293
 1		382.02	2.86		Avg: 4.496496000903647
 2		372.78	3.06		Avg: 4.498141169084105
 3		376.97	3.32		Avg: 4.481351386194255
@@ -111,4 +113,3 @@ LumpSum 	Volume	Price	Avg. Utility
 21000	285.08	2017.21	Avg: 4.0448286814891485
 22000	247.43	2945.91	Avg: 4.194840740956112
 23000	243.71	3270.18	Avg: 4.188088719570624
-*einkommens- und substitutionseffekt einbauen
