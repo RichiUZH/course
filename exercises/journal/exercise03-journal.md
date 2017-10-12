@@ -22,32 +22,34 @@ Since $V$ and $T$ ought to be constant and $M$ increases, the price level will h
 Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
 Interestingly a cap is reached in both products fast but once it is in prie and the other one in volume, while the other feature oscilates.
 Manhour
-Interest		Volume	Price
-0.001		381.98	3.56
-0.011		377.88	72.17
-0.021		378.05	1332.72
-0.031		185.24	3000.52
-0.041		160		9015.72
-0.051		160		5598.77
-0.061		160		4355.33
-0.071		160		6831.33
-0.081		160		11821.15
-0.091		160		11194.83
-0.101		160		5602.16
+|Interest		|Volume	|Price|
+| ------------- |:-------------:| -----:|
+|0.001		|381.98	|3.56|
+|0.011		|377.88	|72.17|
+|0.021		|378.05	|1332.72|
+|0.031		|185.24	|3000.52|
+|0.041		|160		|9015.72|
+|0.051		|160		|5598.77|
+|0.061		|160		|4355.33|
+|0.071		|160		|6831.33|
+|0.081		|160		|11821.15|
+|0.091		|160		|11194.83|
+|0.101		|160		|5602.16|
 
 Potatoe
-Interest		Volume	Price
-0.001		238.72	5.75
-0.011		234.39	116.64
-0.021		235.55	2204.57
-0.031		106.57	96676.79
-0.041		94.73	99019.8
-0.051		99.28	99019.8
-0.061		95.76	99019.8
-0.071		100.1	99019.8
-0.081		81.12	99019.8
-0.091		85.45	99019.8
-0.101		99.28	99019.8
+Interest	|Volume	|Price
+| ------------- |:-------------:| -----:|
+|0.001	|238.72	|5.75
+|0.011	|234.39	116.64
+|0.021	|	235.55|2204.57
+|0.031	|	106.57|96676.79
+|0.041	|	94.73|99019.8
+|0.051	|	99.28|99019.8
+|0.061	|	95.76|99019.8
+|0.071	|	100.1|99019.8
+|0.081	|	81.12|99019.8
+|0.091	|	85.45|99019.8
+|0.101	|	99.28|99019.8
 
 *Falls die Wirtschaft sich bei einer Geldmengenerhöhung nicht wie erwartet verhält, liegt der Grund vermutlich darin, dass, wie im WhatsApp Chat erwähnt, es keine Geldmultiplikatoren wie Geschäftsbanken o.ä. gibt. Diese können mehr Kredite vergeben als eigentlich Geld in der Wirtschaft zur Verfügung steht. Dadurch weitet sich die Geldmenge um 1/delta Mindesteinlagensatz aus.
 
@@ -60,8 +62,8 @@ As expected the lumps sum distribution creates an inflation, therefore the price
 
 Potatoe
 LumpSum 	Volume	Price	Avg. Utility
-0		240.03	4.21		Avg: 4.499272436171293
-1		238.91	4.61		Avg: 4.496496000903647
+|0		240.03	4.21		Avg: 4.499272436171293
+|1		238.91	4.61		Avg: 4.496496000903647
 2		233.87	5.16		Avg: 4.498141169084105
 3		232.25	5.58		Avg: 4.481351386194255
 4		240.15	5.82		Avg: 4.495751148018211
@@ -86,7 +88,7 @@ LumpSum 	Volume	Price	Avg. Utility
 23000	146.24	16213.56	Avg: 4.188088719570624
 Man hour
 LumpSum 	Volume	Price	Avg. Utility
-0		383.14	2.62		Avg: 4.499272436171293
+|0		383.14	2.62		Avg: 4.499272436171293
 1		382.02	2.86		Avg: 4.496496000903647
 2		372.78	3.06		Avg: 4.498141169084105
 3		376.97	3.32		Avg: 4.481351386194255
