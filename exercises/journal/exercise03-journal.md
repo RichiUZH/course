@@ -11,7 +11,7 @@ Following a table that shows the two different buffers and how they increase. Th
 
 The simulation was run multiple times and the end volume and price was compared of each simulation.
 
-![Table of different buffer sizes](/images/Screenshot_202017-10-12_2017.57.15.png "Table of different buffer sizes")
+![Table of different buffer sizes](/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
 
 
 *Einfluss Money supply (gleichverteilt) festhalten. 
@@ -21,6 +21,7 @@ Since $V$ and $T$ ought to be constant and $M$ increases, the price level will h
 ##2. Interest Rates
 Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
 Interestingly a cap is reached in both products fast but once it is in prie and the other one in volume, while the other feature oscilates.
+
 Manhour
 | Interest	 | Volume | Price |
 | ------------- | -------- | ----- |
@@ -86,6 +87,7 @@ LumpSum 	Volume	Price	Avg. Utility
 21000	170.93	12652.77	Avg: 4.0448286814891485
 22000	151.54	15033.41	Avg: 4.194840740956112
 23000	146.24	16213.56	Avg: 4.188088719570624
+
 Man hour
 LumpSum 	Volume	Price	Avg. Utility
 |0		383.14	2.62		Avg: 4.499272436171293
