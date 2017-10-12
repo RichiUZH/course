@@ -1,22 +1,19 @@
 # Lab Journal: Exercise 3
-
-*einträge mit Stern sind nicht zur Abgabe gedacht, sondern als Gedankenstütze während der Bearbeitung. 
-
 Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
 ##1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions.
 
-Following a table that shows the two different buffers and how they increase. The good shown is man hours. A buffer size of 1 is impossible because no money would flow. As we can see as the buffer size grows money gets scarce and therefore prices decrease because of a heavy deflation.
+Following a table that shows the two different buffers and how they increase. The good shown is man hours. A buffer size of 1 is impossible because no money would flow. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
 
-The simulation was run multiple times and the end volume and price was compared of each simulation.
+We ran the simulation multiple times and in each simulation the end volume and price were compared:
 
 ![Table of different buffer sizes](/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
 
 
 *Einfluss Money supply (gleichverteilt) festhalten. 
 
-Since $V$ and $T$ ought to be constant and $M$ increases, the price level will have 
+*Since $V$ and $T$ ought to be constant and $M$ increases, the price level will have 
 
 ##2. Interest Rates
 Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
