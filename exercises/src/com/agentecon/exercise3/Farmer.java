@@ -36,7 +36,8 @@ import com.agentecon.research.IInnovation;
  */
 public class Farmer extends Consumer implements IFounder {
 	
-	private static final double CAPITAL_BUFFER = 0.80;
+	private static double capitalBuffer = 0.8;
+	private static double farmBuffer = 0.0;
 
 	public static final double MINIMUM_WORKING_HOURS = 5;
 
@@ -92,8 +93,14 @@ public class Farmer extends Consumer implements IFounder {
 		// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
 		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
 		// the daily amount spent is the same, but more smooth over time.
-		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), CAPITAL_BUFFER);
+		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), capitalBuffer);
 		super.trade(reducedInv, market);
+	}
+	public static void setCapitalBuffer(double buffer) {
+		capitalBuffer = buffer;
+	}
+	public static void setFarmBuffer(double buffer) {
+		farmBuffer = buffer;
 	}
 
 	@Override
@@ -105,20 +112,59 @@ public class Farmer extends Consumer implements IFounder {
 	public static void main(String[] args) {
 		// Create the simulation configuration and specify which agent classes should participate
 		// The simulation will create multiple instances of every class.
-		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
+		
 		
 		// In case you want to test a setting with two different types of farmers, you configure the simulation like this:
 //		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class, AlternateFarmer.class);
 
 		System.out.print("Creating and running the simulation...");
 		// Create the simulation based on that configuration
+		int test=3;
+if(test==1) {
+	for(int i =0;i<10;i++) {
+		setCapitalBuffer(i/10.f);
+		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
 		Simulation sim = new Simulation(configuration);
 		sim.run(); // run the simulation
+		
+		System.out.println(sim.getStatistics().getGoodsMarketStats().getStats(HermitConfiguration.MAN_HOUR));
+	}
+}if(test==2){
+	for(int i =0;i<100;i++) {
+		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
+		configuration.addEvent(new InterestEvent(0.001+i/100.f, 10));
+		Simulation sim = new Simulation(configuration);
+		sim.run(); // run the simulation
+		System.out.println(Math.round((0.001+i/100.f)*1000)/1000f+"\t"+sim.getStatistics().getGoodsMarketStats().getStats(FarmingConfiguration.POTATOE));
+	}
+}if(test==3) {
+		for(int i =0;i<24;i++) {
+			int factor=1;
+			if(i<10)factor=1;
+			else if(i<15)factor=10;
+			else if(i<20)factor=50;
+			else if(i<25)factor=1000;
+			FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
+			configuration.addEvent(new HelicopterMoneyEvent(0, 1, 1, i*factor));
+			Simulation sim = new Simulation(configuration);
+			sim.run(); // run the simulation
+			System.out.println(i*factor+"\t\t"+sim.getStatistics().getGoodsMarketStats().getStats(FarmingConfiguration.POTATOE)+"\t\t"+sim.getStatistics().getAverageUtility());
+			//System.out.println(i*factor+"\t\t"+sim.getStatistics().getGoodsMarketStats().getStats(HermitConfiguration.MAN_HOUR)+"\t\t"+sim.getStatistics().getAverageUtility());
 
-		System.out.println(" done.");
-
+			}		
+		
+	}else {
+	
+	FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
+	//configuration.addEvent(new InterestEvent(0.001, 10));
+	Simulation sim = new Simulation(configuration);
+	sim.run(); // run the simulation
+    configuration.diagnoseResult(System.out, sim);
+	
+}
+		
 		// The configuration has a nice method to analyse the simulation for relevant metrics
-		configuration.diagnoseResult(System.out, sim);
+
 
 		System.out.println();
 		System.out.println("A more advanced way of running the simulation is to start the class com.agentecon.web.SimulationServer from the Arena project.");

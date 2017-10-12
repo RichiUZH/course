@@ -46,7 +46,7 @@ public class GoodStats {
 
 	@Override
 	public String toString() {
-		return Numbers.toShortString(yesterday.getTotWeight()) + " units traded for " + Numbers.toShortString(yesterday.getAverage()) + "$ each";
+		return Numbers.toShortString(yesterday.getTotWeight()) + "\t" + Numbers.toShortString(yesterday.getAverage());
 	}
 
 	public String toTabString() {
