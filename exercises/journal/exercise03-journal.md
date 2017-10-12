@@ -1,12 +1,12 @@
 # Lab Journal: Exercise 3
 Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
-The tables 
+*NB: The image and tables are not displaying properly on our end. The image is placed in team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png; and the tables are displayed more clearly when viewing the text in "raw"*
 
 ## 1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions.
 
-The following table (*the image isn't displaying properly on our end*) shows the two different buffers and how they increase, the good shown is man hours. A buffer size of 1 would lead to no money changing hands in the economy. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
+The following table () shows the two different buffers and how they increase, the good shown is man hours. A buffer size of 1 would lead to no money changing hands in the economy. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
 
 We ran the simulation multiple times and in each simulation the end volume and price were compared:
 
