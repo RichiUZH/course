@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.agent.IAgents;
+import com.agentecon.ISimulation;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
@@ -20,7 +20,7 @@ public class OwnershipStats extends SimStats {
 
 	private HashMap<String, HashMap<String, TimeSeries>> structure;
 
-	public OwnershipStats(IAgents agents) {
+	public OwnershipStats(ISimulation agents) {
 		super(agents);
 		this.structure = new InstantiatingHashMap<String, HashMap<String, TimeSeries>>() {
 
@@ -47,7 +47,7 @@ public class OwnershipStats extends SimStats {
 					return new OwnershipStructure(key);
 				}
 			};
-			for (IShareholder pc : agents.getShareholders()) {
+			for (IShareholder pc : getAgents().getShareholders()) {
 				String ownerType = pc.getType();
 				if (pc instanceof IConsumer && ((IConsumer) pc).isRetired()) {
 					ownerType = "Retiree";
@@ -94,11 +94,11 @@ public class OwnershipStats extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(String simId) {
+	public Collection<? extends Chart> getCharts() {
 		ArrayList<Chart> charts = new ArrayList<>();
 		for (Map.Entry<String, HashMap<String, TimeSeries>> owned : structure.entrySet()) {
 			Collection<TimeSeries> ts = owned.getValue().values();
-			Chart ch = new Chart(simId, owned.getKey() + " Owners", "Owners of an average firm of type " + owned.getKey(), ts);
+			Chart ch = new Chart(owned.getKey() + " Owners", "Owners of an average firm of type " + owned.getKey(), ts);
 			ch.setStacking("percent");
 			charts.add(ch);
 		}

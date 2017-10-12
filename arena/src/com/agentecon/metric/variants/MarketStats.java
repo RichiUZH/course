@@ -30,7 +30,8 @@ public class MarketStats extends SimStats implements IMarketListener {
 	private HashMap<Good, TimeSeries> volume;
 	private TimeSeries index;
 
-	public MarketStats(boolean inclVolume) {
+	public MarketStats(ISimulation sim, boolean inclVolume) {
+		super(sim);
 		this.index = new TimeSeries("Price Index");
 		this.averages = new InstantiatingHashMap<Good, Average>() {
 
@@ -131,19 +132,19 @@ public class MarketStats extends SimStats implements IMarketListener {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(String simId) {
+	public Collection<? extends Chart> getCharts() {
 		ArrayList<TimeSeries> price = new ArrayList<>(prices.values());
 		boolean useIndex = prices.size() > 2;
 		if (volume != null && useIndex) {
 			price.add(index);
 		}
-		Chart ch1 = new Chart(simId, comment == null || comment.isEmpty() ? "Prices" : "Prices (" + comment + ")", "Average transacted price for each good", price);
+		Chart ch1 = new Chart(comment == null || comment.isEmpty() ? "Prices" : "Prices (" + comment + ")", "Average transacted price for each good", price);
 		if (volume == null) {
 			return Collections.singleton(ch1);
 		} else {
-			Chart volumeChart = new Chart(simId, "Trade Volume", "Trade volume for each good", volume.values());
+			Chart volumeChart = new Chart("Trade Volume", "Trade volume for each good", volume.values());
 			if (useIndex){
-				Chart real = new Chart(simId, "Real Prices", "Nominal prices divided by index", createRealPrices());
+				Chart real = new Chart("Real Prices", "Nominal prices divided by index", createRealPrices());
 				return Arrays.asList(ch1, real, volumeChart);
 			} else {
 				return Arrays.asList(ch1, volumeChart);

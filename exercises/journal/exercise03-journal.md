@@ -2,7 +2,7 @@
 
 *einträge mit Stern sind nicht zur Abgabe gedacht, sondern als Gedankenstütze während der Bearbeitung. 
 
-Authors: Merian, Sybilla; Mühlemann, Mark
+Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
 1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions. 

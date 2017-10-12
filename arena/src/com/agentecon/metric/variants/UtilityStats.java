@@ -4,65 +4,62 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 
 import com.agentecon.ISimulation;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.market.IStatistics;
 import com.agentecon.metric.SimStats;
-import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.util.InstantiatingHashMap;
 
 public class UtilityStats extends SimStats {
 
-	private int iter;
-	private AveragingTimeSeries totUtil;
-	private AveragingTimeSeries phase1Util;
+	private TimeSeries tot, min, max;
+	private HashMap<String, TimeSeries> utilities;
 
-	public UtilityStats() {
-		this.iter = 0;
-		this.totUtil = new AveragingTimeSeries("Overall");
-		this.phase1Util = new AveragingTimeSeries("From day 250 to end");
+	public UtilityStats(ISimulation sim) {
+		super(sim);
+		this.tot = new TimeSeries("Average");
+		this.min = new TimeSeries("Min");
+		this.max = new TimeSeries("Max");
+		this.utilities = new InstantiatingHashMap<String, TimeSeries>() {
+
+			@Override
+			protected TimeSeries create(String key) {
+				return new TimeSeries(key);
+			}
+		};
 	}
 
 	@Override
 	public void notifyDayEnded(IStatistics stats) {
-		this.totUtil.add(stats.getAverageUtility().getAverage());
-		if (stats.getDay() >= 250) {
-			this.phase1Util.add(stats.getAverageUtility().getAverage());
+		this.tot.set(stats.getDay(), stats.getAverageUtility().getAverage());
+		this.min.set(stats.getDay(), stats.getAverageUtility().getMin());
+		this.max.set(stats.getDay(), stats.getAverageUtility().getMax());
+		for (IConsumer consumer: getAgents().getConsumers()) {
+			utilities.get(consumer.getName()).set(stats.getDay(), consumer.getUtilityFunction().getLatestExperiencedUtility());
 		}
 	}
 
 	@Override
-	public void notifySimEnded(ISimulation sim) {
-		this.totUtil.push(iter);
-		this.phase1Util.push(iter);
-		this.iter++;
-	}
-
-	@Override
-	public Collection<? extends Chart> getCharts(String simId) {
-		Collection<TimeSeries> list = Arrays.asList(totUtil.getTimeSeries(), phase1Util.getTimeSeries());
-		Chart ch = new Chart(simId, "Average Utility", "Average daily utility per consumer in each iteration", list);
+	public Collection<? extends Chart> getCharts() {
+		Chart ch = new Chart("Average Utility", "Average daily utility per consumer in each iteration", getTimeSeries());
 		return Collections.singleton(ch);
 	}
 	
 	@Override
 	public String toString(){
-		return phase1Util.toString();
-	}
-
-	public AveragingTimeSeries getScore() {
-		return phase1Util;
-	}
-	
-	public AveragingTimeSeries getUtil(){
-		return totUtil;
+		return tot.toString();
 	}
 
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
-		ArrayList<TimeSeries> list = new ArrayList<>();
-		list.add(totUtil.getTimeSeries());
+		Collection<TimeSeries> list = new ArrayList<>(Arrays.asList(tot, min, max));
+		ArrayList<TimeSeries> individuals = new ArrayList<>(utilities.values());
+		Collections.sort(individuals);
+		list.addAll(individuals);
 		return list;
 	}
 	

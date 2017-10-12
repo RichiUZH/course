@@ -24,10 +24,6 @@ public class SimulationConfig implements IDiscountRate {
 
 	private ArrayList<Event> events = new ArrayList<Event>();
 
-	@SuppressWarnings("unused")
-	private SimulationConfig() {
-	}
-
 	public SimulationConfig(int rounds) {
 		this(rounds, 23);
 	}
@@ -61,6 +57,14 @@ public class SimulationConfig implements IDiscountRate {
 	public int getRounds() {
 		return rounds;
 	}
+	
+	public IOptimalityIndicator[] getOptimalFirmCountIndicators() {
+		return new IOptimalityIndicator[0];
+	}
+	
+	public IOptimalityIndicator[] getOptimalProductionIndicators() {
+		return new IOptimalityIndicator[0];
+	}
 
 	public int getIntradayIterations() {
 		return marketRetries;
@@ -90,6 +94,10 @@ public class SimulationConfig implements IDiscountRate {
 	
 	public static boolean isServerConfig() {
 		return System.getProperty("agentecon.server") != null;
+	}
+
+	public static boolean shouldLoadRemoteTeams() {
+		return isServerConfig() || System.getProperty("agentecon.remoteteams") != null;
 	}
 
 }

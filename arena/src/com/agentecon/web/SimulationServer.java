@@ -1,12 +1,14 @@
 package com.agentecon.web;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.StringTokenizer;
 
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.web.methods.AgentsMethod;
+import com.agentecon.web.methods.ChartMethod;
 import com.agentecon.web.methods.ChildrenMethod;
 import com.agentecon.web.methods.DownloadCSVMethod;
 import com.agentecon.web.methods.GithubeventMethod;
@@ -32,17 +34,22 @@ public class SimulationServer extends VisServer {
 		super(port);
 
 		this.simulations = new ListMethod();
-		if (!SimulationConfig.isServerConfig()) {
+		if (SimulationConfig.isServerConfig()) {
+			try {
+				this.simulations.add(new GitSimulationHandle("meisser", "course", "master", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex1-hermit-3", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex2-farmer-4", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex4-growth-1", true));
+			} catch (IOException e) {
+				System.out.println("Disabled remote repositories. " + e.getMessage());
+			}
+		} else {
 			this.simulations.add(new LocalSimulationHandle());
-			new LocalSimulationUpdater(this.simulations).start();
-		}
-		try {
-//			this.simulations.add(new GitSimulationHandle("meisserecon", "agentecon", "demo-2", true));
-			this.simulations.add(new GitSimulationHandle("meisser", "course", "master", true));
-			this.simulations.add(new GitSimulationHandle("meisser", "course", "ex1-hermit-3", true));
-			this.simulations.add(new GitSimulationHandle("meisser", "course", "ex2-farmer-3", true));
-		} catch (IOException e) {
-			System.out.println("Disabled remote repositories. " + e.getMessage());
+			if (SimulationConfig.shouldLoadRemoteTeams()) {
+				// only start local reloaded if we don't have remote teams in order to save github api calls
+			} else {
+				new LocalSimulationUpdater(this.simulations).start();
+			}
 		}
 
 		this.methods = new MethodsMethod();
@@ -55,6 +62,7 @@ public class SimulationServer extends VisServer {
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));
 		this.methods.add(new RankingMethod(this.simulations));
+		this.methods.add(new ChartMethod(this.simulations));
 		this.methods.add(new DownloadCSVMethod(this.simulations));
 		this.methods.add(new MiniChartMethod(this.simulations));
 	}
@@ -95,19 +103,15 @@ public class SimulationServer extends VisServer {
 		}
 	}
 
-	// protected Response serveSimulation(IHTTPSession session, String uri, StringTokenizer tok) throws IOException {
-	// if (tok.hasMoreTokens()) {
-	// String methodName = tok.nextToken();
-	// WebApiMethod calledMethod = methods.getMethod(methodName);
-	// if (calledMethod != null) {
-	// return serve(session, calledMethod.execute(new StringTokenizer(uri, "\\/"), new Parameters(session)));
-	// } else {
-	// return super.serve(session, "sim.html");
-	// }
-	// } else {
-	// return super.serve(session, "sim.html");
-	// }
-	// }
+	@Override
+	protected String getStartPath() {
+		Collection<String> sims = simulations.getSimulations();
+		if (sims.size() == 1) {
+			return "/vis/simulation?sim=" + sims.iterator().next();
+		} else {
+			return super.getStartPath();
+		}
+	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		SimulationServer server = new SimulationServer(8080);

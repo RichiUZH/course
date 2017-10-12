@@ -5,11 +5,12 @@ package com.agentecon.metric.series;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import com.agentecon.util.Average;
 import com.agentecon.util.Numbers;
 
-public class TimeSeries {
+public class TimeSeries implements Comparable<TimeSeries> {
 
 	private String name;
 	protected Line line;
@@ -49,17 +50,12 @@ public class TimeSeries {
 	public void set(int pos, double average) {
 		assert!Double.isNaN(average);
 		assert!Double.isInfinite(average);
+		assert pos > line.getEnd() : "Adding points in the middle is not yet supported";
 		line.add(new Point(pos, (float) average));
 	}
 
 	public float getLatest() {
 		return line.getLatest();
-	}
-
-	public void setExact(int pos, double average) {
-		assert!Double.isNaN(average);
-		assert!Double.isInfinite(average);
-		line.add(new Point(pos, (float) average), 0);
 	}
 
 	public String getName() {
@@ -249,6 +245,47 @@ public class TimeSeries {
 		assert Numbers.equals(ts.buildMovingAverage(1).get(0), 0.5f);
 		assert Numbers.equals(ts.buildMovingAverage(5).get(0), (1 + 2 + 3 + 4 + 5) / 6.0f);
 		assert Numbers.equals(ts.buildMovingAverage(5).get(10), (1 + 2 + 3 + 4 + 5) / 6.0f + 10);
+	}
+
+	@Override
+	public int compareTo(TimeSeries o) {
+		StringTokenizer mine = new StringTokenizer(name);
+		StringTokenizer other = new StringTokenizer(o.name);
+		while (true) {
+			if (mine.hasMoreTokens() && other.hasMoreTokens()) {
+				String myNext = mine.nextToken();
+				String otherNext = other.nextToken();
+				int diff = findDiff(myNext, otherNext);
+				if (diff != 0) {
+					return diff;
+				}
+			} else if (mine.hasMoreTokens()){
+				return 1;
+			} else if (other.hasMoreTokens()){
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	}
+
+	private int findDiff(String myNext, String otherNext) {
+		if (isNumber(myNext) && isNumber(otherNext)) {
+			int myNum = Integer.parseInt(myNext);
+			int otNum = Integer.parseInt(otherNext);
+			return Integer.compare(myNum, otNum);
+		} else {
+			return myNext.compareTo(otherNext);
+		}
+	}
+
+	private boolean isNumber(String myNext) {
+		for (char ch: myNext.toCharArray()) {
+			if (!Character.isDigit(ch)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

@@ -10,19 +10,27 @@ import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.sim.SimulationListenerAdapter;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public abstract class SimStats extends SimulationListenerAdapter {
 
-	protected final IAgents agents;
-
-	public SimStats() {
-		this(null);
+	private final ISimulation sim;
+	
+	public SimStats(ISimulation sim) {
+		this.sim = sim;
+	}
+	
+	protected IAgents getAgents() {
+		return sim.getAgents();
+	}
+	
+	public int getDay() {
+		return sim.getDay();
 	}
 
-	public SimStats(IAgents agents) {
-		this.agents = agents;
+	public Collection<? extends Chart> getCharts(){
+		throw new NotImplementedException();
 	}
-
-	public abstract Collection<? extends Chart> getCharts(String simId);
 
 	public void notifySimStarting(ISimulation sim) {
 		sim.addListener(this);

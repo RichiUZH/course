@@ -21,15 +21,10 @@ public class CompilingClassLoader extends RemoteLoader {
 	}
 
 	@Override
-	public void forEach(String packageName, BiConsumer<String, byte[]> biConsumer) throws IOException {
+	public void forEach(String packageName, BiConsumer<String, ByteCodeSource> biConsumer) throws IOException {
 		Collection<String> files = source.listSourceFiles(packageName);
 		for (String f : files) {
-			try {
-				byte[] data = getByteCode(f);
-				biConsumer.accept(f, data);
-			} catch (ClassNotFoundException e) {
-				throw new NoClassDefFoundError(f + " not found");
-			}
+			biConsumer.accept(f, getByteCodeSource(f));
 		}
 	}
 

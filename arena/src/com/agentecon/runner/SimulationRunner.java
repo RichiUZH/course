@@ -9,15 +9,14 @@ import java.util.ArrayList;
 
 import com.agentecon.IIteratedSimulation;
 import com.agentecon.ISimulation;
-import com.agentecon.agent.IAgents;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Correlator;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.metric.variants.CashStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.MarketStats;
-import com.agentecon.metric.variants.MonetaryStats;
 import com.agentecon.metric.variants.OwnershipStats;
 import com.agentecon.metric.variants.StockMarketStats;
 import com.agentecon.metric.variants.ValuationStats;
@@ -42,25 +41,24 @@ public class SimulationRunner {
 		this.stats = new ArrayList<>();
 		this.latestRunStats = new ArrayList<>();
 
-		IAgents agents = sim.getAgents();
 		if (hasIterations(sim)) {
 			iter = (IIteratedSimulation) sim;
-			this.stats.add(new MarketStats(INCL_VOLUME));
+			this.stats.add(new MarketStats(sim, INCL_VOLUME));
 			// this.overallStats.add(new UtilityStats());
 			// skip most stats
 		} else {
-			MarketStats mstats = new MarketStats(true);
+			MarketStats mstats = new MarketStats(sim, true);
 			this.stats.add(mstats);
-			StockMarketStats sstats = new StockMarketStats(agents);
+			StockMarketStats sstats = new StockMarketStats(sim);
 			this.stats.add(sstats);
-			this.stats.add(new ValuationStats(agents));
-			this.stats.add(new OwnershipStats(agents));
-			this.stats.add(new DividendStats(agents));
-			this.stats.add(new MonetaryStats(agents));
+			this.stats.add(new ValuationStats(sim));
+			this.stats.add(new OwnershipStats(sim));
+			this.stats.add(new DividendStats(sim, new ArrayList<>()));
+			this.stats.add(new CashStats(sim));
 			// this.stats.add(new ProductionStats());
 			// this.stats.add(new SingleFirmStats());
 			// this.stats.add(new InventoryStats(sim));
-			this.stats.add(new Demographics(agents));
+			this.stats.add(new Demographics(sim));
 		}
 		this.latestRunStats.addAll(stats);
 		this.output = new ByteArrayOutputStream();
@@ -119,7 +117,7 @@ public class SimulationRunner {
 					sim = --maxIter <= 0 ? null : iter.getNext();
 					if (sim != null) {
 						currentStats = new ArrayList<>();
-						currentStats.add(new MarketStats(INCL_VOLUME));
+						currentStats.add(new MarketStats(sim, INCL_VOLUME));
 						stats.addAll(currentStats);
 						this.latestRunStats.clear();
 						this.latestRunStats.addAll(currentStats);
@@ -138,18 +136,6 @@ public class SimulationRunner {
 			System.setOut(oldOut);
 			System.setErr(oldErr);
 		}
-	}
-
-	public Chart[] getCharts(String simId) {
-		ArrayList<Chart> charts = new ArrayList<>();
-		for (SimStats stat : stats) {
-			for (Chart ch : stat.getCharts(simId)) {
-				if (ch.hasContent()) {
-					charts.add(ch);
-				}
-			}
-		}
-		return charts.toArray(new Chart[] {});
 	}
 
 	public ArrayList<TimeSeries> getLatestRunTimeSeries() {
