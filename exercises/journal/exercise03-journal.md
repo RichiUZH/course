@@ -11,7 +11,7 @@ Following a table that shows the two different buffers and how they increase. Th
 
 The simulation was run multiple times and the end volume and price was compared of each simulation.
 
-![Table of different buffer sizes](/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
+![Table of different buffer sizes](team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
 
 
 *Einfluss Money supply (gleichverteilt) festhalten. 
