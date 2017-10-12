@@ -22,8 +22,8 @@ Since $V$ and $T$ ought to be constant and $M$ increases, the price level will h
 Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
 Interestingly a cap is reached in both products fast but once it is in prie and the other one in volume, while the other feature oscilates.
 Manhour
-|Interest		|Volume	   |Price   |
-| ------------- |:-------------:| -----:|
+| Interest		| Volume	   | Price   |
+| ------------- |:--------:| -----:|
 |0.001		|381.98	|3.56|
 |0.011		|377.88	|72.17|
 |0.021		|378.05	|1332.72|
