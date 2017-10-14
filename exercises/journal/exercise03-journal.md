@@ -118,7 +118,7 @@ LumpSum 	Volume	Price	Avg. Utility
 ## Evaluation
 by Luzius Meisser
 
-Well done!
+Well done, with some room for improvment, in particular regarding the choice of parameters and the economic reasoning.
 
 To make the link to the chart work, the path must be provided relative to the folder the journal resides in, so
 ![Table of different buffer sizes](images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
@@ -126,6 +126,10 @@ should work.
 
 Task 1: you do the right tests and get the right numbers, but the conclusion could have been formulated in stronger terms, namely that larger capital buffers lead to a lower velocity and vice versa, whereas the real economy (trading volume and production) remains largely unaffected. The small effects that can be seen can be attributed to the simulation become less stable and less efficient when trying out more extreme values. The strong effect is clearly that on prices, which implies a change in velocity since the money supply stays constant.
 
-Task 2: [committing temporarily to make the tables work]
+Task 2: (Fixed the tables by adding a blank line in front of them, github needs that.) The tables show that more money M means higher prices P. This is most apparent when staying within reasonably low interest rates. At high interest rates, the simulation tends to fall apart and become chaotic, producing not very meaningful results any more. It is always good to explore the boundaries, but I would have liked to see a few more tests with reasonably low interest rates (since they are paid out "daily", 1% is already a lot). The key difference to reality is indeed credits, which can turn the relation between interest and inflation upside down.
+
+Task 3: Here, I would have liked to see some figures on how the utility of the lucky agent is affected by the helicopter drops. Does he achieve a better utility than the others? You expect yes (formulated in rather vague terms), but do not provide a clear statement or any evidence from the simulation.
+
+Overall score: 6.
 
 
