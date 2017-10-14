@@ -21,6 +21,7 @@ The table below shows the interest rates and how the two products, man hour and 
 Interestingly, a cap is reached in both products fast, but once it is in price and the other one in volume, while the other feature oscillates.
 
 Manhour
+
 | Interest	 | Volume | Price |
 | ------------- | -------- | ----- |
 |0.001		|381.98	|3.56|
@@ -36,7 +37,8 @@ Manhour
 |0.101		|160		|5602.16|
 
 Potatoe
-Interest	|Volume	|Price
+
+|Interest	|Volume	|Price
 | ------------- |:-------------:| -----:|
 |0.001	|238.72	|5.75
 |0.011	|234.39	116.64
@@ -112,3 +114,18 @@ LumpSum 	Volume	Price	Avg. Utility
 21000	285.08	2017.21	Avg: 4.0448286814891485
 22000	247.43	2945.91	Avg: 4.194840740956112
 23000	243.71	3270.18	Avg: 4.188088719570624
+
+## Evaluation
+by Luzius Meisser
+
+Well done!
+
+To make the link to the chart work, the path must be provided relative to the folder the journal resides in, so
+![Table of different buffer sizes](images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
+should work.
+
+Task 1: you do the right tests and get the right numbers, but the conclusion could have been formulated in stronger terms, namely that larger capital buffers lead to a lower velocity and vice versa, whereas the real economy (trading volume and production) remains largely unaffected. The small effects that can be seen can be attributed to the simulation become less stable and less efficient when trying out more extreme values. The strong effect is clearly that on prices, which implies a change in velocity since the money supply stays constant.
+
+Task 2: [committing temporarily to make the tables work]
+
+
