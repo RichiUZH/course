@@ -23,7 +23,7 @@ $max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{
 
 $\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot -\frac{1}{p_{t+s}} + u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}} =0$
 
-$u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * 1/{p_{t+s}}= u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}}$
+$u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot \frac{1}{p_{t+s}} = u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}}$
 
 $\leftrightarrow u'(x_{p,t+s}) * 1/{p_{t+s}}= u'(x_{p,t+s+1})*1/{p_{t+s+1}}$
 
