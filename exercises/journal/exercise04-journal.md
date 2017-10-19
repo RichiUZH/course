@@ -10,15 +10,20 @@ Agents are prohibited from working during their retirement. As shown below, they
 
 The agent maximizes his lifetime utility by consuming potatoes. While consuming a budget constraint has to be taken into account. The budget constraint contains that the money spent on lifetime consumption must equal the lifetime income. In our case the lifetime income is the income from working. Dividends are not jet taken into account.  
 Period budget constraint: 
-$x_{p,t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
+
+$x_{p,t+s} \cdot p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
+
 As the agent does not invest its money but rather stores it under his pillow, we do not have to account for discounting. 
 The agent than optimizes:
+
 $max \sum_{s=0}^{500}u(x_p,t))$ subjected to $x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
 
 By rearaging we get:
-$max \sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s})$
+
+$max \sum_{s=0}^{500}u(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}})$
 
 In order to optimize the savings for the following day we get:
+
 $max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
 
 $\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot -\frac{1}{p_{t+s}} + u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}} =0$
@@ -32,13 +37,13 @@ Hence we get: $\frac{u'(x_{p,t+s+1})}{u'(x_{p,t+s})}=\frac{p_{t+s+1}}{p_{t+s}}$
 Therefore we get that the agent's consumption should change in order with the price change. 
 Given logarithmic utility and that prices are constant during the first 400 days, we get a consumption smoothing behavior.
 
-$u(x_{p,t})= log(h_l)+ log(x_{p,t}$ 
+$u(x_{p,t})= log(h_l)+ log(x_{p,t})$ 
 
-$u'(x_{p,t}= \frac{1}{x_{p,t}}$
+$u'(x_{p,t})= \frac{1}{x_{p,t}}$
 
 $\frac{x_{p,t+s}}{x_{p,t+s+1}}=\frac{p_{t+s+1}}{p_{t+s}}$ 
 
-Therefore we get the following saving heuristic in case of no dividends: If prices are increased by a factor $\alpha$, decrease consumption by the factor $\frac{1}{\alpha} and vice versa.
+Therefore we get the following saving heuristic in case of no dividends: If prices are increased by a factor $\alpha$, decrease consumption by the factor $\frac{1}{\alpha}$ and vice versa.
 
 
 
