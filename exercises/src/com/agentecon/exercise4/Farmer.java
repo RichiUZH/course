@@ -25,6 +25,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Quantity;
+import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.market.IStatistics;
 import com.agentecon.production.IPriceProvider;
@@ -45,6 +46,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 
 	private Good manhours;
 	private double savings;
+	private double potatoPrice;
 
 	public Farmer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
 		super(id, maxAge, end, utility);
@@ -89,17 +91,15 @@ public class Farmer extends MortalConsumer implements IFounder {
 			//this.savings = yesterdaysSavingsTarget * 0.9;
 		} else {
 			// Stupid example heuristic: try to increase the savings by 5
-			this.savings = yesterdaysSavingsTarget + 1;
+			//this.savings = yesterdaysSavingsTarget + 1;
+			this.savings =money-(getPotatoes()*potatoPrice);
 		}
 	}
 	
 	double getPotatoes(){
 		double money = getMoney().getAmount();
 		double earnings=yesterdayMoney-money;
-		double numPotatoes=0;
-		
-	
-		return numPotatoes;
+		return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice);
 	}
 	
 	@Override
@@ -124,6 +124,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 
 	private boolean checkProfitability(IPriceProvider prices, IStock myLand, IProductionFunction prod) {
 		try {
+			potatoPrice=prices.getPriceBelief(FarmingConfiguration.POTATOE);
 			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.5).getQuantity();
 			Quantity output = prod.calculateOutput(new Quantity(HermitConfiguration.MAN_HOUR, 12), myLand.getQuantity());
 			double profits = prices.getPriceBelief(output) - prices.getPriceBelief(hypotheticalInput);
@@ -139,6 +140,8 @@ public class Farmer extends MortalConsumer implements IFounder {
 		// - First we hide the savings, which we want to keep for the future
 		// - Second we hide a relative amount of what is left as a buffer as usual
 		Inventory inventoryWithoutSavings = inv.hide(getMoney().getGood(), savings);
+		/*IOffer offer = market.getOffer(FarmingConfiguration.POTATOE, false);
+		System.out.println("potatoe offer:"+offer.getPrice().toString());*/
 		Inventory reducedInv = inventoryWithoutSavings.hideRelative(getMoney().getGood(), CAPITAL_BUFFER);
 		DailyStockMarket stock = new DailyStockMarket(null);
 		managePortfolio(stock);
