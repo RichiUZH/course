@@ -42,14 +42,13 @@ public class Farmer extends MortalConsumer implements IFounder {
 	
 	private static final double CAPITAL_BUFFER = 0.80;
 	public static final double MINIMUM_WORKING_HOURS = 5;
-	double yesterdayMoney=0;
-
+	double[] money = new double[500];
 	private Good manhours;
 	private double savings;
 	double[] potatoPrice = new double[500];
 	double consumption;
 	
-	private int approach=1;
+	private int approach=2;
 
 	public Farmer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
 		super(id, maxAge, end, utility);
@@ -66,7 +65,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 		double yesterdaysSavingsTarget = this.savings; // how much we decided to keep aside yesterday
 		double spendings = getDailySpendings(); // how much we are spending on consumption goods at average
 		double dividends = getPortfolio().getLatestDividendIncome(); // how much dividends did we get today?
-		double money = getMoney().getAmount(); // that's how much money we currently have
+		money[this.getAge()] = getMoney().getAmount();
 		boolean retired = isRetired(); // are we retired yet
 		int age = getAge(); // the current age
 		int retirementAge = getRetirementAge(); // the age at which retirement starts
@@ -77,27 +76,35 @@ public class Farmer extends MortalConsumer implements IFounder {
 			if(approach==0) {
 				this.savings = yesterdaysSavingsTarget * 0.9;
 			}
-			if(approach==1) {
-				this.savings=money/(100-this.getAge()-400)*1.001;
+			if(approach==1||approach==2||approach==3) {
+				this.savings=money[this.getAge()]/(100-this.getAge()-400)*1.001;
 			}
-			if(approach==2) {
-				this.savings=money/(100-this.getAge()-400)*1.001;
-			}
+			
 
 		} else {
 			if(approach==0) {
 				this.savings = yesterdaysSavingsTarget + 1;
 			}
 			if(approach==1) {
-				this.savings =money-(getPotatoes()*potatoPrice[this.getAge()]);
+				this.savings =money[this.getAge()]-(getPotatoes()*potatoPrice[this.getAge()]);
 			}
 			if(approach==2) {
 				if(this.getAge()==0) {
-					this.savings =money-(getPotatoes()*potatoPrice[this.getAge()]);
+					this.savings =money[this.getAge()]-(getPotatoes()*potatoPrice[this.getAge()]);
 					consumption=getPotatoes()*potatoPrice[this.getAge()];
 				}else {
 					double newConsumption=(consumption)*(potatoPrice[this.getAge()-1]/potatoPrice[this.getAge()]);
-					this.savings =money-newConsumption;
+					this.savings =money[this.getAge()]-newConsumption;
+					consumption=newConsumption;
+				}
+			}if(approach==3) {
+				if(this.getAge()==0) {
+					
+					this.savings =money[this.getAge()]-(getPotatoes()*potatoPrice[this.getAge()]);
+					consumption=getPotatoes()*potatoPrice[this.getAge()];
+				}else {
+					double newConsumption=(consumption)*(potatoPrice[this.getAge()-1]/potatoPrice[this.getAge()]);
+					this.savings =money[this.getAge()]-newConsumption;
 					consumption=newConsumption;
 				}
 			}
@@ -108,8 +115,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 	}
 	
 	double getPotatoes(){
-		double money = getMoney().getAmount();
-		double earnings=yesterdayMoney-money;
+		double earnings=money[this.getAge()-1]-money[this.getAge()];
 		return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice[this.getAge()]);
 	}
 	
