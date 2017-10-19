@@ -10,7 +10,6 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.finance.TradingPortfolio;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
-import com.agentecon.firm.Portfolio;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
@@ -21,8 +20,6 @@ import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.util.Numbers;
 
 public class Consumer extends Agent implements IConsumer, IShareholder {
-
-	private static final double CAPITAL_BUFFER = 0.75;
 
 	private Good soldGood;
 	private IUtility utility;
@@ -53,7 +50,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		if (isRetired()) {
 			inv = inv.hide(soldGood); // cannot work any more, hide hours
 		}
-		trade(inv.hideRelative(getMoney().getGood(), CAPITAL_BUFFER), market);
+		trade(inv, market);
 	}
 
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
@@ -142,9 +139,15 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		return false;
 	}
 
-	public Inventory considerDeath(Portfolio inheritance) {
+	public Inheritance considerDeath() {
 		super.age();
 		return null;
+	}
+	
+	@Override
+	public void inherit(Inheritance inheritance) {
+		getInventory().absorb(inheritance.getInventory());
+		getPortfolio().absorb(inheritance.getPortfolio());
 	}
 
 	public boolean isRetired() {

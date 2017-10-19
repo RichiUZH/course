@@ -2,7 +2,6 @@ package com.agentecon.agent;
 
 import java.net.URL;
 
-import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.consumer.IConsumer;
@@ -27,9 +26,9 @@ public abstract class Agent implements IAgent, Cloneable {
 	private AgentRef ref;
 
 	public Agent(IAgentIdGenerator agentRegistry, Endowment end) {
-		this.type = inferType(getClass());
 		this.inv = end.getInitialInventory();
 		this.number = agentRegistry.createUniqueAgentId();
+		this.type = inferType(getClass());
 		this.end = end;
 		this.age = 0;
 		this.ref = new AgentRef(this);
@@ -106,14 +105,18 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public int getAge() {
-		return age;
+		if (age < 0) {
+			return -age;
+		} else {
+			return age;
+		}
 	}
 
 	public String getName() {
 		return getType() + " " + number;
 	}
 
-	public final String getType() {
+	public String getType() {
 		return type;
 	}
 
@@ -128,10 +131,12 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	public Inventory dispose() {
 		assert isAlive();
-		age = -1;
+		assert age > 0;
+		age = -age;
 		Inventory old = this.inv;
-		this.inv = new Inventory(old.getMoney().getGood());
-		return old;
+		Inventory newInventory = new Inventory(old.getMoney().getGood());
+		newInventory.absorb(old);
+		return newInventory;
 	}
 
 	protected final IStock getStock(Good good) {

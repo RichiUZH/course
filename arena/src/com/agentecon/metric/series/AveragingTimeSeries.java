@@ -2,6 +2,7 @@ package com.agentecon.metric.series;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class AveragingTimeSeries {
 
@@ -25,6 +26,12 @@ public class AveragingTimeSeries {
 		if (weight > 0) {
 			this.series.set(day, tot);
 			reset();
+		}
+	}
+	
+	public void pushZeroIfNothing() {
+		if (weight == 0.0 && series.isInteresting()) {
+			add(0.0);
 		}
 	}
 

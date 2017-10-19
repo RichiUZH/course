@@ -52,16 +52,15 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	private static final double LAND_ENDOWMENT = 100;
 	
-	private static final int ROUNDS = 3000;
+	private static final int ROUNDS = 2500;
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
 
-	
 	private int agentsWithLand;
 
 	@SafeVarargs
 	public FarmingConfiguration(Class<? extends Consumer>... agents) {
-		this(new AgentFactoryMultiplex(agents, AGENTS), AGENTS);
+		this(new AgentFactoryMultiplex(agents), AGENTS);
 	}
 
 	public FarmingConfiguration() throws IOException {
@@ -104,7 +103,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	@Override
 	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
 		assert desiredOutput.equals(POTATOE);
-		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 10.0, FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
 	}
 
 	@Override

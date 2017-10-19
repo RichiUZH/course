@@ -18,18 +18,37 @@ public interface IConsumer extends IAgent, IMarketParticipant {
 	 * @return the utility gained from consumption.
 	 */
 	public double consume();
+	
+	public boolean isMortal();
 
 	/**
 	 * Get one day older and die if the maximum age is reached.
-	 * In case of death, the inventory must be returned and the remaining
-	 * portfolio transferred to the 'inheritance' portfolio.
+	 * In case of death, the inventory and the portfolio are returned
+	 * so they can be inherited by others.
 	 */
-	public Inventory considerDeath(Portfolio inheritance);
+	public default Inheritance considerDeath() {
+		return null;
+	}
+	
+	@Deprecated
+	public default Inventory considerDeath(Portfolio inheritance) {
+		Inheritance inh = considerDeath();
+		inheritance.absorb(inh.getPortfolio());
+		return inh.getInventory();
+	}
+	
+	/**
+	 * Receive an inheritance.
+	 */
+	public default void inherit(Inheritance removeFirst) {
+		throw new RuntimeException("not implemented");
+	}
 	
 	public boolean isRetired();
 	
 	public IUtility getUtilityFunction();
 	
 	public void addListener(IConsumerListener listener);
+
 	
 }

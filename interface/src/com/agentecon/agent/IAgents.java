@@ -1,9 +1,11 @@
 package com.agentecon.agent;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.Inheritance;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Ticker;
@@ -30,5 +32,9 @@ public Collection<? extends IAgent> getAgents();
 	public Set<String> getConsumerTypes();
 
 	public Collection<IAgent> getAgents(String type);
+
+	public default Collection<Inheritance> getPendingInheritances(){
+		return Collections.emptyList();
+	}
 
 }

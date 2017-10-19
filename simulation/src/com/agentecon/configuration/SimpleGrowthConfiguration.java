@@ -13,13 +13,9 @@ import java.net.SocketTimeoutException;
 
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Consumer;
-import com.agentecon.consumer.IConsumer;
-import com.agentecon.consumer.IUtility;
 import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
-import com.agentecon.events.MinPopulationGrowthEvent;
 import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
@@ -29,63 +25,39 @@ import com.agentecon.goods.Stock;
 import com.agentecon.research.IInnovation;
 import com.agentecon.world.ICountry;
 
-public class GrowthConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
+public class SimpleGrowthConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
 	
 	private static final int BASIC_AGENTS = 30;
-	public static final String BASIC_AGENT = "com.agentecon.exercise4.Farmer";
+	public static final String BASIC_AGENT = "com.agentecon.exercise3.Farmer";
 	
-	public static final double GROWTH_RATE = 0.0025;
-	public static final int MAX_AGE = 500;
+	public static final double GROWTH_RATE = 0.001;
 
 	public static final Good LAND = HermitConfiguration.LAND;
 	public static final Good POTATOE = HermitConfiguration.POTATOE;
 	public static final Good MAN_HOUR = HermitConfiguration.MAN_HOUR;
 
 	@SafeVarargs
-	public GrowthConfiguration(Class<? extends Consumer>... agents) {
+	public SimpleGrowthConfiguration(Class<? extends Consumer>... agents) {
 		this(new AgentFactoryMultiplex(agents), BASIC_AGENTS);
 	}
 	
-	public GrowthConfiguration() throws SocketTimeoutException, IOException {
+	public SimpleGrowthConfiguration() throws SocketTimeoutException, IOException {
 		this(new ExerciseAgentLoader(BASIC_AGENT), BASIC_AGENTS);
 	}
 	
-	public GrowthConfiguration(IAgentFactory loader, int agents) {
-		super(new IAgentFactory() {
-			
-			private int number = 1;
-			
-			@Override
-			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-				int maxAge = number++ * MAX_AGE / agents;
-				return loader.createConsumer(id, maxAge, endowment, utilityFunction);
-			}
-		}, agents);
+	public SimpleGrowthConfiguration(IAgentFactory loader, int agents) {
+		super(loader, agents);
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
-		addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS){
-
-			@Override
-			protected void execute(ICountry sim) {
-				IConsumer cons = loader.createConsumer(sim, MAX_AGE, workerEndowment, create(0));
-				sim.add(cons);
-			}
-			
-		});
 		addEvent(new GrowthEvent(0, GROWTH_RATE){
 
 			@Override
 			protected void execute(ICountry sim) {
-				IConsumer cons = loader.createConsumer(sim, MAX_AGE, workerEndowment, create(0));
-				sim.add(cons);
+				sim.add(new Consumer(sim, workerEndowment, create(0)));
 			}
 			
 		});
-		addEvent(new CentralBankEvent(POTATOE));
+		addEvent(new InterestEvent(0.001, 1));
 	}
 
-	public static void main(String[] args) {
-		System.out.println("asdasd");
-	}
-	
 }

@@ -16,20 +16,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.agentecon.IAgentFactory;
-import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.configuration.AgentFactoryMultiplex;
-import com.agentecon.consumer.IConsumer;
-import com.agentecon.consumer.IUtility;
 import com.agentecon.sim.SimulationConfig;
 
 public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 
-	private static final Collection<String> TEAMS = createRepos(1,2,3,4,5,7,10);
-	
+	private static final Collection<String> TEAMS = createRepos(1, 2, 3, 4, 5, 7, 10);
+
 	private IAgentFactory defaultFactory;
-	
+
 	public ExerciseAgentLoader(String classname) throws SocketTimeoutException, IOException {
 		this(classname, SimulationConfig.shouldLoadRemoteTeams());
 	}
@@ -45,7 +41,7 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 
 	private static Collection<String> createRepos(int... numbers) {
 		ArrayList<String> repos = new ArrayList<>();
-		for (int i: numbers) {
+		for (int i : numbers) {
 			String number = Integer.toString(i);
 			repos.add("team" + (number.length() == 1 ? "00" : "0") + number);
 		}
@@ -58,11 +54,14 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 			Stream<ExerciseAgentFactory> stream = TEAMS.parallelStream().map(team -> {
 				try {
 					ExerciseAgentFactory factory = new ExerciseAgentFactory(classname, new GitSimulationHandle("meisser", team, false));
-					factory.preload();
-					return factory;
+					try {
+						factory.preload();
+						return factory;
+					} catch (ClassNotFoundException e) {
+						System.err.println("Could not load agent from " + factory + " due to " + e);
+						return null;
+					}
 				} catch (IOException e) {
-					return null;
-				} catch (ClassNotFoundException e) {
 					return null;
 				}
 			}).filter(factory -> factory != null);
@@ -70,10 +69,10 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 		}
 		return factories.toArray(new IAgentFactory[factories.size()]);
 	}
-	
+
 	@Override
-	protected IConsumer createDefault(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-		return defaultFactory.createConsumer(id, endowment, utilityFunction);
+	protected IAgentFactory getDefaultFactory() {
+		return defaultFactory;
 	}
 
 }
