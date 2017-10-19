@@ -42,13 +42,13 @@ public class Farmer extends MortalConsumer implements IFounder {
 	
 	private static final double CAPITAL_BUFFER = 0.80;
 	public static final double MINIMUM_WORKING_HOURS = 5;
-	double[] money = new double[500];
+	double[] money = new double[501];
 	private Good manhours;
 	private double savings;
 	double[] potatoPrice = new double[500];
 	double consumption;
 	  
-	private int approach=2;
+	private int approach=3;
 
 	public Farmer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
 		super(id, maxAge, end, utility);
@@ -103,9 +103,9 @@ public class Farmer extends MortalConsumer implements IFounder {
 					this.savings =money[this.getAge()]-(getPotatoes()*potatoPrice[this.getAge()]);
 					consumption=getPotatoes()*potatoPrice[this.getAge()];
 				}else {
-					double newConsumption=(consumption)*(potatoPrice[this.getAge()-1]/potatoPrice[this.getAge()]);
-					this.savings =money[this.getAge()]-newConsumption;
-					consumption=newConsumption;
+					double savingsAlt=this.savings;
+					this.savings =(money[this.getAge()-1]*money[this.getAge()])/(potatoPrice[this.getAge()]*0.2)+savingsAlt;
+
 				}
 			}
 			// Stupid example heuristic: try to increase the savings by 5
@@ -115,8 +115,14 @@ public class Farmer extends MortalConsumer implements IFounder {
 	}
 	
 	double getPotatoes(){
-		double earnings=money[this.getAge()-1]-money[this.getAge()];
-		return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice[this.getAge()]);
+		if(this.getAge()==0) {
+			double earnings=0-money[this.getAge()];
+			return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice[this.getAge()]);
+		}else {
+			double earnings=money[this.getAge()-1]-money[this.getAge()];
+			return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice[this.getAge()]);
+		}
+		
 	}
 	
 	@Override
