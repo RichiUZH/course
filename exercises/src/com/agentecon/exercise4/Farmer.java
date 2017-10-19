@@ -47,7 +47,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 	private double savings;
 	double[] potatoPrice = new double[500];
 	double consumption;
-	
+	  
 	private int approach=2;
 
 	public Farmer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
