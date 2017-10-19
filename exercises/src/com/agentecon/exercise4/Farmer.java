@@ -46,7 +46,9 @@ public class Farmer extends MortalConsumer implements IFounder {
 
 	private Good manhours;
 	private double savings;
-	private double potatoPrice;
+	double[] potatoPrice = new double[500];
+	
+	private int approach=2;
 
 	public Farmer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
 		super(id, maxAge, end, utility);
@@ -68,38 +70,43 @@ public class Farmer extends MortalConsumer implements IFounder {
 		int age = getAge(); // the current age
 		int retirementAge = getRetirementAge(); // the age at which retirement starts
 		int lifeEnd = getMaxAge(); // the age at which the agent dies
-		if(yesterdayMoney==0) {
-			//System.out.println("hello money=0");
-			yesterdayMoney=money;
-			//do nothing
-		}else if(yesterdayMoney==money) {
-			yesterdayMoney=money;
-			//System.out.println(this.getAge()+" "+money+" "+yestderdayMoney);
-		}
-		/*if(yesterdayUtility==0) {
-	
-			yesterdayUtility=this.getDailySpendings();
-
-		}else if(yesterdayUtility==money) {
-			yesterdayUtility=money;
-			//System.out.println(this.getAge()+" "+money+" "+yestderdayMoney);
-		}*/
 		
 		if (retired) {
 			// Stupid example heuristic: when in retirement, spend 10% of the savings
-			this.savings=money/(100-this.getAge()-400)*1.001;
-			//this.savings = yesterdaysSavingsTarget * 0.9;
+			if(approach==0) {
+				this.savings = yesterdaysSavingsTarget * 0.9;
+			}
+			if(approach==1) {
+				this.savings=money/(100-this.getAge()-400)*1.001;
+			}
+			if(approach==2) {
+				this.savings=money/(100-this.getAge()-400)*1.001;
+			}
+
 		} else {
+			if(approach==0) {
+				this.savings = yesterdaysSavingsTarget + 1;
+			}
+			if(approach==1) {
+				this.savings =money-(getPotatoes()*potatoPrice[this.getAge()]);
+			}
+			if(approach==2) {
+				if(this.getAge()==0) {
+					this.savings =money-(getPotatoes()*potatoPrice[this.getAge()]);
+				}else {
+					this.savings =money-(getPotatoes()*potatoPrice[this.getAge()])*(potatoPrice[this.getAge()-1]/potatoPrice[this.getAge()]);
+				}
+			}
 			// Stupid example heuristic: try to increase the savings by 5
-			//this.savings = yesterdaysSavingsTarget + 1;
-			this.savings =money-(getPotatoes()*potatoPrice);
+		
+			
 		}
 	}
 	
 	double getPotatoes(){
 		double money = getMoney().getAmount();
 		double earnings=yesterdayMoney-money;
-		return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice);
+		return (earnings*this.getAge())/((this.getAge()+100)*potatoPrice[this.getAge()]);
 	}
 	
 	@Override
@@ -124,7 +131,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 
 	private boolean checkProfitability(IPriceProvider prices, IStock myLand, IProductionFunction prod) {
 		try {
-			potatoPrice=prices.getPriceBelief(FarmingConfiguration.POTATOE);
+			potatoPrice[this.getAge()]=prices.getPriceBelief(FarmingConfiguration.POTATOE);
 			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.5).getQuantity();
 			Quantity output = prod.calculateOutput(new Quantity(HermitConfiguration.MAN_HOUR, 12), myLand.getQuantity());
 			double profits = prices.getPriceBelief(output) - prices.getPriceBelief(hypotheticalInput);
