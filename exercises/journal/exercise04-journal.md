@@ -10,10 +10,7 @@ Authors: Mühlemann Mark, Merian Sybilla
 
 Agents are prohibited from working during their retirement. As shown (_WO? ERKLÄRUNG / BEWEIS CONSUMPTION SMOOTHING SYBILLA_),  they should aim to save a portion of the fruits of their labor, dedicated to consumption during this last period of their life. In accordance with the No-Ponzi condition, the capital of every agent must be non-negative at the end of his life cycle. There is no inheritance system in place and the agent derives no utility from owning money at the point of his death (as maybe would be the case in real life, leaving one's assets to an institution, such as a charity or school). Therefore, this share (combined with any interest it accumulates during his time as a worker and over the remaining 100 days of his life) should be consumed completely before the agent's demise. 
 
-
-TO DO:
-+ Versuchen, den zinseszins effekt in das Maximierungsproblem einzubauen (oder einfach einen entsprechenden kommentar zu machen auf Zeile 8.
-+ Beweis für konsumgläöttung auf Z 11
+--
 
 The agent maximizes his lifetime utility by consuming potatoes. While consuming a budget constraint has to be taken into account. The budget constraint contains that the money spent on lifetime consumption must equal the lifetime income. In our case the lifetime income ist the income from working and in case of firm owners the additional dividends. 
 period budget constraint: 
@@ -22,4 +19,16 @@ As the agent does not invest its money but rather stores it under his pillow, we
 The agent than optimizes:
 $max (\sum_{s=0}^{500}u(x_p,t))$ subjected to $x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
 By rearaging we get: $max (\sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}))$
+
+In order to optimize the savings for the following day we get:
+max $ u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
+
+${\partial[.]}/{\partial {s_{t+s+1}}} = u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * {-1}/{p_{t+s}} + u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}} =0$
+$u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * 1/{p_{t+s}}= u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}}$
+\leftrightarrow $u'(x_{p,t+s}) * 1/{p_{t+s}}= u'(x_{p,t+s+1})*1/{p_{t+s+1}}$
+Hence we get:
+$u'(x_{p,t+s+1})/u'(x_{p,t+s})=p_{t+s+1}/p_{t+s}$
+Therefore we get that the agent's consumption should change in order with the price change. Given prices are constant and we assume the log-utility, we get a consumption smoothing behavior. 
+
+
 
