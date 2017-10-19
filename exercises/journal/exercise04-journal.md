@@ -59,7 +59,7 @@ $\text{Daily spending allowance}=\text{Savings}-(\frac{\text{Savings}}{500-age}+
 
 The agent is advised to divide his current savings by his remaining days alive, add a margin of security of 0.1%, and setting this aside, then spending the entire remaining amount on potatoes. 
 
-
+___
 ## Side note: What happens if interest is introduced?
 In the following, we discuss some thoughts on the influence of interest on the problem at hand. 
 ### PAYGO vs. Funded System
