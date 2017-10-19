@@ -45,8 +45,17 @@ $\frac{x_{p,t+s}}{x_{p,t+s+1}}=\frac{p_{t+s+1}}{p_{t+s}}$
 Therefore we get the following saving heuristic in case of no dividends: If prices are increased by a factor $\alpha$, decrease consumption by the factor $\frac{1}{\alpha}$ and vice versa.
 
 ## Task 2: Simulation
+Because the agent does not have certainty over the development of potato prices,
+>We assume that wages move perfectly with the price of potatoes, and  making prices stable relative to 
+### Simple heuristic
+In a first approach, we programmed our agent to follow a very simple spending pattern, starting on the first day of his retirement: 
 
-We assume that wages move perfectly with the price of potatoes, and  making prices stable relative to 
+```javascript
+this.savings=money/(100-this.getAge()-400)*1.001;
+```
+or, in more relatable terms (at least for economists)
+
+$\frac{Savings}{Remaining days alive}+0.1%$
 
 
 ## Side note: What happens if interest is introduced?
