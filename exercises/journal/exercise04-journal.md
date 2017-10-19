@@ -20,4 +20,5 @@ period budget constraint:
 $x_t+s * p_t+s = s_t+s + w_t+s - s_t+s+1$
 As the agent does not invest its money but rather stores it under his pillow, we do not have to account for discounting. 
 The agent than optimizes:
-max \(sum_{s=0}^{500}u(x_p,t}
+$max (sum_{s=0}^{500}u(x_p,t))$ subjected to $x_t+s * p_t+s = s_t+s + w_t+s - s_t+s+1$
+
