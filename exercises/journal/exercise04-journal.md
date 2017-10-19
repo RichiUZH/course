@@ -4,7 +4,7 @@ Authors: Mühlemann Mark, Merian Sybilla
 
 ## Task 1: Savings Rule
 
-Agents are prohibited from working during their retirement. As shown below, they should aim to save a portion of the fruits of their labor, dedicated to consumption during this last period of their life. In accordance with the so-called No-Ponzi condition, the capital of every agent must be non-negative at the end of his life cycle. There is no inheritance system in place and the agent derives no utility from owning money at the point of his death (as maybe would be the case in real life, leaving one's assets to an institution, such as a charity or school). Therefore, this share (combined with any interest it accumulates during his time as a worker and over the remaining 100 days of his life) should be consumed completely before the agent's demise. 
+Agents are prohibited from working during their retirement. As shown below, they should aim to save a portion of the fruits of their labor, dedicated to consumption during this last period of their life. In accordance with the No-Ponzi condition, the capital of every agent must be non-negative at the end of his life cycle. There is no inheritance system in place and the agent derives no utility from owning money at the point of his death (as maybe would be the case in real life, leaving one's assets to an institution, such as a charity or school). Therefore, this share (combined with any interest it accumulates during his time as a worker and over the remaining 100 days of his life) should be consumed completely before the agent's demise. 
 
 --
 
