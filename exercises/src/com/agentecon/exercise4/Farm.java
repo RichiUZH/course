@@ -23,6 +23,7 @@ import com.agentecon.production.PriceUnknownException;
 
 public class Farm extends Producer {
 
+	
 	private static final double CAPITAL_BUFFER = 0.9;
 	private static final double CAPITAL_TO_SPENDINGS_RATIO = 1 / (1 - CAPITAL_BUFFER);
 
