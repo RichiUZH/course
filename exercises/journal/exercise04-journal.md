@@ -55,7 +55,7 @@ this.savings=money/(100-this.getAge()-400)*1.001;
 ```
 or, in more relatable terms (at least for economists)
 
-$\text{Daily spending allowance}=\text{Savings}-(\frac{\text{Savings}}{500-age}+0.1\%)$
+$\text{Daily spending allowance}=\text{Savings}-(\frac{\text{Savings}}{500-age} \cdot 1.001)$
 
 The agent is advised to divide his current savings by his remaining days alive, add a margin of security of 0.1%, and setting this aside, then spending the entire remaining amount on potatoes. 
 
