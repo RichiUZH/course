@@ -21,7 +21,7 @@ $max \sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s})$
 In order to optimize the savings for the following day we get:
 $max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
 
-$\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = \prime{u}(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}})$
+$\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = u' = u^\prime(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}})$
 
 $u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * 1/{p_{t+s}}= u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}}$
 
