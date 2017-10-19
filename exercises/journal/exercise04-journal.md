@@ -21,19 +21,18 @@ $max \sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s})$
 In order to optimize the savings for the following day we get:
 $max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
 
-$\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot -\frac{1}{p_{t+s}} + u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}} =0$
+$\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot -\frac{1}{p_{t+s}} + u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}} =0 \\$
 
-$u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot \frac{1}{p_{t+s}} = u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}}$
+$u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot \frac{1}{p_{t+s}} = u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}} \\$
 
-$\leftrightarrow u'(x_{p,t+s}) * 1/{p_{t+s}}= u'(x_{p,t+s+1})*1/{p_{t+s+1}}$
+$\Leftrightarrow u'(x_{p,t+s}) \cdot \frac{1}{p_{t+s}}= u'(x_{p,t+s+1}) \cdot \frac{1}{p_{t+s+1}} \\$
 
-Hence we get:
-$u'(x_{p,t+s+1})/u'(x_{p,t+s})=p_{t+s+1}/p_{t+s}$
+Hence we get: $\frac{u'(x_{p,t+s+1})}{u'(x_{p,t+s})}=\frac{p_{t+s+1}}{p_{t+s}}$
 
 Therefore we get that the agent's consumption should change in order with the price change. 
-Given prices are constant during the first 400 days and log utility, we get a consumption smoothing behavior.
-$u(x_{p,t})= log(h_l)+ log(x_{p,t}$
-$u'(x_{p,t}= 1/{x_{p,t}}
+Given logarithmic utility and that prices are constant during the first 400 days, we get a consumption smoothing behavior.
+$u(x_{p,t})= log(h_l)+ log(x_{p,t}\\$
+$u'(x_{p,t}= \frac{1}{{x_{p,t}}\\$
 
 $x_{p,t+s}/x_{p,t+s+1}=p_{t+s+1}/p_{t+s}$
 Therefore we get the following saving heuristic in case of no dividends: If prices are increased by the factor x, decrease consumption by the factor 1/x and vice versa.
