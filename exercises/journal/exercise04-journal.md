@@ -31,11 +31,14 @@ Hence we get: $\frac{u'(x_{p,t+s+1})}{u'(x_{p,t+s})}=\frac{p_{t+s+1}}{p_{t+s}}$
 
 Therefore we get that the agent's consumption should change in order with the price change. 
 Given logarithmic utility and that prices are constant during the first 400 days, we get a consumption smoothing behavior.
-$u(x_{p,t})= log(h_l)+ log(x_{p,t}\\$
-$u'(x_{p,t}= \frac{1}{{x_{p,t}}\\$
 
-$x_{p,t+s}/x_{p,t+s+1}=p_{t+s+1}/p_{t+s}$
-Therefore we get the following saving heuristic in case of no dividends: If prices are increased by the factor x, decrease consumption by the factor 1/x and vice versa.
+$u(x_{p,t})= log(h_l)+ log(x_{p,t}\\$ 
+
+$u'(x_{p,t}= \frac{1}{x_{p,t}}\\$
+
+$\frac{x_{p,t+s}}{x_{p,t+s+1}}=\frac{p_{t+s+1}}{p_{t+s}}\\$ 
+
+Therefore we get the following saving heuristic in case of no dividends: If prices are increased by a factor $\alpha$, decrease consumption by the factor $\frac{1}{\alpha} and vice versa.
 
 
 
