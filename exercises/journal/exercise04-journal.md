@@ -55,7 +55,7 @@ this.savings=money/(100-this.getAge()-400)*1.001;
 ```
 or, in more relatable terms (at least for economists)
 
-$\frac{Savings}{Remaining days alive}+0.1%$
+$\text{Daily spending allowance}=\frac{\text{Savings}}{\text{Remaining days alive}}+0.1%$
 
 
 ## Side note: What happens if interest is introduced?
