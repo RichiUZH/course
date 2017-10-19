@@ -45,10 +45,26 @@ $\frac{x_{p,t+s}}{x_{p,t+s+1}}=\frac{p_{t+s+1}}{p_{t+s}}$
 Therefore we get the following saving heuristic in case of no dividends: If prices are increased by a factor $\alpha$, decrease consumption by the factor $\frac{1}{\alpha}$ and vice versa.
 
 ## Task 2: Simulation
+Because the agent does not have certainty over the development of potato prices,
+>We assume that wages move perfectly with the price of potatoes, and  making prices stable relative to 
+### Simple heuristic
+In a first approach, we programmed our agent to follow a very simple spending pattern, starting on the first day of his retirement: 
 
+```javascript
+this.savings=money/(100-this.getAge()-400)*1.001;
+```
+or, in more relatable terms (at least for economists)
+
+$\text{Daily spending allowance}=\frac{\text{Savings}}{\text{Remaining days alive}}+0.1%$
 
 
 ## Side note: What happens if interest is introduced?
 In the following, we discuss some thoughts on the influence of interest on the problem at hand. 
-### PAYGO vs Funded System
-We assume that the modeled economy can not rely on a PAYGO system (pay as you go, or _Umlaufverfahren_ in German). Instead, the agents use a funded system (_Kapitaldeckungsverfahren_). In this system, every agent saves a portion of his income; sets it aside while subjecting the money to interest (for example in a savings account or, ideally, an account with interest rates higher than inflation, such as a pension fund); and finances his existence in retirement with the resulting amount. Due to the effect of accumulated interest, the contributions set aside early in an agent's life, are responsible for the largest shares (relative to their initial size) of the capital dedicated to the period of retirement. This could be taken in account by our agent as he tries to optimise his lifetime utility: However, due to the logarithmic utility function (constant relative risk aversion), he will still attempt to smooth his consumption in every period and over all periods of his life. As long as interest rates are higher than the population growth rate, the funded system performs better (measured by lifetime income) than a PAYGO system. To smoothen this effect (as well as for other reasons, such as redistributing wealth, most economies rely on a combination of both systems. 
+### PAYGO vs. Funded System
+So far we have assumed that the modeled economy can not rely on a PAYGO system (pay as you go, or _Umlaufverfahren_ in German). Instead, ceteris paribus, the agents would be using a funded system (_Kapitaldeckungsverfahren_). In this system, every agent saves a portion of his income and sets it aside. Instead of keeping his savings under the mattress, he would subject the money to interest (for example in a savings account or, ideally, an account with interest rates higher than inflation, such as a pension fund); and finance his existence in retirement with the resulting amount. As long as interest rates are higher than the population growth rate, the funded system performs better (measured by lifetime income) than a PAYGO system. To smoothen this effect (as well as for other reasons, such as redistributing wealth, most economies rely on a combination of both systems. 
+
+### Consequences for agents
+Due to the effect of accumulated interest, the contributions set aside early in an agent's life, are responsible for the largest shares (relative to their initial size) of the capital dedicated to the period of retirement. This could be taken in account by our agent as he tries to optimize his lifetime utility. However, due to the logarithmic utility function (constant relative risk aversion), he will still attempt to smooth his consumption in every period and over all periods of his life. 
+
+### Introducing a PAYGO System
+Enabling the agents to make use of a PAYGO system, would somewhat mitigate the effect of price fluctuation. A portion of the wages earned by the working population in the examined period would be made available to the retirees, thus reducing their need to periodically recalculalating their savings plan. Given a sufficient amount of trust in the system and it's continuity, working generations would be able to better maximize their lifetime utility. 
