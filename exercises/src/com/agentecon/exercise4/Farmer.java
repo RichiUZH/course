@@ -47,6 +47,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 	private Good manhours;
 	private double savings;
 	double[] potatoPrice = new double[500];
+	double consumption;
 	
 	private int approach=2;
 
@@ -93,8 +94,11 @@ public class Farmer extends MortalConsumer implements IFounder {
 			if(approach==2) {
 				if(this.getAge()==0) {
 					this.savings =money-(getPotatoes()*potatoPrice[this.getAge()]);
+					consumption=getPotatoes()*potatoPrice[this.getAge()];
 				}else {
-					this.savings =money-(getPotatoes()*potatoPrice[this.getAge()])*(potatoPrice[this.getAge()-1]/potatoPrice[this.getAge()]);
+					double newConsumption=(consumption)*(potatoPrice[this.getAge()-1]/potatoPrice[this.getAge()]);
+					this.savings =money-newConsumption;
+					consumption=newConsumption;
 				}
 			}
 			// Stupid example heuristic: try to increase the savings by 5
