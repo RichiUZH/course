@@ -14,3 +14,10 @@ Agents are prohibited from working during their retirement. As shown (_WO? ERKL�
 TO DO:
 + Versuchen, den zinseszins effekt in das Maximierungsproblem einzubauen (oder einfach einen entsprechenden kommentar zu machen auf Zeile 8.
 + Beweis für konsumgläöttung auf Z 11
+
+The agent maximizes his lifetime utility by consuming potatoes. While consuming a budget constraint has to be taken into account. The budget constraint contains that the money spent on lifetime consumption must equal the lifetime income. In our case the lifetime income ist the income from working and in case of firm owners the additional dividends. 
+period budget constraint: 
+$x_t+s * p_t+s = s_t+s + w_t+s - s_t+s+1$
+As the agent does not invest its money but rather stores it under his pillow, we do not have to account for discounting. 
+The agent than optimizes:
+max \(sum_{s=0}^{500}u(x_p,t}
