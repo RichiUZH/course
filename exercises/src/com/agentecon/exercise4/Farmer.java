@@ -91,8 +91,8 @@ public class Farmer extends MortalConsumer implements IFounder {
 			//this.savings = yesterdaysSavingsTarget * 0.9;
 		} else {
 			// Stupid example heuristic: try to increase the savings by 5
-			this.savings = yesterdaysSavingsTarget + 1;
-			//this.savings =money-(getPotatoes()*potatoPrice);
+			//this.savings = yesterdaysSavingsTarget + 1;
+			this.savings =money-(getPotatoes()*potatoPrice);
 		}
 	}
 	
