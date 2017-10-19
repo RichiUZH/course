@@ -55,7 +55,9 @@ this.savings=money/(100-this.getAge()-400)*1.001;
 ```
 or, in more relatable terms (at least for economists)
 
-$\text{Daily spending allowance}=\frac{\text{Savings}}{\text{Remaining days alive}}+0.1%$
+$\text{Daily spending allowance}=\text{Savings}-(\frac{\text{Savings}}{500-age}+0.1\%)$
+
+The agent is advised to divide his current savings by his remaining days alive, add a margin of security of 0.1%, and setting this aside, then spending the entire remaining amount on potatoes. 
 
 
 ## Side note: What happens if interest is introduced?
