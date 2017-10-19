@@ -17,15 +17,15 @@ period budget constraint:
 $x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
 As the agent does not invest its money but rather stores it under his pillow, we do not have to account for discounting. 
 The agent than optimizes:
-$max (\sum_{s=0}^{500}u(x_p,t))$ subjected to $x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
-By rearaging we get: $max (\sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}))$
+$max \sum_{s=0}^{500}u(x_p,t))$ subjected to $x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
+By rearaging we get: $ max \sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s})$
 
 In order to optimize the savings for the following day we get:
-max $ u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
+$ max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
 
 ${\partial[.]}/{\partial {s_{t+s+1}}} = u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * {-1}/{p_{t+s}} + u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}} =0$
 $u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * 1/{p_{t+s}}= u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}}$
-\leftrightarrow $u'(x_{p,t+s}) * 1/{p_{t+s}}= u'(x_{p,t+s+1})*1/{p_{t+s+1}}$
+$\leftrightarrow u'(x_{p,t+s}) * 1/{p_{t+s}}= u'(x_{p,t+s+1})*1/{p_{t+s+1}}$
 Hence we get:
 $u'(x_{p,t+s+1})/u'(x_{p,t+s})=p_{t+s+1}/p_{t+s}$
 Therefore we get that the agent's consumption should change in order with the price change. Given prices are constant and we assume the log-utility, we get a consumption smoothing behavior. 
