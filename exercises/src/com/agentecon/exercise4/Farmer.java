@@ -16,6 +16,7 @@ import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
+import com.agentecon.finance.DailyStockMarket;
 import com.agentecon.finance.Firm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
@@ -40,6 +41,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 	
 	private static final double CAPITAL_BUFFER = 0.80;
 	public static final double MINIMUM_WORKING_HOURS = 5;
+	double yesterdayMoney=0;
 
 	private Good manhours;
 	private double savings;
@@ -64,14 +66,40 @@ public class Farmer extends MortalConsumer implements IFounder {
 		int age = getAge(); // the current age
 		int retirementAge = getRetirementAge(); // the age at which retirement starts
 		int lifeEnd = getMaxAge(); // the age at which the agent dies
+		if(yesterdayMoney==0) {
+			//System.out.println("hello money=0");
+			yesterdayMoney=money;
+			//do nothing
+		}else if(yesterdayMoney==money) {
+			yesterdayMoney=money;
+			//System.out.println(this.getAge()+" "+money+" "+yestderdayMoney);
+		}
+		/*if(yesterdayUtility==0) {
+	
+			yesterdayUtility=this.getDailySpendings();
+
+		}else if(yesterdayUtility==money) {
+			yesterdayUtility=money;
+			//System.out.println(this.getAge()+" "+money+" "+yestderdayMoney);
+		}*/
 		
 		if (retired) {
 			// Stupid example heuristic: when in retirement, spend 10% of the savings
-			this.savings = yesterdaysSavingsTarget * 0.9;
+			this.savings=money/(100-this.getAge()-400)*1.001;
+			//this.savings = yesterdaysSavingsTarget * 0.9;
 		} else {
 			// Stupid example heuristic: try to increase the savings by 5
 			this.savings = yesterdaysSavingsTarget + 1;
 		}
+	}
+	
+	double getPotatoes(){
+		double money = getMoney().getAmount();
+		double earnings=yesterdayMoney-money;
+		double numPotatoes=0;
+		
+	
+		return numPotatoes;
 	}
 	
 	@Override
@@ -112,6 +140,8 @@ public class Farmer extends MortalConsumer implements IFounder {
 		// - Second we hide a relative amount of what is left as a buffer as usual
 		Inventory inventoryWithoutSavings = inv.hide(getMoney().getGood(), savings);
 		Inventory reducedInv = inventoryWithoutSavings.hideRelative(getMoney().getGood(), CAPITAL_BUFFER);
+		DailyStockMarket stock = new DailyStockMarket(null);
+		managePortfolio(stock);
 		
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
 		super.trade(reducedInv, market);
@@ -129,6 +159,9 @@ public class Farmer extends MortalConsumer implements IFounder {
 		System.out.print("Creating and running the simulation...");
 		// Create the simulation based on that configuration
 		Simulation sim = new Simulation(configuration);
+		
+		System.out.println("Hello");
+		
 		long t0 = System.nanoTime();
 		sim.run(); // run the simulation
 		long t1 = System.nanoTime();
