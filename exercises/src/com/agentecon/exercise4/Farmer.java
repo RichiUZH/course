@@ -77,7 +77,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 				this.savings = yesterdaysSavingsTarget * 0.9;
 			}
 			if(approach==1||approach==2||approach==3) {
-				this.savings=money[this.getAge()]/(100-this.getAge()-400)*1.001;
+				this.savings=money[this.getAge()]/(100-(this.getAge()-400))*1.001;
 			}
 			
 
@@ -86,6 +86,7 @@ public class Farmer extends MortalConsumer implements IFounder {
 				this.savings = yesterdaysSavingsTarget + 1;
 			}
 			if(approach==1) {
+	            //this.savings =money-(getPotatoes()*potatoPrice);
 				this.savings =money[this.getAge()]-(getPotatoes()*potatoPrice[this.getAge()]);
 			}
 			if(approach==2) {
