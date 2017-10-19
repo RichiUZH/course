@@ -44,6 +44,8 @@ $\frac{x_{p,t+s}}{x_{p,t+s+1}}=\frac{p_{t+s+1}}{p_{t+s}}$
 
 Therefore we get the following saving heuristic in case of no dividends: If prices are increased by a factor $\alpha$, decrease consumption by the factor $\frac{1}{\alpha}$ and vice versa.
 
+By assuming constant prices and wages, we can than calculate the optimal consumption of potatoes. If we introduce uncertainty about prices and dividends, the agents optimizes his utility based on his expectaitons conditional on his information set at the current time. Hence the agent has to form beliefs about the development of prices and dividends. 
+
 ## Task 2: Simulation
 Because the agent does not have certainty over the development of potato prices,
 >We assume that wages move perfectly with the price of potatoes, and  making prices stable relative to 
