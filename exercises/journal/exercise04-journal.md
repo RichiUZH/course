@@ -15,15 +15,15 @@ $x_{p,t+s} \cdot p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
 Since the agent does not invest his money, but rather stores it under his pillow, we do not have to account for discounting. 
 The agent then optimizes:
 
-$max \sum_{s=0}^{500}u(x_p,t))$ s.t. $x_{t+s} \cdot p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
+$\max \sum_{s=0}^{500}u(x_p,t))$ s.t. $x_{t+s} \cdot p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
 
 By rearanging we get:
 
-$max \sum_{s=0}^{500}u(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}})$
+$\max \sum_{s=0}^{500}u(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}})$
 
 In order to optimize the savings for the following day we get:
 
-$max u(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) + u(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}})
+$\max u(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) + u(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}})$
 
 $\frac{\partial{[.]}}{\partial{s_{t+s+1}}} = u'(\frac{s_{t+s} + w_{t+s} - s_{t+s+1}}{p_{t+s}}) \cdot -\frac{1}{p_{t+s}} + u'(\frac{s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}{p_{t+s+1}}) \cdot \frac{1}{p_{t+s+1}} =0$
 
