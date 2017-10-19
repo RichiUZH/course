@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.agentecon.ISimulation;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.variants.CashStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;

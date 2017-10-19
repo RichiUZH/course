@@ -1,28 +1,27 @@
 # Lab Journal: Exercise 3
-
-*einträge mit Stern sind nicht zur Abgabe gedacht, sondern als Gedankenstütze während der Bearbeitung. 
-
 Authors: Merian, Sybilla; Mühlemann, Mark; Stoher, Robin
 
-##1. Velocity
+*NB: The image and tables are not displaying properly on our end. The image is placed in team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png and the tables are displayed more clearly when viewing the text raw.*
+
+## 1. Velocity
 In a first step, we will experiment with the money supply. First, we shall try to introduce a subsidy as a one-time event, distributed evenly on to all agents. In accordance with the Fisher equation, this should, in the long term and assuming 0% interest as well as constant velocity, lead to an equally large increase on the right hand side of the equation; the total (nominal) amount of transactions.
 
-Following a table that shows the two different buffers and how they increase. The good shown is man hours. A buffer size of 1 is impossible because no money would flow. As we can see as the buffer size grows money gets scarce and therefore prices decrease because of a heavy deflation.
+The following table shows the two different buffers and how they increase, the good shown is man hours. A buffer size of 1 would lead to no money changing hands in the economy. As we can see, money gets scarce as the buffer size grows, leading to decreasing prices; essentially reflecting the heavy deflation.
 
-The simulation was run multiple times and the end volume and price was compared of each simulation.
+We ran the simulation multiple times and in each simulation the end volume and price were compared:
 
 ![Table of different buffer sizes](team010/exercises/journal/images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
 
+As visible in the lower half of the above table, there is an decreasing trend overall, with slight bumps, in the price of manhours as the respective buffers grow. 
 
-*Einfluss Money supply (gleichverteilt) festhalten. 
+Manhour volume on the other hand follows a less clear pattern. 
 
-Since $V$ and $T$ ought to be constant and $M$ increases, the price level will have 
-
-##2. Interest Rates
-Following a table that shows the interest rates and how the two products man hour and potatoe and their price and volume act.
-Interestingly a cap is reached in both products fast but once it is in prie and the other one in volume, while the other feature oscilates.
+## 2. Interest Rates
+The table below shows the interest rates and how the two products, man hour and potato, their prices and their volume act.
+Interestingly, a cap is reached in both products fast, but once it is in price and the other one in volume, while the other feature oscillates.
 
 Manhour
+
 | Interest	 | Volume | Price |
 | ------------- | -------- | ----- |
 |0.001		|381.98	|3.56|
@@ -38,7 +37,8 @@ Manhour
 |0.101		|160		|5602.16|
 
 Potatoe
-Interest	|Volume	|Price
+
+|Interest	|Volume	|Price
 | ------------- |:-------------:| -----:|
 |0.001	|238.72	|5.75
 |0.011	|234.39	116.64
@@ -52,19 +52,19 @@ Interest	|Volume	|Price
 |0.091	|	85.45|99019.8
 |0.101	|	99.28|99019.8
 
-*Falls die Wirtschaft sich bei einer Geldmengenerhöhung nicht wie erwartet verhält, liegt der Grund vermutlich darin, dass, wie im WhatsApp Chat erwähnt, es keine Geldmultiplikatoren wie Geschäftsbanken o.ä. gibt. Diese können mehr Kredite vergeben als eigentlich Geld in der Wirtschaft zur Verfügung steht. Dadurch weitet sich die Geldmenge um 1/delta Mindesteinlagensatz aus.
+*Falls die Wirtschaft sich bei einer Geldmengenerhöhung nicht wie erwartet verhält, liegt der Grund vermutlich darin, dass es keine Geldmultiplikatoren wie Geschäftsbanken o.ä. gibt. Diese können mehr Kredite vergeben als eigentlich Geld in der Wirtschaft zur Verfügung steht. Dadurch weitet sich die Geldmenge um 1/delta Mindesteinlagensatz aus.*
 
-##3. Lump Sum Subsidies
+## 3. Lump Sum Subsidies
 By adding a fixed amount of money to the agents' account every day, he should, in theory, be willing to spend more (in absolute terms). This in turn would have to lead to other agents selling more goods, thus providing them with a higher utility. There are possibly some counteracting effects, such as certain agents disappearing from the market, because prices over time might rise, since in aggregate there is now more money in the economy. Additionaly, the agent will still maximize his utility and buy goods at the lowest price. This would favor efficient firms, and eliminate weaker firms that may not be able to compete in a price war. This of course is assuming that not all firms are producing at cost (yet).
 
 Interestingly the more amount of one person does not change the live of the others that much compared with the previous experiments.
 The average utility is more or less untouched, but somewhere between 950-20000 of the lump sum distribution the utility decreases harshly to a level of ~4.1.
 As expected the lumps sum distribution creates an inflation, therefore the prices are getting higher but also the wages. Bigger effects are visible after 20000 lump sum where both volumes are reduced but no convergence can be spotted in this area.
 
-Potatoe
-LumpSum 	Volume	Price	Avg. Utility
-|0		240.03	4.21		Avg: 4.499272436171293
-|1		238.91	4.61		Avg: 4.496496000903647
+Potato
+Lump-sum 	Volume	Price	Avg. Utility
+0		240.03	4.21		Avg: 4.499272436171293
+1		238.91	4.61		Avg: 4.496496000903647
 2		233.87	5.16		Avg: 4.498141169084105
 3		232.25	5.58		Avg: 4.481351386194255
 4		240.15	5.82		Avg: 4.495751148018211
@@ -90,7 +90,7 @@ LumpSum 	Volume	Price	Avg. Utility
 
 Man hour
 LumpSum 	Volume	Price	Avg. Utility
-|0		383.14	2.62		Avg: 4.499272436171293
+0		383.14	2.62		Avg: 4.499272436171293
 1		382.02	2.86		Avg: 4.496496000903647
 2		372.78	3.06		Avg: 4.498141169084105
 3		376.97	3.32		Avg: 4.481351386194255
@@ -114,4 +114,22 @@ LumpSum 	Volume	Price	Avg. Utility
 21000	285.08	2017.21	Avg: 4.0448286814891485
 22000	247.43	2945.91	Avg: 4.194840740956112
 23000	243.71	3270.18	Avg: 4.188088719570624
-*einkommens- und substitutionseffekt einbauen
+
+## Evaluation
+by Luzius Meisser
+
+Well done, with some room for improvment, in particular regarding the choice of parameters and the economic reasoning.
+
+To make the link to the chart work, the path must be provided relative to the folder the journal resides in, so
+![Table of different buffer sizes](images/Screenshot_2017-10-12_17.57.15.png "Table of different buffer sizes")
+should work.
+
+Task 1: you do the right tests and get the right numbers, but the conclusion could have been formulated in stronger terms, namely that larger capital buffers lead to a lower velocity and vice versa, whereas the real economy (trading volume and production) remains largely unaffected. The small effects that can be seen can be attributed to the simulation become less stable and less efficient when trying out more extreme values. The strong effect is clearly that on prices, which implies a change in velocity since the money supply stays constant.
+
+Task 2: (Fixed the tables by adding a blank line in front of them, github needs that.) The tables show that more money M means higher prices P. This is most apparent when staying within reasonably low interest rates. At high interest rates, the simulation tends to fall apart and become chaotic, producing not very meaningful results any more. It is always good to explore the boundaries, but I would have liked to see a few more tests with reasonably low interest rates (since they are paid out "daily", 1% is already a lot). The key difference to reality is indeed credits, which can turn the relation between interest and inflation upside down.
+
+Task 3: Here, I would have liked to see some figures on how the utility of the lucky agent is affected by the helicopter drops. Does he achieve a better utility than the others? You expect yes (formulated in rather vague terms), but do not provide a clear statement or any evidence from the simulation.
+
+Overall score: 6.
+
+
