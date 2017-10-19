@@ -14,21 +14,29 @@ Agents are prohibited from working during their retirement. As shown (_WO? ERKLÃ
 
 The agent maximizes his lifetime utility by consuming potatoes. While consuming a budget constraint has to be taken into account. The budget constraint contains that the money spent on lifetime consumption must equal the lifetime income. In our case the lifetime income ist the income from working and in case of firm owners the additional dividends. 
 period budget constraint: 
-$x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
+$x_{p,t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
 As the agent does not invest its money but rather stores it under his pillow, we do not have to account for discounting. 
 The agent than optimizes:
 $max \sum_{s=0}^{500}u(x_p,t))$ subjected to $x_{t+s} * p_{t+s}= s_{t+s} + w_{t+s} - s_{t+s+1}$
-By rearaging we get: $ max \sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s})$
+By rearaging we get:
+$max \sum_{s=0}^{500}u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s})$
 
 In order to optimize the savings for the following day we get:
-$ max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
+$max u({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) + u({s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})
 
 ${\partial[.]}/{\partial {s_{t+s+1}}} = u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * {-1}/{p_{t+s}} + u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}} =0$
 $u'({s_{t+s} + w_{t+s} - s_{t+s+1}}/p_{t+s}) * 1/{p_{t+s}}= u'(s_{t+s+1} + w_{t+s+1} - s_{t+s+2}}/p_{t+s+1})*1/{p_{t+s+1}}$
 $\leftrightarrow u'(x_{p,t+s}) * 1/{p_{t+s}}= u'(x_{p,t+s+1})*1/{p_{t+s+1}}$
 Hence we get:
 $u'(x_{p,t+s+1})/u'(x_{p,t+s})=p_{t+s+1}/p_{t+s}$
-Therefore we get that the agent's consumption should change in order with the price change. Given prices are constant and we assume the log-utility, we get a consumption smoothing behavior. 
+Therefore we get that the agent's consumption should change in order with the price change. 
+Given prices are constant during the first 400 days and log utility, we get a consumptions smoothing behavior.
+$u(x_{p,t})= log(h_l)+ log(x_{p,t}$
+$u'(x_{p,t}= 1/{x_{p,t}}
+
+$x_{p,t+s}/x_{p,t+s+1}=p_{t+s+1}/p_{t+s}$
+Therefore we get the following saving heuristic: If prices are increased by the factor x, decrease consumption by the factor 1/x and vice versa.
+
 
 
 
