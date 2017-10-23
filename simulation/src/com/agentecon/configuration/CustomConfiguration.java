@@ -2,6 +2,7 @@ package com.agentecon.configuration;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.SocketTimeoutException;
 import java.util.Collection;
 
 import com.agentecon.ISimulation;
@@ -30,13 +31,21 @@ public class CustomConfiguration extends SimulationConfig {
 		try {
 			// use same source as parent
 			SimulationHandle handle = parent.getSource().copy(false);
-			ClassLoader loader = parent.getSubloader(handle);
-			if (loader == null) {
-				loader = new CompilingClassLoader(parent, handle);
-			}
+			ClassLoader loader = findLoader(parent, handle);
 			delegate = (SimulationConfig) loader.loadClass(className).newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	protected ClassLoader findLoader(RemoteLoader parent, SimulationHandle handle) throws SocketTimeoutException, IOException {
+		synchronized (parent) {
+			ClassLoader loader = parent.getSubloader(handle);
+			if (loader == null) {
+				return new CompilingClassLoader(parent, handle);
+			} else {
+				return loader;
+			}
 		}
 	}
 
