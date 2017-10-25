@@ -59,7 +59,7 @@ public class MonetaryStats extends SimStats {
 
 		double transactionVolume = 0.0;
 		transactionVolume += record(day, stats.getGoodsMarketStats());
-		transactionVolume += record(day, stats.getStockMarketStats());
+//		transactionVolume += record(day, stats.getStockMarketStats());
 		this.velocity.set(day, transactionVolume / moneySupply); // Fisher equation
 	}
 

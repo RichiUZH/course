@@ -2,6 +2,8 @@ package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
@@ -20,13 +22,13 @@ public class InventoryStats extends SimStats {
 
 	private HashMap<Good, TimeSeriesCollector> inventoriesByGoods;
 
-	public InventoryStats(ISimulation agents) {
+	public InventoryStats(ISimulation agents, boolean details) {
 		super(agents);
 		this.inventoriesByGoods = new InstantiatingHashMap<Good, TimeSeriesCollector>() {
 
 			@Override
 			protected TimeSeriesCollector create(Good key) {
-				return new TimeSeriesCollector(false);
+				return new TimeSeriesCollector(details);
 			}
 		};
 	}
@@ -69,9 +71,13 @@ public class InventoryStats extends SimStats {
 	@Override
 	public ArrayList<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
-		for (TimeSeriesCollector c: inventoriesByGoods.values()) {
-			list.addAll(c.getTimeSeries());
-		}
+		inventoriesByGoods.entrySet().forEach(new Consumer<Entry<Good, TimeSeriesCollector>>() {
+
+			@Override
+			public void accept(Entry<Good, TimeSeriesCollector> t) {
+				list.addAll(TimeSeries.prefix(t.getKey() + " held by ", t.getValue().getTimeSeries()));
+			}
+		});
 		return list;
 	}
 

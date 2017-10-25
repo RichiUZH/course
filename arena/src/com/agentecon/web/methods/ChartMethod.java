@@ -62,7 +62,7 @@ public class ChartMethod extends SimSpecificMethod {
 			Collection<TimeSeries> series = getCached(stepper, metric);
 			if (series == null) {
 				ISimulation sim = stepper.getSimulation(0).getItem();
-				SimStats stats = metric.createAndRegister(sim, params.getSelection());
+				SimStats stats = metric.createAndRegister(sim, params.getSelection(), false);
 				sim.run();
 				series = cache(stepper, metric, stats);
 			}

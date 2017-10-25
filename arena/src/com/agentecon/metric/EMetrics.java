@@ -31,12 +31,12 @@ public enum EMetrics {
 
 	CASH, DEMOGRAPHICS, DIVIDENDS, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, RANKING, UTILITY, TYPE;
 
-	public SimStats createAndRegister(ISimulation sim, List<String> list) {
+	public SimStats createAndRegister(ISimulation sim, List<String> list, boolean details) {
 		ArrayList<AgentQuery> queries = new ArrayList<>();
 		for (String query : list) {
 			queries.add(new AgentQuery(query));
 		}
-		SimStats stats = instantiate(sim, queries);
+		SimStats stats = instantiate(sim, queries, details);
 		sim.addListener(stats);
 		return stats;
 	}
@@ -53,13 +53,13 @@ public enum EMetrics {
 			return "The agent ranking over time.";
 //		case FIRM:
 		case INVENTORY:
-			return "Amount of goods held by firms and consumers.";
+			return "Amount of goods held by firms and consumers after trading (before consumption and before production).";
 		case MARKET:
 			return "Average market price and trading volume of all goods, including a volume-weighted price index.";
 		case MARKETMAKER:
 			return "The bid and ask price beliefs of one selected market maker.";
 		case MONETARY:
-			return "Money supply, prices and trade volume.";
+			return "Money supply, money velocity; prices and trade volume on the goods market.";
 		case OWNERSHIP:
 			return "Some general statistics on firm ownership.";
 		case PRODUCTION:
@@ -76,7 +76,7 @@ public enum EMetrics {
 		}
 	}
 
-	private SimStats instantiate(ISimulation sim, ArrayList<AgentQuery> agents) {
+	private SimStats instantiate(ISimulation sim, ArrayList<AgentQuery> agents, boolean details) {
 		switch (this) {
 		case DEMOGRAPHICS:
 			return new Demographics(sim);
@@ -85,7 +85,7 @@ public enum EMetrics {
 //		case FIRM:
 //			return new FirmStats(sim);
 		case INVENTORY:
-			return new InventoryStats(sim);
+			return new InventoryStats(sim, details);
 		case MARKET:
 			return new MarketStats(sim, true);
 		case MARKETMAKER:
