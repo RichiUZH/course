@@ -24,4 +24,8 @@ public interface IRegister {
 		return getTotalShareCount();
 	}
 
+	public default double getDividendPerShare() {
+		return getAverageDividend() / getTotalShareCount();
+	}
+
 }

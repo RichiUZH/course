@@ -54,7 +54,6 @@ public class StockMarket {
 			con.managePortfolio(dsm);
 		}
 		dsm.close(day);
-		stockStats.notifyMarketClosed(day);
 	}
 
 	public IMarketStatistics getStats() {

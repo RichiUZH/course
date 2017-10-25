@@ -25,6 +25,7 @@ import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.Numbers;
 
 public class StockMarketStats extends SimStats implements IMarketListener, IConsumerListener {
 
@@ -34,7 +35,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	private HashMap<Ticker, Average> averages;
 	private HashMap<Good, TimeSeries> prices;
 	private HashMap<Good, TimeSeries> volumes;
-	private HashMap<Good, TimeSeries> peratio;
+	private HashMap<Good, TimeSeries> dividendYield;
 	private AveragingTimeSeries investments, divestments, difference;
 
 	private boolean includeIndex;
@@ -68,7 +69,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			}
 
 		};
-		this.peratio = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.dividendYield = new InstantiatingHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
@@ -121,7 +122,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			}
 		};
 		// Average indexRatio = new Average();
-		HashMap<Good, Average> sectorRatios = new InstantiatingHashMap<Good, Average>() {
+		HashMap<Good, Average> sectorYields = new InstantiatingHashMap<Good, Average>() {
 
 			@Override
 			protected Average create(Good key) {
@@ -135,11 +136,11 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			indexPoints.add(avgPrice);
 			sectorIndices.get(sector).add(avgPrice);
 
-			double dividends = getAgents().getFirm(firm).getShareRegister().getAverageDividend();
-			if (dividends > 1) {
+			double dividends = getAgents().getFirm(firm).getShareRegister().getDividendPerShare();
+			if (dividends > Numbers.EPSILON) {
 				double yield = dividends / avgPrice.getAverage();
 				// indexRatio.add(yield);
-				sectorRatios.get(sector).add(yield);
+				sectorYields.get(sector).add(yield);
 			}
 		}
 		printTicker(day);
@@ -154,8 +155,8 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 				volumes.get(sector).set(day, ind.getTotWeight());
 			}
 		}
-		for (Map.Entry<Good, Average> e : sectorRatios.entrySet()) {
-			peratio.get(e.getKey()).set(day, e.getValue().getAverage());
+		for (Map.Entry<Good, Average> e : sectorYields.entrySet()) {
+			dividendYield.get(e.getKey()).set(day, e.getValue().getAverage());
 		}
 		// if (indexRatio.hasValue()) {
 		// peratio.get(index).set(day, indexRatio.getAverage());
@@ -205,7 +206,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	public Collection<? extends Chart> getCharts() {
 		Chart ch1 = new Chart("Stock Market Prices", "Volume-weighted stock prices for each sector", prices.values());
 		Chart ch2 = new Chart("Stock Market Volumes", "Stock trading volumes of each sector", volumes.values());
-		Chart ch3 = new Chart("Price/Earning Ratios", "P/E ratios by sector", peratio.values());
+		Chart ch3 = new Chart("Price/Earning Ratios", "P/E ratios by sector", dividendYield.values());
 		Chart ch4 = new Chart("Investment Flows", "Worker investments versus retiree divestments", investments.getTimeSeries(), divestments.getTimeSeries());
 		return Arrays.asList(ch1, ch2, ch3, ch4);
 	}
@@ -222,7 +223,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 		ArrayList<TimeSeries> logReturns = TimeSeries.logReturns(list);
 		list.addAll(logReturns);
 		list.addAll(TimeSeries.prefix("Volume", volumes.values()));
-		list.addAll(TimeSeries.prefix("Dividend yield", peratio.values()));
+		list.addAll(TimeSeries.prefix("Dividend yield", dividendYield.values()));
 		if (investments.getTimeSeries().compact().isInteresting()) {
 			list.add(investments.getTimeSeries());
 			list.add(divestments.getTimeSeries());
