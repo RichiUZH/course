@@ -7,11 +7,18 @@ import com.agentecon.goods.Stock;
 public class Position extends Stock {
 	
 	private Stock dividends;
+	private boolean consumer;
 	private boolean disposed;
 	private IRegister register;
 	
+	@Deprecated
 	public Position(IRegister register, Ticker ticker, Good currency, double shares) {
+		this(register, ticker, currency, shares, true);
+	}
+	
+	public Position(IRegister register, Ticker ticker, Good currency, double shares, boolean consumer) {
 		super(ticker, shares);
+		this.consumer = consumer;
 		this.disposed = false;
 		this.register = register;
 		this.dividends = new Stock(currency);
@@ -26,10 +33,15 @@ public class Position extends Stock {
 		super.transfer(source, amount);
 	}
 	
+	@Deprecated
 	public Position createNewPosition(){
+		return createNewPosition(true);
+	}
+	
+	public Position createNewPosition(boolean consumer){
 		assert !disposed;
 		double prevAmount = getAmount();
-		Position pos = register.createPosition();
+		Position pos = register.createPosition(consumer);
 		assert pos.getAmount() + getAmount() == prevAmount;
 		return pos;
 	}
@@ -89,6 +101,10 @@ public class Position extends Stock {
 	public Position duplicate() {
 		assert dividends.isEmpty();
 		return this;
+	}
+
+	public boolean isConsumerPosition() {
+		return consumer;
 	}
 	
 }

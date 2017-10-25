@@ -94,7 +94,7 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 		return owner;
 	}
 
-	public boolean isUsed() {
+	public final boolean isUsed() {
 		return getAmount() == 0.0;
 	}
 

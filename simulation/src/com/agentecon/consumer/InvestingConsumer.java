@@ -15,10 +15,11 @@ import com.agentecon.configuration.GrowthConfiguration;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
-import com.agentecon.firm.Farm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.LandBuyingFarm;
+import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
@@ -37,6 +38,7 @@ import com.agentecon.research.IInnovation;
  */
 public class InvestingConsumer extends MortalConsumer implements IFounder {
 
+	private static final double SELL_LAND_IF_LESS = 20;
 	private static final double CAPITAL_BUFFER = 0.80;
 	public static final double MINIMUM_WORKING_HOURS = 5;
 
@@ -68,13 +70,15 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.02) {
+		if (myLand.getAmount() < SELL_LAND_IF_LESS) {
+			return null;
+		} else if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.02) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = InvestingConsumer.this;
 				IStock startingCapital = getMoney().hideRelative(0.5);
-				Firm farm = new Farm(id, owner, startingCapital, myLand, prod, statistics);
+				Firm farm = new LandBuyingFarm(id, owner, startingCapital, myLand, (CobbDouglasProduction) prod, statistics);
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {
@@ -98,6 +102,10 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
+		IStock myLand = getStock(FarmingConfiguration.LAND);
+		if (myLand.getAmount() < SELL_LAND_IF_LESS) {
+			market.sellSome(this, getMoney(), myLand);
+		}
 		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), CAPITAL_BUFFER);
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
 		super.trade(reducedInv, market);

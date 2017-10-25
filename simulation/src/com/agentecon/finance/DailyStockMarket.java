@@ -27,6 +27,8 @@ public class DailyStockMarket implements IStockMarket {
 	private HashMap<Ticker, BestPriceMarket> market;
 	private IFinancialMarketData bloomberg;
 
+	private ArrayList<BestPriceMarket> marketCache;
+
 	public DailyStockMarket(IFinancialMarketData bloomberg, Random rand) {
 		this.rand = rand;
 		this.bloomberg = bloomberg;
@@ -39,17 +41,17 @@ public class DailyStockMarket implements IStockMarket {
 			}
 		};
 	}
-	
+
 	@Override
 	public Collection<Ticker> getTradedStocks() {
 		return market.keySet();
 	}
-	
+
 	@Override
 	public FirmFinancials getFirmData(Ticker ticker) {
 		return bloomberg.getFirmData(ticker);
 	}
-	
+
 	@Override
 	public void addMarketListener(IMarketListener listener) {
 		this.listeners.add(listener);
@@ -67,14 +69,15 @@ public class DailyStockMarket implements IStockMarket {
 		assert ask instanceof AskFin;
 		ask.setListener(listeners);
 		this.market.get(ask.getGood()).offer(ask);
+		this.marketCache = null;
 	}
-	
+
 	@Override
 	public Ticker findAnyAsk(List<Ticker> preferred, boolean marketCapWeight) {
-		while (preferred.size() > 0){
+		while (preferred.size() > 0) {
 			int choice = rand.nextInt(preferred.size());
 			Ticker t = preferred.get(choice);
-			if (hasAsk(t)){
+			if (hasAsk(t)) {
 				return t;
 			} else {
 				preferred.remove(choice);
@@ -82,10 +85,10 @@ public class DailyStockMarket implements IStockMarket {
 		}
 		return getRandomStock(marketCapWeight);
 	}
-	
+
 	@Override
 	public Ticker getRandomStock(boolean marketCapWeight) {
-		if (marketCapWeight){
+		if (marketCapWeight) {
 			return findMarketCapWeightedRandomAsk();
 		} else {
 			return findRandomAsk();
@@ -93,15 +96,24 @@ public class DailyStockMarket implements IStockMarket {
 	}
 
 	private Ticker findRandomAsk() {
-		ArrayList<Ticker> asks = new ArrayList<>();
-		for (BestPriceMarket bpm: market.values()){
-			Ask ask = bpm.getAsk();
-			if (ask != null){
-				asks.add((Ticker) ask.getGood());
+		if (marketCache == null) {
+			marketCache = new ArrayList<>(market.size());
+			for (BestPriceMarket bpm : market.values()) {
+				if (bpm.getAsk() != null) {
+					marketCache.add(bpm);
+				}
 			}
 		}
-		int size = asks.size();
-		return size == 0 ? null : asks.get(rand.nextInt(size));
+		while (marketCache.size() > 0) {
+			int index = rand.nextInt(marketCache.size());
+			Ask ask = marketCache.get(index).getAsk();
+			if (ask == null) {
+				marketCache.remove(index);
+			} else {
+				return (Ticker) ask.getGood();
+			}
+		}
+		return null;
 	}
 
 	protected Ticker findMarketCapWeightedRandomAsk() {
@@ -181,21 +193,21 @@ public class DailyStockMarket implements IStockMarket {
 	public boolean hasAsk(Ticker ticker) {
 		return getAsk(ticker) != null;
 	}
-	
+
 	public String getTradingStats() {
 		int asks = 0, bids = 0;
-		for (BestPriceMarket bpm: market.values()){
-			if (bpm.getAsk() != null){
+		for (BestPriceMarket bpm : market.values()) {
+			if (bpm.getAsk() != null) {
 				asks++;
 			}
-			if (bpm.getBid() != null){
+			if (bpm.getBid() != null) {
 				bids++;
 			}
 		}
 		return asks + "/" + market.size() + " asks and " + bids + "/" + market.size() + " bids left";
 	}
-	
-	public void close(int day){
+
+	public void close(int day) {
 		listeners.notifyMarketClosed(day);
 	}
 

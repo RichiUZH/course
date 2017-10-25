@@ -1,6 +1,7 @@
 package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
@@ -20,7 +21,7 @@ public class AskFin extends Ask {
 	
 	public Position accept(IAgent acceptor, IStock payer, Position target, double budget) {
 		if (target == null){
-			target = getStock().createNewPosition();
+			target = getStock().createNewPosition(acceptor instanceof IConsumer);
 		}
 		super.accept(acceptor, payer, target, new Quantity(target.getGood(), budget / getPrice().getPrice()));
 		return target;

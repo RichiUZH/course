@@ -10,9 +10,7 @@ package com.agentecon.firm;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Weight;
-import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFinancials;
-import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -22,19 +20,17 @@ import com.agentecon.market.IDiscountRate;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceTakerMarket;
 
-public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements IFirmDecisions {
+public class InvestmentStrategy {
 
 	private CobbDouglasProduction prodFun;
-	private double prevInvestment = 0.0;
 	private IDiscountRate discountRate;
 
-	public FinanceDepartment(CobbDouglasProduction prodFun, IDiscountRate iDiscountRate) {
-		super(prodFun.getReturnsToScaleExcludingCapital());
+	public InvestmentStrategy(CobbDouglasProduction prodFun, IDiscountRate iDiscountRate) {
 		this.prodFun = prodFun;
 		this.discountRate = iDiscountRate;
 	}
 
-	public void invest(IAgent agent, Inventory inv, IFinancials financials, IPriceTakerMarket market) {
+	public double invest(IAgent agent, Inventory inv, IFinancials financials, IPriceTakerMarket market) {
 		double revenue = financials.getExpectedRevenue();
 		double investments = 0.0;
 		for (Weight input : prodFun.getInputWeigths()) {
@@ -43,7 +39,7 @@ public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements I
 				investments += invest(agent, inv.getMoney(), inv.getStock(inputGood), revenue * input.weight, market);
 			}
 		}
-		this.prevInvestment = investments;
+		return investments;
 	}
 
 	private double invest(IAgent agent, IStock money, IStock input, double targetDailySpending, IPriceTakerMarket market) {
@@ -95,18 +91,6 @@ public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements I
 				return actuallyDivested;
 			}
 		}
-	}
-
-	@Override
-	public double calcDividend(IFinancials metrics) {
-		double dividends = super.calcDividend(metrics);
-		// subtract investments from dividends, but do not add divestments in order to shrink slowly after doing so
-		return dividends - Math.max(0, prevInvestment);
-	}
-
-	@Override
-	public FinanceDepartment duplicate() {
-		return new FinanceDepartment(prodFun, discountRate);
 	}
 
 }

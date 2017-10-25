@@ -48,7 +48,6 @@ public class SimulationListenerAdapter implements ISimulationListener {
 	
 	public void notifyFirmCreated(IFirm firm){
 	}
-	
 
 	@Override
 	public void notifyAgentDied(IAgent agent) {

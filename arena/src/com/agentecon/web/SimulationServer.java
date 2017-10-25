@@ -17,6 +17,7 @@ import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.MetricsMethod;
 import com.agentecon.web.methods.MiniChartMethod;
+import com.agentecon.web.methods.Parameters;
 import com.agentecon.web.methods.RankingMethod;
 import com.agentecon.web.methods.SizeTypesMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
@@ -29,11 +30,13 @@ public class SimulationServer extends VisServer {
 
 	private MethodsMethod methods;
 	private ListMethod simulations;
+	private Refresher refresher;
 
 	public SimulationServer(int port) throws IOException, InterruptedException {
 		super(port);
 
-		this.simulations = new ListMethod();
+		this.refresher = new Refresher(20);
+		this.simulations = new ListMethod(refresher);
 		if (SimulationConfig.isServerConfig()) {
 			try {
 				this.simulations.add(new GitSimulationHandle("meisser", "course", "master", true));
@@ -86,6 +89,7 @@ public class SimulationServer extends VisServer {
 				String methodName = tok.nextToken();
 				WebApiMethod calledMethod = methods.getMethod(methodName);
 				if (calledMethod != null) {
+					refresher.notifyCalled(calledMethod, new Parameters(session));
 					return calledMethod.execute(session);
 				} else {
 					return super.serve(session);

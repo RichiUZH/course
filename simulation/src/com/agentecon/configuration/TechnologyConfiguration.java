@@ -64,15 +64,15 @@ public class TechnologyConfiguration implements IConfiguration {
 		for (SimEvent event : events) {
 			config.addEvent(event);
 		}
-		config.addEvent(new SimEvent(0, MARKET_MAKERS) {
-
-			@Override
-			public void execute(int day, ICountry sim) {
-				for (int i = 0; i < getCardinality(); i++) {
-					sim.add(new MarketMaker(sim, MONEY, sim.getAgents().getFirms()));
-				}
-			}
-		});
+//		config.addEvent(new SimEvent(0, MARKET_MAKERS) {
+//
+//			@Override
+//			public void execute(int day, ICountry sim) {
+//				for (int i = 0; i < getCardinality(); i++) {
+//					sim.add(new MarketMaker(sim, MONEY, sim.getAgents().getFirms()));
+//				}
+//			}
+//		});
 		return config;
 	}
 

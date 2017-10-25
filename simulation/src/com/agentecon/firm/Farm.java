@@ -66,6 +66,10 @@ public class Farm extends Producer {
 	public void produce() {
 		super.produce();
 	}
+	
+	protected IFinancials getFinancials() {
+		return marketing.getFinancials(getInventory(), getProductionFunction());
+	}
 
 	@Override
 	protected double calculateDividends(int day) {

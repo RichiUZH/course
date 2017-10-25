@@ -4,19 +4,26 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import com.agentecon.goods.IStock;
-import com.agentecon.market.IMarketStatistics;
+import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.PriceUnknownException;
 
 public class Portfolio implements Cloneable {
 
+	private boolean consumer;
 	protected IStock wallet;
 	private double dividends;
 	protected HashMap<Ticker, Position> inv;
 
+	@Deprecated
 	public Portfolio(IStock money) {
+		this(money, true);
+	}
+
+	public Portfolio(IStock money, boolean consumer) {
 		this.wallet = money;
 		this.inv = new HashMap<>();
 		this.dividends = 0.0;
+		this.consumer = consumer;
 	}
 
 	public void absorb(Portfolio other) {
@@ -36,13 +43,13 @@ public class Portfolio implements Cloneable {
 		for (Position p : other.inv.values()) {
 			Position myPosition = inv.get(p.getTicker());
 			if (myPosition == null) {
-				myPosition = p.createNewPosition();
+				myPosition = p.createNewPosition(consumer);
 				inv.put(p.getTicker(), myPosition);
 			}
 			myPosition.transfer(p, p.getAmount() * ratio);
 		}
 	}
-	
+
 	public void addPosition(Position pos) {
 		if (pos != null) {
 			Position prev = inv.put(pos.getTicker(), pos);
@@ -59,7 +66,7 @@ public class Portfolio implements Cloneable {
 	public Position getPosition(Ticker ticker) {
 		return inv.get(ticker);
 	}
-	
+
 	public double notifyFirmClosed(Ticker t) {
 		Position p = inv.remove(t);
 		if (p == null) {
@@ -79,7 +86,7 @@ public class Portfolio implements Cloneable {
 	}
 
 	public void dispose() {
-		for (Position p: inv.values()) {
+		for (Position p : inv.values()) {
 			p.dispose();
 		}
 		this.inv.clear();
@@ -105,7 +112,7 @@ public class Portfolio implements Cloneable {
 		return wallet.getAmount();
 	}
 
-	public double calculateValue(IMarketStatistics stats) {
+	public double calculateValue(IPriceProvider stats) {
 		double value = 0.0;
 		for (IStock stock : inv.values()) {
 			try {

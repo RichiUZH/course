@@ -14,5 +14,9 @@ public interface IShareholder {
 	 * after new firms have been founded.
 	 */
 	public void managePortfolio(IStockMarket dsm);
+
+	public default double notifyFirmClosed(Ticker ticker) {
+		return getPortfolio().notifyFirmClosed(ticker);
+	}
 	
 }

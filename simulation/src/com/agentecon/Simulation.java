@@ -190,7 +190,6 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	
 	public static void main(String[] args) throws Exception {
 		Simulation sim = new Simulation();
-		Thread.sleep(20000);
 		long t0 = System.nanoTime();
 		sim.run();
 		long t1 = System.nanoTime();

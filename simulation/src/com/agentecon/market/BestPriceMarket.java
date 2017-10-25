@@ -20,31 +20,31 @@ public class BestPriceMarket extends AbstractMarket {
 		this.asks = new PriorityQueue<Ask>();
 	}
 
-	public boolean hasOffers(PriorityQueue<? extends AbstractOffer> bids) {
+	public final boolean hasOffers(PriorityQueue<? extends AbstractOffer> bids) {
 		return getBest(bids) != null;
 	}
 
 	@Override
-	protected Collection<Ask> getAsks() {
+	protected final Collection<Ask> getAsks() {
 		return asks;
 	}
 
 	@Override
-	protected Collection<Bid> getBids() {
+	protected final Collection<Bid> getBids() {
 		return bids;
 	}
 
 	@Override
-	public Bid getBid() {
+	public final Bid getBid() {
 		return getBest(bids);
 	}
 
 	@Override
-	public Ask getAsk() {
+	public final Ask getAsk() {
 		return getBest(asks);
 	}
 
-	private <T extends AbstractOffer> T getBest(PriorityQueue<T> bids) {
+	private final <T extends AbstractOffer> T getBest(PriorityQueue<T> bids) {
 		if (REQUEUE_TO_END) {
 			T offer = bids.poll();
 			while (offer != null && offer.isUsed()) {

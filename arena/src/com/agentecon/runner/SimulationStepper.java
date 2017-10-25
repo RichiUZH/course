@@ -2,13 +2,10 @@ package com.agentecon.runner;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Collection;
 
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.variants.Rank;
-import com.agentecon.metric.variants.UtilityRanking;
 import com.agentecon.util.LogClock;
 import com.agentecon.web.SoftCache;
 
@@ -27,10 +24,10 @@ public class SimulationStepper {
 	public SimulationStepper(SimulationLoader loader) throws IOException {
 		this.loader = loader;
 		this.simulation = new SimulationCache(loader);
-		this.cachedData = refreshCache(loader);
+		this.cachedData = new SoftCache<>();
 		this.successor = null;
 	}
-
+	
 	public boolean isObsolete() {
 		return successor != null;
 	}
@@ -39,14 +36,8 @@ public class SimulationStepper {
 		return successor;
 	}
 
-	private SoftCache<Object, Object> refreshCache(SimulationLoader loader) throws IOException {
-		SoftCache<Object, Object> cache = new SoftCache<>();
-		cache.put(UtilityRanking.class, createRanking(loader.loadSimulation()));
-		return cache;
-	}
-
 	public Recyclable<ISimulation> getSimulation() throws IOException {
-		return this.simulation.getAny();
+		return this.simulation.borrow(0);
 	}
 
 	public Recyclable<ISimulation> getSimulation(int day) throws IOException {
@@ -68,18 +59,6 @@ public class SimulationStepper {
 		} else {
 			throw new NothingChangedException();
 		}
-	}
-
-	private UtilityRanking createRanking(ISimulation sim) {
-		UtilityRanking ranking = new UtilityRanking(sim, false);
-		sim.addListener(ranking);
-		sim.run();
-		return ranking;
-	}
-
-	public Collection<Rank> getRanking() {
-		UtilityRanking ranking = (UtilityRanking) cachedData.get(UtilityRanking.class);
-		return ranking.getRanking();
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {

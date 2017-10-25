@@ -5,30 +5,32 @@ import java.util.HashMap;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
+import com.agentecon.firm.IRegister;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
-import com.agentecon.goods.Stock;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.IPriceTakerMarket;
+import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.PriceUnknownException;
 import com.agentecon.util.Average;
 
-public class MarketMaker extends Firm implements IMarketMaker {
+public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, IMarketParticipant {
 
-	private static final int MARKET_MAKER_CASH = 1000;
+	private static final double TARGET_OWNER_SHIP_SHARE = 0.01;
 
-	private double reserve;
 	private Portfolio portfolio;
 	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
 
-	public MarketMaker(IAgentIdGenerator id,Good money, Collection<IFirm> firms) {
-		super(id, new Endowment(money, new IStock[] { new Stock(money, MARKET_MAKER_CASH) }, new IStock[] {}));
-		this.portfolio = new Portfolio(getMoney());
-		this.reserve = 0.0;
+	public MarketMaker(IAgentIdGenerator id, IStock money, Collection<IFirm> firms) {
+		super(id, new Endowment(money));
+		this.portfolio = new Portfolio(getMoney(), false);
 		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();
 		for (IFirm firm : firms) {
 			notifyFirmCreated(firm);
@@ -36,36 +38,64 @@ public class MarketMaker extends Firm implements IMarketMaker {
 	}
 
 	@Override
+	public void tradeGoods(IPriceTakerMarket market) {
+		IMarketParticipant.super.sellSomeGoods(market);
+	}
+	
+	@Override
 	public void managePortfolio(IStockMarket dsm) {
 	}
 
 	public void postOffers(IPriceMakerMarket dsm) {
-		IStock money = getMoney().hide(reserve);
-		double budgetPerPosition = money.getAmount() / priceBeliefs.size();
+		IStock money = getMoney();
+		double budget = money.getAmount() / 5;
+		double budgetPerPosition = budget / priceBeliefs.size();
 		for (MarketMakerPrice e : priceBeliefs.values()) {
 			e.trade(dsm, this, money, budgetPerPosition);
 		}
 	}
 
-	public void notifyFirmCreated(IFirm firm){
+	@Override
+	public double notifyFirmClosed(Ticker ticker) {
+		this.priceBeliefs.remove(ticker);
+		return IMarketMaker.super.notifyFirmClosed(ticker);
+	}
+
+	public void notifyFirmCreated(IFirm firm) {
 		if (firm.getTicker().equals(getTicker())) {
 			// do not trade own shares
 		} else {
-			Position pos = firm.getShareRegister().createPosition();
+			Position pos = firm.getShareRegister().createPosition(false);
 			portfolio.addPosition(pos);
-			MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos));
+			MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos, 0.05 * IRegister.SHARES_PER_COMPANY));
 			assert prev == null;
 		}
+	}
+
+	@Override
+	public double getPriceBelief(Good good) throws PriceUnknownException {
+		return getPrice(good);
 	}
 
 	public double getPrice(Good output) {
 		return priceBeliefs.get(output).getPrice();
 	}
 
-	public Average getAvgHoldings() {
+	@Override
+	public double getBid(Ticker ticker) {
+		return priceBeliefs.get(ticker).getBid();
+	}
+
+	@Override
+	public double getAsk(Ticker ticker) {
+		return priceBeliefs.get(ticker).getAsk();
+	}
+
+	public Average getAverageOwnershipShare() {
 		Average avg = new Average();
 		for (Ticker t : priceBeliefs.keySet()) {
-			avg.add(portfolio.getPosition(t).getAmount());
+			Position pos = portfolio.getPosition(t);
+			avg.add(pos.getOwnershipShare());
 		}
 		return avg;
 	}
@@ -80,16 +110,13 @@ public class MarketMaker extends Firm implements IMarketMaker {
 
 	@Override
 	protected double calculateDividends(int day) {
-		double excessCash = getMoney().getAmount() - MARKET_MAKER_CASH;
-		if (excessCash > 0) {
-			double dividend = excessCash / 3;
-			this.reserve = excessCash - dividend;
-			return dividend;
+		double ownerShipShare = getAverageOwnershipShare().getAverage();
+		if (ownerShipShare < TARGET_OWNER_SHIP_SHARE) {
+			return 0.0; // buy more
 		} else {
-			this.reserve = 0.0;
-			return 0.0;
+			double cash = getMoney().getAmount();
+			return cash * (ownerShipShare - TARGET_OWNER_SHIP_SHARE);
 		}
-		// return excessCash; // excessCash / 5 would lead to market makers eventually owning everything...
 	}
 
 	@Override
@@ -104,6 +131,7 @@ public class MarketMaker extends Firm implements IMarketMaker {
 
 	@Override
 	public String toString() {
-		return getType() + " with " + getMoney() + ", holding " + getAvgHoldings() + ", price index: " + getIndex().toFullString() + ", dividend " + getShareRegister().getAverageDividend();
+		return getType() + " with " + getMoney() + ", holding " + getAverageOwnershipShare() + ", price index: " + getIndex().toFullString() + ", dividend " + getShareRegister().getAverageDividend();
 	}
+
 }

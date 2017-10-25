@@ -25,7 +25,7 @@ public class ShareRegister implements IRegister {
 		this.ticker = ticker;
 		this.all = new LinkedList<>();
 		this.dividend = new MovingAverage(0.8);
-		this.rootPosition = new Position(this, ticker, wallet.getGood(), SHARES_PER_COMPANY);
+		this.rootPosition = new Position(this, ticker, wallet.getGood(), SHARES_PER_COMPANY, false);
 		this.all.add(rootPosition);
 	}
 
@@ -73,9 +73,20 @@ public class ShareRegister implements IRegister {
 	public double getAverageDividend() {
 		return dividend.getAverage();
 	}
+	
+	public double getConsumerOwnedShare() {
+		double total = 0.0;
+		for (Position p: all) {
+			if (p.isConsumerPosition()) {
+				total += p.getAmount();
+			}
+		}
+		return total / SHARES_PER_COMPANY;
+	}
 
-	public Position createPosition() {
-		Position pos = new Position(this, getTicker(), rootPosition.getCurrency(), 0.0);
+	@Override
+	public Position createPosition(boolean consumer) {
+		Position pos = new Position(this, getTicker(), rootPosition.getCurrency(), 0.0, consumer);
 		all.add(pos);
 		return pos;
 	}

@@ -14,8 +14,8 @@ import com.agentecon.util.Numbers;
 
 public class TradingPortfolio extends Portfolio {
 
-	public TradingPortfolio(IStock money) {
-		super(money);
+	public TradingPortfolio(IStock money, boolean consumer) {
+		super(money, consumer);
 	}
 
 	public double getCombinedValue(IPriceProvider prices, int timeHorizon) throws PriceUnknownException {

@@ -16,6 +16,7 @@ import com.agentecon.metric.variants.CashStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.InventoryStats;
+import com.agentecon.metric.variants.MarketMakerStats;
 import com.agentecon.metric.variants.MarketStats;
 import com.agentecon.metric.variants.MonetaryStats;
 import com.agentecon.metric.variants.OwnershipStats;
@@ -28,7 +29,7 @@ import com.agentecon.web.query.AgentQuery;
 
 public enum EMetrics {
 
-	CASH, DEMOGRAPHICS, DIVIDENDS, INVENTORY, MARKET, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, RANKING, UTILITY, TYPE;
+	CASH, DEMOGRAPHICS, DIVIDENDS, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, RANKING, UTILITY, TYPE;
 
 	public SimStats createAndRegister(ISimulation sim, List<String> list) {
 		ArrayList<AgentQuery> queries = new ArrayList<>();
@@ -55,6 +56,8 @@ public enum EMetrics {
 			return "Amount of goods held by firms and consumers.";
 		case MARKET:
 			return "Average market price and trading volume of all goods, including a volume-weighted price index.";
+		case MARKETMAKER:
+			return "The bid and ask price beliefs of one selected market maker.";
 		case MONETARY:
 			return "Money supply, prices and trade volume.";
 		case OWNERSHIP:
@@ -85,6 +88,8 @@ public enum EMetrics {
 			return new InventoryStats(sim);
 		case MARKET:
 			return new MarketStats(sim, true);
+		case MARKETMAKER:
+			return new MarketMakerStats(sim, "MarketMaker");
 		case CASH:
 			return new CashStats(sim);
 		case MONETARY:

@@ -10,7 +10,6 @@ import com.agentecon.ISimulation;
 
 public class SimulationCache {
 
-	private int max;
 	private SimulationLoader loader;
 	private TreeMap<Integer, ArrayList<SoftReference<ISimulation>>> sims;
 
@@ -18,7 +17,6 @@ public class SimulationCache {
 		this.loader = loader;
 		this.sims = new TreeMap<>();
 		ISimulation sim = loader.loadSimulation();
-		this.max = sim.getConfig().getRounds();
 		recycle(sim);
 	}
 
@@ -78,10 +76,6 @@ public class SimulationCache {
 			}
 		}
 		list.add(new SoftReference<ISimulation>(sim));
-	}
-
-	public synchronized Recyclable<ISimulation> getAny() throws IOException {
-		return borrow(max);
 	}
 
 }

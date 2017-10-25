@@ -60,7 +60,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 		createBasicPopulation(workerEndowment);
 		addMarketMakers();
 		addEvent(new CentralBankEvent(POTATOE));
-		addCustomInvestors(loader, workerEndowment);
+//		addCustomInvestors(loader, workerEndowment);
 	}
 
 	private void addCustomInvestors(IAgentFactory loader, Endowment end) {
@@ -86,7 +86,8 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 			@Override
 			public void execute(int day, ICountry sim) {
 				for (int i = 0; i < getCardinality(); i++) {
-					sim.add(new MarketMaker(sim, getMoney(), sim.getAgents().getFirms()));
+					IStock money = new Stock(getMoney(), 1000);
+					sim.add(new MarketMaker(sim, money, sim.getAgents().getFirms()));
 				}
 			}
 		});

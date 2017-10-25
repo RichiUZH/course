@@ -43,7 +43,7 @@ public class MortalConsumer extends Consumer {
 		}
 		if (age > maxAge) {
 			Inventory inv = super.dispose();
-			Portfolio portfolio = new Portfolio(inv.getMoney());
+			Portfolio portfolio = new Portfolio(inv.getMoney(), true);
 			portfolio.absorb(getPortfolio());
 			return new Inheritance(inv, portfolio);
 		} else {

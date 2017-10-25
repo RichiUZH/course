@@ -17,16 +17,23 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.MinMaxTimeSeries;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.metric.series.TimeSeriesCollector;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 
 public class InventoryStats extends SimStats {
 
-	private HashMap<Good, MinMaxTimeSeries> consumerInv;
-	private HashMap<Good, MinMaxTimeSeries> firmInv;
+	private HashMap<Good, TimeSeriesCollector> inventoriesByGoods;
 
 	public InventoryStats(ISimulation agents) {
 		super(agents);
+		this.inventoriesByGoods = new InstantiatingHashMap<Good, TimeSeriesCollector>() {
+
+			@Override
+			protected TimeSeriesCollector create(Good key) {
+				return null;
+			}
+		};
 		this.firmInv = new InstantiatingHashMap<Good, MinMaxTimeSeries>() {
 
 			@Override

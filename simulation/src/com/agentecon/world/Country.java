@@ -9,7 +9,6 @@ import com.agentecon.consumer.Inheritance;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
-import com.agentecon.firm.Position;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IStatistics;
@@ -65,11 +64,11 @@ public class Country implements ICountry {
 		for (IFirm firm : agents.getFirms()) {
 			if (firm.considerBankruptcy(stats)) {
 				Inventory inv = new Inventory(getMoney());
-				Portfolio port = new Portfolio(inv.getMoney());
+				Portfolio port = new Portfolio(inv.getMoney(), false);
 				double totalshares = firm.dispose(inv, port);
 				IShareholder last = null;
 				for (IShareholder shareholder : agents.getShareholders()) {
-					double shares = shareholder.getPortfolio().notifyFirmClosed(firm.getTicker());
+					double shares = shareholder.notifyFirmClosed(firm.getTicker());
 					if (shares > 0.0) {
 						last = shareholder;
 						double ratio = Math.min(shares / totalshares, 1.0);

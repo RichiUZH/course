@@ -61,14 +61,23 @@ public abstract class WebApiMethod {
 		JsonData answer = getJsonAnswer(params);
 		return NanoHTTPD.newFixedLengthResponse(Status.OK, "application/json", answer.getJson());
 	}
+	
+	/**
+	 * Dummy execution of this method to refresh the cache
+	 */
+	public void refreshCashe(Parameters params) {
+		try {
+			getJsonAnswer(params);
+		} catch (IOException e) {
+		}
+	}
 
 	protected JsonData getJsonAnswer(Parameters params) throws IOException {
-		throw new RuntimeException("Not implemented");
+		return null;
 	}
 
 	@Override
 	public String toString() {
 		return name;
 	}
-
 }

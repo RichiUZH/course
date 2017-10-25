@@ -38,7 +38,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 		this.minCashLevel = getMoney().getAmount();
 		IStock ownedLand = getStock(this.land);
 		ownedLand.absorb(initialLand);
-		this.priceBelief = new MarketMakerPrice(ownedLand);
+		this.priceBelief = new MarketMakerPrice(ownedLand, 30);
 		this.profitModel = new QuadraticMaximizer(0.98, id.getRand().nextLong(), initialMoney.getAmount(), initialMoney.getAmount() * 1000);
 		this.capital = calculateCapital();
 	}

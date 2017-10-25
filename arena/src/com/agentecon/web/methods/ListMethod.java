@@ -21,22 +21,25 @@ import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.runner.NothingChangedException;
 import com.agentecon.runner.SimulationLoader;
 import com.agentecon.runner.SimulationStepper;
+import com.agentecon.web.Refresher;
 import com.agentecon.web.data.JsonData;
 
 public class ListMethod extends WebApiMethod {
 
+	private transient Refresher updateListener;
 	private transient HashMap<String, SimulationHandle> handles;
 	private transient ArrayList<String> simulationNamesInCorrectOrder;
 	private transient HashMap<SimulationHandle, SimulationStepper> simulations;
 	private transient Executor simulationUpdateExecutor;
 
-	public ListMethod() {
+	public ListMethod(Refresher updateListener) {
 		this.handles = new HashMap<>();
 		this.simulations = new HashMap<>();
+		this.updateListener = updateListener;
 		this.simulationNamesInCorrectOrder = new ArrayList<>();
 		this.simulationUpdateExecutor = Executors.newSingleThreadExecutor();
 	}
-	
+
 	public Collection<String> getSimulations() {
 		return handles.keySet();
 	}
@@ -46,8 +49,11 @@ public class ListMethod extends WebApiMethod {
 		this.handles.put(handle.getIdentifier(), handle);
 	}
 
-	protected synchronized void update(SimulationHandle handle, SimulationStepper stepper) {
-		simulations.put(handle, stepper);
+	protected void update(SimulationHandle handle, SimulationStepper stepper) {
+		synchronized (this) {
+			simulations.put(handle, stepper);
+		}
+		updateListener.notifySimulationUpdated(handle.getIdentifier());
 	}
 
 	public synchronized void notifyRepositoryChanged(String repo) {

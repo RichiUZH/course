@@ -3,6 +3,7 @@ package com.agentecon.finance;
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.FirmListeners;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
@@ -23,7 +24,7 @@ public abstract class Firm extends Agent implements IFirm {
 
 	public Firm(IAgentIdGenerator ids, IShareholder owner, Endowment end) {
 		this(ids, end);
-		Position ownerPosition = this.register.createPosition();
+		Position ownerPosition = this.register.createPosition(owner instanceof IConsumer);
 		this.register.claimCompanyShares(ownerPosition);
 		owner.getPortfolio().addPosition(ownerPosition);
 	}
@@ -71,6 +72,8 @@ public abstract class Firm extends Agent implements IFirm {
 		double dividend = calculateDividends(day);
 		if (dividend > 0) {
 			// pay at most 20% of the available cash
+			double consumerOwned = getShareRegister().getConsumerOwnedShare();
+			dividend /= consumerOwned;
 			dividend = Math.min(dividend, getDividendWallet().getAmount() * 0.2);
 			monitor.reportDividend(this, dividend);
 			register.payDividend(getDividendWallet(), dividend);
