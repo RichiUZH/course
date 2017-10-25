@@ -17,6 +17,10 @@ public class TimeSeriesCollector {
 	private AveragingTimeSeries firms, consumers;
 
 	public TimeSeriesCollector() {
+		this(true);
+	}
+
+	public TimeSeriesCollector(boolean includeIndividuals) {
 		this.firms = new AveragingTimeSeries("Firms");
 		this.consumers = new AveragingTimeSeries("Consumers");
 		this.type = new InstantiatingHashMap<String, AveragingTimeSeries>() {
@@ -26,13 +30,15 @@ public class TimeSeriesCollector {
 				return new AveragingTimeSeries(key, new Line());
 			}
 		};
-		this.individual = new InstantiatingHashMap<String, TimeSeries>() {
+		if (includeIndividuals) {
+			this.individual = new InstantiatingHashMap<String, TimeSeries>() {
 
-			@Override
-			protected TimeSeries create(String key) {
-				return new TimeSeries(key);
-			}
-		};
+				@Override
+				protected TimeSeries create(String key) {
+					return new TimeSeries(key);
+				}
+			};
+		}
 	}
 
 	public void record(int day, IAgent agent, double number) {
@@ -62,7 +68,7 @@ public class TimeSeriesCollector {
 	}
 
 	public void record(int day, IAgentType agent, double number) {
-		if (agent.getIndividualKey() != null) {
+		if (individual != null && agent.getIndividualKey() != null) {
 			individual.get(agent.getIndividualKey()).set(day, number);
 		}
 		for (String t : agent.getTypeKeys()) {
@@ -75,7 +81,7 @@ public class TimeSeriesCollector {
 			firms.add(number);
 		}
 	}
-	
+
 	public void reportZeroIfNoData() {
 		for (AveragingTimeSeries ts : type.values()) {
 			ts.pushZeroIfNothing();
@@ -109,7 +115,9 @@ public class TimeSeriesCollector {
 			ts.add(firms.getTimeSeries());
 		}
 		ts.addAll(sort(AveragingTimeSeries.unwrap(type.values())));
-		ts.addAll(sort(individual.values()));
+		if (individual != null) {
+			ts.addAll(sort(individual.values()));
+		}
 		return ts;
 	}
 
