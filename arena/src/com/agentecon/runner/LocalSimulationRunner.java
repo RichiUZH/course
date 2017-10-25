@@ -36,7 +36,7 @@ public class LocalSimulationRunner {
 
 	private void run() throws IOException {
 		UtilityRanking ranking = new UtilityRanking(sim, false);
-		SimStats prodStats = new ProductionStats(sim);
+		SimStats prodStats = new ProductionStats(sim, false);
 		SimStats stats = new DividendStats(sim, new ArrayList<>());
 		SimStats prices = new MarketStats(sim, true);
 		sim.addListener(prices);

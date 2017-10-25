@@ -99,13 +99,19 @@ export default {
     },
     addSeries() {
       const sizeBefore = this.selectedSeries.length;
-      this.series.forEach((element) => {
-        if (sizeBefore === this.selectedSeries.length) {
-          if (!this.selectedSeries.includes(element)) {
-            this.selectedSeries.push(element);
+      const index = this.series.indexOf(this.selectedSeries[sizeBefore - 1]) + 1;
+      const candidate = this.series[index];
+      if (index < this.series.length && !this.selectedSeries.includes(candidate)) {
+        this.selectedSeries.push(candidate);
+      } else {
+        this.series.forEach((element) => {
+          if (sizeBefore === this.selectedSeries.length) {
+            if (!this.selectedSeries.includes(element)) {
+              this.selectedSeries.push(element);
+            }
           }
-        }
-      });
+        });
+      }
       this.updateChart();
     },
     removeSeries() {

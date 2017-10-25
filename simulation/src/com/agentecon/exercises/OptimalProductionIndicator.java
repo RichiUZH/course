@@ -12,9 +12,13 @@ import com.agentecon.util.Average;
 public class OptimalProductionIndicator extends OptimalFirmCountIndicator {
 	
 	private Quantity fixed;
+	
+	public OptimalProductionIndicator(Quantity fixed, CobbDouglasProductionWithFixedCost prodFun, Good manHour) {
+		this(fixed, prodFun, manHour, UNLIMITED);
+	}
 
-	public OptimalProductionIndicator(Quantity fixed, CobbDouglasProductionWithFixedCost prodFun, Good manHour, int agentsWithLand) {
-		super(prodFun, manHour, agentsWithLand);
+	public OptimalProductionIndicator(Quantity fixed, CobbDouglasProductionWithFixedCost prodFun, Good manHour, double maxFirms) {
+		super(prodFun, manHour, maxFirms);
 		this.fixed = fixed;
 	}
 

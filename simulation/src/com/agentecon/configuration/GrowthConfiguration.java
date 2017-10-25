@@ -23,7 +23,6 @@ import com.agentecon.events.MinPopulationGrowthEvent;
 import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
-import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.research.IInnovation;

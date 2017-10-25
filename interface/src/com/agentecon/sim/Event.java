@@ -2,6 +2,8 @@
 
 package com.agentecon.sim;
 
+import java.util.Random;
+
 public abstract class Event implements Comparable<Event> {
 
 	private int nextExecution;
@@ -21,6 +23,9 @@ public abstract class Event implements Comparable<Event> {
 		this.nextExecution = day;
 		this.interval = interval;
 		this.cardinality = cardinality;
+	}
+	
+	public void init(Random rand) {
 	}
 
 	public int getCardinality() {

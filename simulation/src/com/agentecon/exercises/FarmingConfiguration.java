@@ -52,7 +52,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	private static final double LAND_ENDOWMENT = 100;
 	
-	public static final int ROUNDS = 3000;
+	public static final int ROUNDS = 10000;
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
 
@@ -83,11 +83,11 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	
 	@Override
 	public IOptimalityIndicator[] getOptimalFirmCountIndicators() {
-		return new IOptimalityIndicator[] {new OptimalFirmCountIndicator(createProductionFunction(POTATOE), MAN_HOUR, agentsWithLand)};
+		return new IOptimalityIndicator[] {new OptimalFirmCountIndicator(createProductionFunction(POTATOE), MAN_HOUR)};
 	}
 	
 	public IOptimalityIndicator[] getOptimalProductionIndicators() {
-		return new IOptimalityIndicator[] {new OptimalProductionIndicator(new Quantity(LAND, LAND_ENDOWMENT), createProductionFunction(POTATOE), MAN_HOUR, agentsWithLand)};
+		return new IOptimalityIndicator[] {new OptimalProductionIndicator(new Quantity(LAND, LAND_ENDOWMENT), createProductionFunction(POTATOE), MAN_HOUR)};
 	}
 
 	@Override

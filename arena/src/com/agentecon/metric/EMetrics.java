@@ -53,7 +53,7 @@ public enum EMetrics {
 			return "The agent ranking over time.";
 //		case FIRM:
 		case INVENTORY:
-			return "Amount of goods held by firms and consumers after trading (before consumption and before production).";
+			return "Average amount of goods held by firms and consumers after trading (before consumption and before production).";
 		case MARKET:
 			return "Average market price and trading volume of all goods, including a volume-weighted price index.";
 		case MARKETMAKER:
@@ -97,7 +97,7 @@ public enum EMetrics {
 		case OWNERSHIP:
 			return new OwnershipStats(sim);
 		case PRODUCTION:
-			return new ProductionStats(sim);
+			return new ProductionStats(sim, details);
 		case STOCKMARKET:
 			return new StockMarketStats(sim, false);
 		case RANKING:

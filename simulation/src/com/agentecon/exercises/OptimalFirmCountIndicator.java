@@ -8,9 +8,15 @@ import com.agentecon.sim.IOptimalityIndicator;
 
 public class OptimalFirmCountIndicator implements IOptimalityIndicator {
 	
+	protected static final double UNLIMITED = 1000;
+	
 	private double maximum;
 	private Good variableInput;
 	protected CobbDouglasProductionWithFixedCost prodFun;
+	
+	public OptimalFirmCountIndicator(CobbDouglasProductionWithFixedCost prodFun, Good variableInput) {
+		this(prodFun, variableInput, UNLIMITED);
+	}
 
 	public OptimalFirmCountIndicator(CobbDouglasProductionWithFixedCost prodFun, Good variableInput, double maximum) {
 		this.prodFun = prodFun;

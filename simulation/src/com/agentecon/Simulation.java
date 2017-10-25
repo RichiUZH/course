@@ -54,9 +54,9 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 
 	public Simulation(SimulationConfig config) {
 		this.config = config;
-		this.events = createEventQueue(config.getEvents());
 		this.listeners = new SimulationListeners();
 		this.world = new Country(config, listeners);
+		this.events = createEventQueue(config.getEvents());
 		this.stocks = new StockMarket(world, listeners);
 		this.goodsMarketStats = new MarketStatistics();
 		this.day = 0;
@@ -65,6 +65,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private PriorityBlockingQueue<SimEvent> createEventQueue(Collection<Event> collection) {
 		PriorityBlockingQueue<SimEvent> queue = new PriorityBlockingQueue<>();
 		for (Event e : collection) {
+			e.init(getRandomNumberGenerator());
 			queue.add((SimEvent) e);
 		}
 		return queue;

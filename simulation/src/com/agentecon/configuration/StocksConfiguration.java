@@ -26,6 +26,7 @@ import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.MarketMaker;
+import com.agentecon.firm.RealEstateAgent;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.research.IInnovation;
@@ -88,6 +89,16 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 				for (int i = 0; i < getCardinality(); i++) {
 					IStock money = new Stock(getMoney(), 1000);
 					sim.add(new MarketMaker(sim, money, sim.getAgents().getFirms()));
+				}
+			}
+		});
+		addEvent(new SimEvent(0, 0, 5) {
+
+			@Override
+			public void execute(int day, ICountry sim) {
+				for (int i = 0; i < getCardinality(); i++) {
+					IStock money = new Stock(getMoney(), 1000);
+					sim.add(new RealEstateAgent(sim, money, LAND));
 				}
 			}
 		});

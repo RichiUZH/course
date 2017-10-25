@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.firm.IFirm;
@@ -30,11 +32,17 @@ public class ProductionStats extends SimStats {
 	private IOptimalityIndicator[] indicators;
 	private Map<Good, TimeSeries> optimalProduction;
 	private Map<Good, MarketStatistics> usedInputs;
-	private TimeSeriesCollector collector;
+	private Map<Good, TimeSeriesCollector> collectors;
 
-	public ProductionStats(ISimulation sim) {
+	public ProductionStats(ISimulation sim, boolean details) {
 		super(sim);
-		this.collector = new TimeSeriesCollector();
+		this.collectors = new InstantiatingHashMap<Good, TimeSeriesCollector>() {
+
+			@Override
+			protected TimeSeriesCollector create(Good key) {
+				return new TimeSeriesCollector(details);
+			}
+		};
 		this.indicators = sim.getConfig().getOptimalProductionIndicators();
 		this.optimalProduction = new InstantiatingHashMap<Good, TimeSeries>() {
 
@@ -84,6 +92,7 @@ public class ProductionStats extends SimStats {
 				@Override
 				public void notifyProduced(IProducer inst, Quantity[] inputs, Quantity output) {
 					includeInput(inputs, output);
+					TimeSeriesCollector collector = collectors.get(output.getGood());
 					collector.record(getDay(), new IAgentType() {
 
 						@Override
@@ -113,14 +122,16 @@ public class ProductionStats extends SimStats {
 
 	@Override
 	public void notifyDayEnded(IStatistics stats) {
-		for (MarketStatistics market: usedInputs.values()) {
+		for (MarketStatistics market : usedInputs.values()) {
 			market.notifyMarketClosed(stats.getDay());
 		}
 		for (IOptimalityIndicator indicator : indicators) {
 			MarketStatistics volumeStatistics = usedInputs.get(indicator.getOutputGood());
 			optimalProduction.get(indicator.getOutputGood()).set(stats.getDay(), indicator.getOptimum(volumeStatistics));
 		}
-		collector.flushDay(stats.getDay(), false);
+		for (TimeSeriesCollector collector : collectors.values()) {
+			collector.flushDay(stats.getDay(), false);
+		}
 		usedInputs.clear();
 	}
 
@@ -128,7 +139,13 @@ public class ProductionStats extends SimStats {
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> all = new ArrayList<>();
 		all.addAll(optimalProduction.values());
-		all.addAll(collector.getTimeSeries());
+		collectors.entrySet().forEach(new Consumer<Entry<Good, TimeSeriesCollector>>() {
+
+			@Override
+			public void accept(Entry<Good, TimeSeriesCollector> t) {
+				all.addAll(TimeSeries.prefix(t.getKey().getName() + " production by ", t.getValue().getTimeSeries()));
+			}
+		});
 		return all;
 	}
 

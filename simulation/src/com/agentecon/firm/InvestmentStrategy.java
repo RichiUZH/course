@@ -22,6 +22,8 @@ import com.agentecon.market.IPriceTakerMarket;
 
 public class InvestmentStrategy {
 
+	private static final double INVESTMENT_MULTIPLIER = 10;
+	
 	private CobbDouglasProduction prodFun;
 	private IDiscountRate discountRate;
 
@@ -58,7 +60,7 @@ public class InvestmentStrategy {
 			IOffer offer = market.getOffer(input.getGood(), false);
 			if (offer != null) {
 				double dailyDiscounting = offer.getPrice().getPrice() * input.getAmount() * discountRate.getCurrentDiscountRate();
-				double targetInvestment = targetDailySpending - dailyDiscounting;
+				double targetInvestment = INVESTMENT_MULTIPLIER * (targetDailySpending - dailyDiscounting);
 				if (targetInvestment > actuallyInvested) {
 					double moneyBefore = money.getAmount();
 					offer.accept(agent, money, input, new Quantity(input.getGood(), (targetInvestment - actuallyInvested) / offer.getPrice().getPrice()));
@@ -79,7 +81,7 @@ public class InvestmentStrategy {
 			IOffer offer = market.getOffer(input.getGood(), true);
 			if (offer != null) {
 				double dailyDiscounting = offer.getPrice().getPrice() * input.getAmount() * discountRate.getCurrentDiscountRate();
-				double targetDivestment = dailyDiscounting - targetDailySpending;
+				double targetDivestment = INVESTMENT_MULTIPLIER * (dailyDiscounting - targetDailySpending);
 				if (targetDivestment > actuallyDivested) {
 					double moneyBefore = money.getAmount();
 					offer.accept(agent, money, input, new Quantity(input.getGood(), (targetDivestment - actuallyDivested) / offer.getPrice().getPrice()));
