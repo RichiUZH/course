@@ -65,7 +65,7 @@ public enum EMetrics {
 		case PRODUCTION:
 			return "Production volume of each firm.";
 		case STOCKMARKET:
-			return "Various stock market statistics: average prices, trading volumes, p/e ratios, inflows, outflows, etc."; 
+			return "Various stock market statistics: average prices, trading volumes, inflows, outflows, etc."; 
 		case UTILITY:
 			return "Daily average utility, as well as the minimum and maximum experienced by an agent.";
 		case TYPE:
