@@ -10,7 +10,7 @@ package com.agentecon.learning;
 
 import java.util.Random;
 
-public class QuadraticMaximizer extends RecursiveLeastSquares {
+public class QuadraticMaximizer extends RecursiveLeastSquares implements IControl {
 
 	private Random rand;
 	private double latest;
@@ -29,7 +29,7 @@ public class QuadraticMaximizer extends RecursiveLeastSquares {
 		this.max = max;
 	}
 
-	public double getOptimalInput() {
+	public double getCurrentInput() {
 		double a = weights.get(0, 2);
 		double b = weights.get(0, 1);
 		double optimum = -b / (2 * a); // extremum for function of form a*x*x + b*x + c
@@ -45,9 +45,10 @@ public class QuadraticMaximizer extends RecursiveLeastSquares {
 			return 0.0;
 		}
 	}
-
-	public void update(double result) {
-		update(this.latest, result);
+	
+	@Override
+	public void reportOutput(double output) {
+		update(this.latest, output);
 	}
 
 	public void update(double latest, double result) {

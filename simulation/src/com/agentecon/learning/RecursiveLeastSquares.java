@@ -17,6 +17,7 @@ import java.util.Random;
  */
 public class RecursiveLeastSquares {
 
+	private int step;
 	private double memory;
 	protected Matrix weights;
 	private Matrix covarianceMatrix;
@@ -25,11 +26,14 @@ public class RecursiveLeastSquares {
 		this.covarianceMatrix = new Matrix(parameters, true);
 		this.weights = new Matrix(1, parameters);
 		this.memory = memory;
+		this.step = 1;
 	}
 
 	public void update(Matrix x, double y) {
 		// Algorithm taken from "Recursive Least Squares with Forgetting for Online Estimation of Vehicle Mass and Road Grade:
 		// Theory and Experiments", https://pdfs.semanticscholar.org/80eb/236ec16f66e4ce167b2bb0c9804385b03c7f.pdf, page 9
+		
+		double memory = Math.min(this.memory, Math.max(0.1, 1.0 - 1.0/step++));
 		
 		Matrix xT = x.transpose();
 		
