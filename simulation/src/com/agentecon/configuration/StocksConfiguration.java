@@ -37,9 +37,9 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	private static final int BASIC_AGENTS = 30;
 	public static final String BASIC_AGENT = "com.agentecon.exercise5.Investor";
 
-	public static final double GROWTH_RATE = 0.0025;
+	public static final double GROWTH_RATE = 0.004;
 	public static final int MAX_AGE = 500;
-	private static final int GROW_UNTIL = 2000; // day at which growth stops
+	private static final int GROW_UNTIL = 800; // day at which growth stops
 
 	public StocksConfiguration() throws SocketTimeoutException, IOException {
 		this(new ExerciseAgentLoader(BASIC_AGENT), BASIC_AGENTS);

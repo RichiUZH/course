@@ -72,7 +72,7 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
 		if (myLand.getAmount() < SELL_LAND_IF_LESS) {
 			return null;
-		} else if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.02) {
+		} else if (myLand.hasSome() && getMoney().hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.02) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {

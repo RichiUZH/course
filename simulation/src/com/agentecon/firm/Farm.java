@@ -14,6 +14,7 @@ import com.agentecon.finance.Producer;
 import com.agentecon.firm.decisions.IFinancials;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.CovarianceControl;
+import com.agentecon.learning.IControl;
 import com.agentecon.learning.MarketingDepartment;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.IStatistics;
@@ -25,12 +26,13 @@ public class Farm extends Producer {
 	private static final double CAPITAL_BUFFER = 0.9;
 	private static final double CAPITAL_TO_SPENDINGS_RATIO = 1 / (1 - CAPITAL_BUFFER);
 
-	private CovarianceControl control;
+	private IControl control;
 	private MarketingDepartment marketing;
 
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
-		this.control = new CovarianceControl(getInitialBudget(stats), 0.2);
+		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble()/2 + 0.25);
+//		this.control = new QuadraticMaximizer(0.95, id.getRand().nextLong(), 100, 10000);
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);

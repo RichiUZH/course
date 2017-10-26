@@ -20,9 +20,10 @@ public abstract class GrowthEvent extends RandomEvent {
 			execute(sim);
 			births -= 1.0;
 		}
-//		if (rand.nextDouble() <= probability) {
-//			execute(sim);
-//		}
+		if (rand.nextDouble() <= births) {
+			execute(sim);
+		}
+		births = 0.0;
 	}
 
 	protected abstract void execute(ICountry sim);
