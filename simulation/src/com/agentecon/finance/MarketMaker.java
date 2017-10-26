@@ -2,6 +2,7 @@ package com.agentecon.finance;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
@@ -42,8 +43,14 @@ public class MarketMaker extends Firm implements IMarketMaker {
 	public void postOffers(IPriceMakerMarket dsm) {
 		IStock money = getMoney().hide(reserve);
 		double budgetPerPosition = money.getAmount() / priceBeliefs.size();
-		for (MarketMakerPrice e : priceBeliefs.values()) {
-			e.trade(dsm, this, money, budgetPerPosition);
+		Iterator<MarketMakerPrice> iter = priceBeliefs.values().iterator();
+		while (iter.hasNext()) {
+			MarketMakerPrice mmp = iter.next();
+			if (mmp.isObsolete()) {
+				iter.remove();
+			} else {
+				mmp.trade(dsm, this, money, budgetPerPosition);
+			}
 		}
 	}
 

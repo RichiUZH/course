@@ -45,22 +45,20 @@ public class TradingPortfolio extends Portfolio {
 		}
 		return wallet.getAmount() - moneyBefore;
 	}
-	
+
 	/**
-	 * Invest according to the default strategy, weighting the chances of 
-	 * choosing a stock by its market capitalization.
-	 * This is similar to what an Index-ETF does.
+	 * Invest according to the default strategy, weighting the chances of choosing a stock by its market capitalization. This is similar to what an Index-ETF does.
 	 */
 	public double invest(IStockMarket stocks, IAgent owner, double budget) {
 		return invest(new IStockPickingStrategy() {
-			
+
 			@Override
 			public Ticker findStockToBuy(IStockMarket stocks) {
 				return stocks.getRandomStock(false);
 			}
 		}, stocks, owner, budget);
 	}
-	
+
 	public double invest(IStockPickingStrategy strategy, IStockMarket stocks, IAgent owner, double budget) {
 		double moneyBefore = wallet.getAmount();
 		budget = Math.min(moneyBefore, budget);
@@ -71,7 +69,9 @@ public class TradingPortfolio extends Portfolio {
 				Position pos = getPosition(any);
 				addPosition(stocks.buy(owner, any, pos, wallet, budget));
 				double spent = before - wallet.getAmount();
-				invest(strategy, stocks, owner, budget - spent);
+				if (spent > 0.0) {
+					invest(strategy, stocks, owner, budget - spent);
+				}
 			}
 		}
 		return moneyBefore - wallet.getAmount();

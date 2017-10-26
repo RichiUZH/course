@@ -2,6 +2,7 @@ package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IRegister;
+import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.market.IPriceMakerMarket;
@@ -50,6 +51,10 @@ public class MarketMakerPrice {
 			 // offer a fraction of the present shares, but offer more if we have more
 			ceiling.createOffers(dsm, owner, wallet, sharesOwned * 0.05);
 		}
+	}
+	
+	public boolean isObsolete() {
+		return ((Position)floor.getStock()).isDisposed();
 	}
 
 	public double getPrice() {
