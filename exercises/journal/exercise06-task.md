@@ -20,7 +20,7 @@ whereas ${inflow}_t$ is the amount invested into the stock market and ${outflow}
 
 The log returns provided are simple the daily percentage changes. The advantage of using log returns is that you can simply add them up to get cummulative returns, whereas percentage returns need to be multiplied.
 
-$\frac{p_t}{p_{t-2}} = \frac{p_t}{p_{t-1} \frac{p_t-1}{p_{t-2} = e^{ln \frac{p_t}{p_{t-1} + ln \frac{p_t-1}{p_{t-2}}$
+$\frac{p_t}{p_{t-2}} = \frac{p_t}{p_{t-1}} \frac{p_{t-1}}{p_{t-2}} = e^{ln \frac{p_t}{p_{t-1}} + ln \frac{p_{t-1}}{p_{t-2}}}$
 
 Economists often use log returns by default.
 

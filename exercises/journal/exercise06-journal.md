@@ -1,4 +1,4 @@
-# Lab Journal: Exercise 4
+# Lab Journal: Exercise 6
 
 Authors: name surname, name surname
 
