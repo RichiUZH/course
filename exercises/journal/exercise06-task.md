@@ -30,7 +30,9 @@ For the task at hand, you should **ignore all data before day 3000**. Also, you 
 
 While the above equation clearly does not hold on single days, check whether it holds in the longer run. I.e. how high do you need to set $\delta$ for the following to hold approximately:
 
-$\sum_{i=t}^{t+\delta} {inflow}_i \approx \sum_{i=t}^{t+\delta} {outflow}_i$
+$\sum_{i=t}^{t+\delta} {inflow}_i \approx$
+
+$\sum_{i=t}^{t+\delta} {outflow}_i$
 
 ## Task 2: the short run
 
