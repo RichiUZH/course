@@ -22,7 +22,7 @@ The log returns provided are simple the daily percentage changes. The advantage 
 
 $\frac{p_t}{p_{t-2}} = \frac{p_t}{p_{t-1}} \frac{p_{t-1}}{p_{t-2}} = e^{ln \frac{p_t}{p_{t-1}} + ln \frac{p_{t-1}}{p_{t-2}}}$
 
-Economists often use log returns by default.
+Economists often use natural log returns by default and rarely ever convert back.
 
 For the task at hand, you should **ignore all data before day 3000**. Also, you can ignore the data of the individual stocks and focus entirely on the index, which represents a weighted average of the two stocks. Volume represents the number of shares traded, but you can already get the full score without using volume data at all.
 
@@ -30,7 +30,7 @@ For the task at hand, you should **ignore all data before day 3000**. Also, you 
 
 While the above equation clearly does not hold on single days, check whether it holds in the longer run. I.e. how high do you need to set $\delta$ for the following to hold approximately:
 
-$\sum_{i=t}^{t+\delta} {inflow}_i \approx \sum_{i=t}^{t+\delta} {outflow}_i$
+$\sum_{i=t}^{t+\delta} {inflow}_i$
 
 ## Task 2: the short run
 
