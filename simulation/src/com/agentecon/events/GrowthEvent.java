@@ -1,9 +1,12 @@
 package com.agentecon.events;
 
+import java.util.Random;
+
 import com.agentecon.world.ICountry;
 
 public abstract class GrowthEvent extends SimEvent {
 	
+	private Random rand = new Random(1332);
 	private double probPerConsumer;
 	
 	public GrowthEvent(int start, double probPerConsumer) {
@@ -18,7 +21,7 @@ public abstract class GrowthEvent extends SimEvent {
 			execute(sim);
 			probability -= 1.0;
 		}
-		if (sim.getRand().nextDouble() <= probability){
+		if (rand.nextDouble() <= probability){
 			execute(sim);
 		}
 	}

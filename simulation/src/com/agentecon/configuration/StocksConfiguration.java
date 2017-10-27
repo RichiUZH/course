@@ -45,7 +45,17 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	}
 
 	public StocksConfiguration(IAgentFactory loader, int agents) {
-		super(new IAgentFactory() {
+		super(getInitialyAgentFactory(agents), agents);
+		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
+		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
+		createBasicPopulation(loader, workerEndowment);
+		addMarketMakers();
+		addEvent(new CentralBankEvent(POTATOE));
+		addCustomInvestors(loader, workerEndowment);
+	}
+
+	private static IAgentFactory getInitialyAgentFactory(int agents) {
+		return new IAgentFactory() {
 
 			private int number = 1;
 
@@ -54,13 +64,17 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 				int maxAge = number++ * MAX_AGE / agents;
 				return new InvestingConsumer(id, maxAge, end, utility);
 			}
-		}, agents);
-		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
-		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
-		createBasicPopulation(workerEndowment);
-		addMarketMakers();
-		addEvent(new CentralBankEvent(POTATOE));
-		addCustomInvestors(loader, workerEndowment);
+		};
+	}
+	
+	private static IAgentFactory getDefaultAgentFactory() {
+		return new IAgentFactory() {
+
+			@Override
+			public IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility utility) {
+				return new InvestingConsumer(id, MAX_AGE, end, utility);
+			}
+		};
 	}
 
 	private void addCustomInvestors(IAgentFactory loader, Endowment end) {
@@ -92,13 +106,12 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 		});
 	}
 
-	protected void createBasicPopulation(Endowment workerEndowment) {
+	protected void createBasicPopulation(IAgentFactory factory, Endowment workerEndowment) {
 		addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS) {
 
 			@Override
 			protected void execute(ICountry sim) {
-				IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
-				sim.add(cons);
+				sim.add(factory.createConsumer(sim, MAX_AGE, workerEndowment, create(0)));
 			}
 
 		});
@@ -107,8 +120,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 			@Override
 			protected void execute(ICountry sim) {
 				if (sim.getDay() < GROW_UNTIL) {
-					IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
-					sim.add(cons);
+					sim.add(getDefaultAgentFactory().createConsumer(sim, MAX_AGE, workerEndowment, create(0)));
 				}
 			}
 
@@ -117,8 +129,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 
 			@Override
 			protected void execute(ICountry sim) {
-				IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
-				sim.add(cons);
+				sim.add(factory.createConsumer(sim, MAX_AGE, workerEndowment, create(0)));
 			}
 
 		});
