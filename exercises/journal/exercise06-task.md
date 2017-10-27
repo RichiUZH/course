@@ -6,7 +6,7 @@ This week's exercise is about the relation between prices on the stock market an
 
 Random walks are highly important in finance, as they are often used to model the stock market. For example, they are essential when calculating the price of options. The basic idea of a random walk is that at each point in time, we probabilistically make a step in either direction and use the resulting new value as the starting point for the next step. It is mainly the demographics that drive stock market in the current exercise.
 
-![stocks](images/ex-6-stockmarket.jpg "Stock prices")
+![stocks](images/ex6-stockmarket.jpg "Stock prices")
 
 ## Data
 
@@ -46,4 +46,4 @@ Your rule should be simple, but also be statistically significant (t-stats above
 
 Document your findings in the [lab journal](exercise06-journal.md), including an equation describing the relation between flows and prices, as well as the results of you statistic tests.
 
-The deadline for submitting the lab journal to github is 2017-10-26 at 24:00.
+The deadline for submitting the lab journal to github is 2017-11-02 at 24:00.
