@@ -56,11 +56,19 @@ public class Numbers {
 			return 1.0;
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		double worked = 6.899999999999999d;
 		double target = 6.9d;
 		System.out.println(isSmaller(worked, target));
+	}
+
+	/**
+	 * Calculates the geometric sum from zero to n
+	 */
+	public static double geometricSum(double rate, int n) {
+		double power = Math.pow(rate, n + 1);
+		return (1 - power) / (1 - rate);
 	}
 
 }
