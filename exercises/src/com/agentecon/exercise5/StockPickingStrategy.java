@@ -27,19 +27,23 @@ public class StockPickingStrategy implements IStockPickingStrategy {
 	 */
 	@Override
 	public Ticker findStockToBuy(IStockMarket stocks) {
-		Collection<Ticker> listedStocks = stocks.getTradedStocks(); // a list of traded stocks
-		Ticker aFarm = selectRandomFarm(stocks); // a random farm
-		if (aFarm != null) {
-			FirmFinancials financialData = stocks.getFirmData(aFarm);
-			double dividendYield = financialData.getDailyDividendPerShare() / financialData.getSharePrice();
-			Ask ask = stocks.getAsk(aFarm); // the lowest ask for that particular firm in the orderbook
-			Position existingPosition = portfolio.getPosition(aFarm);
-			boolean weAlreadyOwnSomeOfThatStock = existingPosition != null;
-			if (weAlreadyOwnSomeOfThatStock) {
-				double numberOfSharesWeOwn = existingPosition.getAmount();
+		Collection<Ticker> listedStocks = stocks.getTradedStocks(); 
+		Ticker best = null;
+		double bestYield = 0.0;
+		for (Ticker ticker: listedStocks) {
+			Ask ask = stocks.getAsk(ticker);
+			if (ask != null) {
+				double price = ask.getPrice().getPrice();
+				FirmFinancials fin = stocks.getFirmData(ticker);
+				double div = fin.getDailyDividendPerShare();
+				double dividendYield = div / price;
+				if (dividendYield > bestYield) {
+					best = ticker;
+					bestYield = dividendYield;
+				}
 			}
 		}
-		return stocks.getRandomStock(false); // the strategy everyone else is following
+		return best;
 	}
 
 	protected Ticker selectRandomFarm(IStockMarket stocks) {
