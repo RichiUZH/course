@@ -53,40 +53,39 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 		assert this.manhours.equals(FarmingConfiguration.MAN_HOUR);
 	}
 	
-	@Override
-	public void managePortfolio(IStockMarket stocks) {
-		boolean retired = isRetired();
-		int daysLeft = getMaxAge() - getAge() + 1;
-		if (retired) {
-			double proceeds = getPortfolio().sell(stocks, this, 1.0d / daysLeft);
-			listeners.notifyDivested(this, proceeds); // notify listeners for inflow / outflow statistics
-		} else {
-			int daysToRetirement = getRetirementAge() - getAge();
-			double dividends = getPortfolio().getLatestDividendIncome();
-			double constantFactor = Numbers.geometricSum(DISCOUNT_RATE, daysToRetirement);
-			double optimalSavings = (getDailySpendings() * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor;
-			double actualInvestment = getPortfolio().invest(stocks, this, optimalSavings);
-			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
-		}
-	}
-
-
 //	@Override
 //	public void managePortfolio(IStockMarket stocks) {
 //		boolean retired = isRetired();
+//		int daysLeft = getMaxAge() - getAge() + 1;
 //		if (retired) {
-//			int daysLeft = getMaxAge() - getAge() + 1;
 //			double proceeds = getPortfolio().sell(stocks, this, 1.0d / daysLeft);
-//			listeners.notifyDivested(this, proceeds); // notify listeners for statistics
+//			listeners.notifyDivested(this, proceeds); // notify listeners for inflow / outflow statistics
 //		} else {
-//			double dividends = getPortfolio().getLatestDividendIncome(); // how much dividends did we get today?
-//			double workFraction = 1.0d / getMaxAge() * getRetirementAge(); // 80%
-//			double retirementFraction = 1 - workFraction; // 20%
-//			double toInvest = (getDailySpendings() - dividends) / workFraction * retirementFraction;
-//			double actualInvestment = getPortfolio().invest(stocks, this, toInvest);
-//			listeners.notifyInvested(this, actualInvestment); // notify listeners for statistics
+//			int daysToRetirement = getRetirementAge() - getAge();
+//			double dividends = getPortfolio().getLatestDividendIncome();
+//			double constantFactor = Numbers.geometricSum(DISCOUNT_RATE, daysToRetirement);
+//			double optimalSavings = (getDailySpendings() * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor;
+//			double actualInvestment = getPortfolio().invest(stocks, this, optimalSavings);
+//			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 //		}
 //	}
+
+	@Override
+	public void managePortfolio(IStockMarket stocks) {
+		boolean retired = isRetired();
+		if (retired) {
+			int daysLeft = getMaxAge() - getAge() + 1;
+			double proceeds = getPortfolio().sell(stocks, this, 1.0d / daysLeft);
+			listeners.notifyDivested(this, proceeds); // notify listeners for statistics
+		} else {
+			double dividends = getPortfolio().getLatestDividendIncome(); // how much dividends did we get today?
+			double workFraction = 1.0d / getMaxAge() * getRetirementAge(); // 80%
+			double retirementFraction = 1 - workFraction; // 20%
+			double toInvest = (getDailySpendings() - dividends) / workFraction * retirementFraction;
+			double actualInvestment = getPortfolio().invest(stocks, this, toInvest);
+			listeners.notifyInvested(this, actualInvestment); // notify listeners for statistics
+		}
+	}
 
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {

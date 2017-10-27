@@ -56,8 +56,6 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
 
-	private int agentsWithLand;
-
 	@SafeVarargs
 	public FarmingConfiguration(Class<? extends Consumer>... agents) {
 		this(new AgentFactoryMultiplex(agents), AGENTS);
@@ -69,7 +67,6 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	public FarmingConfiguration(IAgentFactory factory, int agents) {
 		super(ROUNDS);
-		this.agentsWithLand = agents;
 		IStock[] initialEndowment = new IStock[] { new Stock(LAND, LAND_ENDOWMENT), new Stock(getMoney(), 1000) };
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment end = new Endowment(getMoney(), initialEndowment, dailyEndowment);
