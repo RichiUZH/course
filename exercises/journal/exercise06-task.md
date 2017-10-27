@@ -28,11 +28,11 @@ For the task at hand, you should **ignore all data before day 3000**. Also, you 
 
 ## Task 1: the long run
 
-While the above equation clearly does not hold on single days, check whether it holds in the longer run. I.e. how high do you need to set $\delta$ for the following to hold approximately:
+While the above equation clearly does not hold on single days, check whether it holds in the longer run by using rolling averages. I.e. how high do you need to set $\delta$ for the following to hold approximately:
 
-$\sum_{i=t}^{t+\delta} {inflow}_i \approx$
+$\frac{1}{\delta} \sum_{i=t}^{t+\delta} {inflow}_i \approx$
 
-$\sum_{i=t}^{t+\delta} {outflow}_i$
+$\frac{1}{\delta} \sum_{i=t}^{t+\delta} {outflow}_i$
 
 ## Task 2: the short run
 
