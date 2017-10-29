@@ -14,7 +14,7 @@ This is a paradise for an active investor! Simply by choosing stocks better, you
 
 ## Task 1: Equilibrium Price
 
-Where do you think is the long-term equilibrium prices of the stocks in our setting? As an agent, how much would you pay for a stock?
+Assuming the simulation would never end, how high would stock prices be in the long run? As an agent, how much would you pay for a stock?
 
 Just make a good qualitative argument, no maths needed. The following considerations might help:
 
