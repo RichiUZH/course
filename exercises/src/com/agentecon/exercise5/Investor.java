@@ -22,7 +22,7 @@ import com.agentecon.util.Numbers;
  */
 public class Investor extends InvestingConsumer {
 
-	private static final double DISCOUNT_RATE = 0.98;
+	private static final double DISCOUNT_RATE = 0.99;
 
 	private IStockPickingStrategy strategy;
 
@@ -42,7 +42,7 @@ public class Investor extends InvestingConsumer {
 			int daysToRetirement = getRetirementAge() - getAge();
 			double dividends = getPortfolio().getLatestDividendIncome();
 			double constantFactor = Numbers.geometricSum(DISCOUNT_RATE, daysToRetirement);
-			double optimalSavings = (getDailySpendings() * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor;
+			double optimalSavings = (getDailySpendings() * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor + dividends - getDailySpendings();
 			double actualInvestment = getPortfolio().invest(strategy, stocks, this, optimalSavings);
 			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 		}
