@@ -14,6 +14,7 @@ import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
+import com.agentecon.firm.IFirm;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
@@ -28,8 +29,6 @@ import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.Numbers;
 
 public class StockMarketStats extends SimStats implements IMarketListener, IConsumerListener {
-
-	public static boolean PRINT_TICKER = false;
 
 	private Good index = new Good("Index");
 	private HashMap<Ticker, Average> averages;
@@ -114,6 +113,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 		divestments.pushSum(day);
 		difference.pushSum(day);
 		Average indexPoints = new Average();
+		Average indexYield = new Average();
 		HashMap<Good, Average> sectorIndices = new InstantiatingHashMap<Good, Average>() {
 
 			@Override
@@ -121,7 +121,6 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 				return new Average();
 			}
 		};
-		// Average indexRatio = new Average();
 		HashMap<Good, Average> sectorYields = new InstantiatingHashMap<Good, Average>() {
 
 			@Override
@@ -130,22 +129,24 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			}
 		};
 		for (Entry<Ticker, Average> e : averages.entrySet()) {
-			Ticker firm = e.getKey();
+			IFirm firm = getAgents().getFirm(e.getKey());
 			Good sector = new Good(firm.getType());
 			Average avgPrice = e.getValue();
-			indexPoints.add(avgPrice);
-			sectorIndices.get(sector).add(avgPrice);
+			double marketCap = firm.getShareRegister().getFreeFloatShares() * avgPrice.getAverage();
+			indexPoints.add(marketCap, avgPrice);
+			sectorIndices.get(sector).add(marketCap, avgPrice);
 
-			double dividends = getAgents().getFirm(firm).getShareRegister().getDividendPerShare();
+			double dividends = firm.getShareRegister().getAverageDividend();
 			if (dividends > Numbers.EPSILON) {
-				double yield = dividends / avgPrice.getAverage();
-				// indexRatio.add(yield);
-				sectorYields.get(sector).add(yield);
+				double yield = dividends / marketCap;
+				indexYield.add(marketCap, yield);
+				sectorYields.get(sector).add(marketCap, yield);
 			}
 		}
-		printTicker(day);
+		// printTicker(day);
 		if (includeIndex) {
 			sectorIndices.put(index, indexPoints);
+			dividendYield.get(index).set(day, indexYield.hasValue() ? indexYield.getAverage() : 0.0);
 		}
 		for (Map.Entry<Good, Average> e : sectorIndices.entrySet()) {
 			Average ind = e.getValue();
@@ -166,31 +167,29 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	private ArrayList<Ticker> toPrint = new ArrayList<>();
 
 	protected void printTicker(int day) {
-		if (PRINT_TICKER) {
-			if (day == 1000) {
-				toPrint.addAll(averages.keySet());
-				Collections.sort(toPrint);
-				printLabels();
-			} else if (day > 1000 && toPrint.size() < averages.size()) {
-				for (Ticker t : averages.keySet()) {
-					if (!toPrint.contains(t)) {
-						toPrint.add(t);
-					}
+		if (day == 1000) {
+			toPrint.addAll(averages.keySet());
+			Collections.sort(toPrint);
+			printLabels();
+		} else if (day > 1000 && toPrint.size() < averages.size()) {
+			for (Ticker t : averages.keySet()) {
+				if (!toPrint.contains(t)) {
+					toPrint.add(t);
 				}
-				printLabels();
 			}
-			if (toPrint.size() > 0) {
-				String line = Integer.toString(day);
-				for (Good g : toPrint) {
-					Average avg = averages.get(g);
-					if (avg == null) {
-						line += "\t";
-					} else {
-						line += "\t" + avg.getAverage();
-					}
+			printLabels();
+		}
+		if (toPrint.size() > 0) {
+			String line = Integer.toString(day);
+			for (Good g : toPrint) {
+				Average avg = averages.get(g);
+				if (avg == null) {
+					line += "\t";
+				} else {
+					line += "\t" + avg.getAverage();
 				}
-				System.out.println(line);
 			}
+			System.out.println(line);
 		}
 	}
 
@@ -219,6 +218,9 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
+		if (includeIndex) {
+			list.add(createTotalReturnIndex(prices.get(index), dividendYield.get(index)));
+		}
 		list.addAll(TimeSeries.prefix("Price", prices.values()));
 		ArrayList<TimeSeries> logReturns = TimeSeries.logReturns(list);
 		list.addAll(logReturns);
@@ -227,9 +229,21 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 		if (investments.getTimeSeries().compact().isInteresting()) {
 			list.add(investments.getTimeSeries());
 			list.add(divestments.getTimeSeries());
-//			list.add(difference.getTimeSeries());
+			list.add(difference.getTimeSeries());
 		}
 		return list;
+	}
+
+	private TimeSeries createTotalReturnIndex(TimeSeries prices, TimeSeries yields) {
+		TimeSeries returns = prices.getReturns().add(yields);
+		TimeSeries totalReturnIndex = new TimeSeries("Total return index (logarithmic)");
+		double current = Math.E;
+		totalReturnIndex.set(0, current);
+		for (int i=1; i<=returns.getEnd(); i++) {
+			current *= returns.get(i);
+			totalReturnIndex.set(i, Math.log(current));
+		}
+		return totalReturnIndex;
 	}
 
 	@Override

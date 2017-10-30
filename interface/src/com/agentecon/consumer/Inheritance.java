@@ -27,6 +27,11 @@ public class Inheritance implements IShareholder {
 	public Portfolio getPortfolio() {
 		return portfolio;
 	}
+	
+	public void absorb(Inheritance left) {
+		this.inventory.absorb(left.inventory);
+		this.portfolio.absorb(left.portfolio);
+	}
 
 	@Override
 	public void managePortfolio(IStockMarket dsm) {

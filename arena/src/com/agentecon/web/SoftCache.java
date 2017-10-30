@@ -12,8 +12,22 @@ public class SoftCache<K, V> {
 		this.simulations = new HashMap<>();
 	}
 
+	public synchronized V getOrSetCachedItem(K key, V value) {
+		V prev = get(key);
+		if (prev == null) {
+			put(key, value);
+			return value;
+		} else {
+			return prev;
+		}
+	}
+
 	public synchronized void put(K key, V value) {
-		this.simulations.put(key, new SoftReference<V>(value));
+		if (value == null) {
+			this.simulations.remove(key);
+		} else {
+			this.simulations.put(key, new SoftReference<V>(value));
+		}
 	}
 
 	public synchronized V get(K handle) {
@@ -31,8 +45,8 @@ public class SoftCache<K, V> {
 
 	private void cleanup() {
 		Iterator<SoftReference<V>> iter = simulations.values().iterator();
-		while (iter.hasNext()){
-			if (iter.next().get() == null){
+		while (iter.hasNext()) {
+			if (iter.next().get() == null) {
 				iter.remove();
 			}
 		}

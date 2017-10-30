@@ -47,7 +47,7 @@ public abstract class WebApiMethod {
 		return name;
 	}
 
-	public final Response execute(IHTTPSession session) throws IOException {
+	public final Response execute(IHTTPSession session) throws IOException, InterruptedException {
 		LogClock clock = new LogClock();
 		Parameters params = new Parameters(session);
 		try {
@@ -57,22 +57,23 @@ public abstract class WebApiMethod {
 		}
 	}
 
-	public Response execute(IHTTPSession session, Parameters params) throws IOException {
+	public Response execute(IHTTPSession session, Parameters params) throws IOException, InterruptedException {
 		JsonData answer = getJsonAnswer(params);
 		return NanoHTTPD.newFixedLengthResponse(Status.OK, "application/json", answer.getJson());
 	}
 	
 	/**
 	 * Dummy execution of this method to refresh the cache
+	 * @throws InterruptedException 
 	 */
-	public void refreshCashe(Parameters params) {
+	public void refreshCashe(Parameters params) throws InterruptedException {
 		try {
 			getJsonAnswer(params);
 		} catch (IOException e) {
 		}
 	}
 
-	protected JsonData getJsonAnswer(Parameters params) throws IOException {
+	protected JsonData getJsonAnswer(Parameters params) throws IOException, InterruptedException {
 		return null;
 	}
 

@@ -78,13 +78,17 @@ public class SimulationServer extends VisServer {
 	public Response serve(IHTTPSession session) {
 		// Method method = session.getMethod();
 		// assert method == Method.GET : "Received a " + method;
-		String uri = session.getUri();
-		Response res = createResponse(session, uri);
-		res.addHeader("Access-Control-Allow-Origin", "*");
-		return res;
+		try {
+			String uri = session.getUri();
+			Response res = createResponse(session, uri);
+			res.addHeader("Access-Control-Allow-Origin", "*");
+			return res;
+		} catch (InterruptedException e) {
+			return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), "Operation Interrupted");
+		}
 	}
 
-	private Response createResponse(IHTTPSession session, String uri) {
+	private Response createResponse(IHTTPSession session, String uri) throws InterruptedException {
 		StringTokenizer tok = new StringTokenizer(uri, "\\/");
 		if (tok.hasMoreTokens()) {
 			try {

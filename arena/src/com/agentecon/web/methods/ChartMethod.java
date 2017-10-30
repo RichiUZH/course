@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import com.agentecon.ISimulation;
 import com.agentecon.metric.EMetrics;
@@ -37,36 +39,39 @@ public class ChartMethod extends SimSpecificMethod {
 		return superSample + DownloadCSVMethod.CHOICE_PARAMETER + "=" + EMetrics.PRODUCTION.getName();
 	}
 
-	@SuppressWarnings("unchecked")
-	private Collection<TimeSeries> getCached(SimulationStepper stepper, EMetrics metric) {
-		return (Collection<TimeSeries>) stepper.getCachedItem(getCacheKey(metric));
-	}
-
-	private Collection<TimeSeries> cache(SimulationStepper stepper, EMetrics metric, SimStats stats) {
-		Collection<TimeSeries> series = stats.getTimeSeries();
-		stepper.putCached(getCacheKey(metric), series);
-		return series;
-	}
-
 	private String getCacheKey(EMetrics metric) {
 		return KEY_PREFIX + metric.getName();
 	}
 
 	@Override
-	public JsonData getJsonAnswer(Parameters params) throws IOException {
+	public JsonData getJsonAnswer(Parameters params) throws IOException, InterruptedException {
 		EMetrics metric = EMetrics.parse(params.getParam(DownloadCSVMethod.CHOICE_PARAMETER));
 		if (metric == null) {
 			return new ChartData();
 		} else {
 			SimulationStepper stepper = getSimulation(params);
-			Collection<TimeSeries> series = getCached(stepper, metric);
-			if (series == null) {
-				ISimulation sim = stepper.getSimulation(0).getItem();
-				SimStats stats = metric.createAndRegister(sim, params.getSelection(), false);
-				sim.run();
-				series = cache(stepper, metric, stats);
+			CompletableFuture<Collection<TimeSeries>> myResult = new CompletableFuture<>();
+			CompletableFuture<Collection<TimeSeries>> first = (CompletableFuture<Collection<TimeSeries>>) stepper.getOrSetCachedItem(getCacheKey(metric), myResult);
+			if (myResult == first) {
+				try {
+					ISimulation sim = stepper.getSimulation(0).getItem();
+					SimStats stats = metric.createAndRegister(sim, params.getSelection(), false);
+					sim.run();
+					myResult.complete(stats.getTimeSeries());
+				} catch (IOException | RuntimeException | Error e) {
+					myResult.completeExceptionally(e);
+				}
+				if (myResult.isCompletedExceptionally()) {
+					stepper.putCached(getCacheKey(metric), null);
+				}
+			} else {
+				first.join();
 			}
-			return new ChartData(metric.getDescription(), series, Arrays.asList(params.getParam(ROW).split(",")));
+			try {
+				return new ChartData(metric.getDescription(), first.get(), Arrays.asList(params.getParam(ROW).split(",")));
+			} catch (ExecutionException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

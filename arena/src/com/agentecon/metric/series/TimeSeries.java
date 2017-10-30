@@ -197,9 +197,36 @@ public class TimeSeries implements Comparable<TimeSeries> {
 		}
 		return ts;
 	}
+	
+	public TimeSeries add(TimeSeries other) {
+		TimeSeries ts = new TimeSeries(getName() + " + " + other.getName());
+		if (isInteresting() || other.isInteresting()) {
+			int start = Math.min(getStart(), other.getStart());
+			int end = Math.max(getEnd(), other.getEnd());
+			for (int i=start; i<=end; i++) {
+				ts.set(i, get(i) + other.get(i));
+			}
+		}
+		return ts;
+	}
+	
+	public TimeSeries getReturns() {
+		TimeSeries ts = new TimeSeries("Returns of " + getName());
+		if (isInteresting()) {
+			Iterator<Point> iter = line.getPoints().iterator();
+			Point prev = iter.next();
+			while (iter.hasNext()) {
+				Point current = iter.next();
+				double currentReturn = current.y / prev.y;
+				ts.set(current.x, currentReturn);
+				prev = current;
+			}
+		}
+		return ts;
+	}
 
 	public TimeSeries getLogReturns() {
-		TimeSeries ts = new TimeSeries("Log return of " + getName());
+		TimeSeries ts = new TimeSeries("log return of " + getName());
 		if (isInteresting()) {
 			Iterator<Point> iter = line.getPoints().iterator();
 			Point prev = iter.next();

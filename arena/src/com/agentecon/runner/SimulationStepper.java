@@ -71,6 +71,10 @@ public class SimulationStepper {
 		stepper.getSimulation(100);
 		stepper.getSimulation(50);
 	}
+	
+	public Object getOrSetCachedItem(Object key, Object value) {
+		return cachedData.getOrSetCachedItem(key, value);
+	}
 
 	public Object getCachedItem(Object key) {
 		return cachedData.get(key);

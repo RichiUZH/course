@@ -32,10 +32,14 @@ public class Refresher {
 				updateExecutor.execute(new Runnable() {
 					@Override
 					public void run() {
-						long t0 = System.nanoTime();
-						r.method.refreshCashe(r.params);
-						long t1 = System.nanoTime();
-						System.out.println("Refreshed call to " + r.method.getName() + " in " + (t1-t0)/1000000 + "ms");
+						try {
+							long t0 = System.nanoTime();
+							r.method.refreshCashe(r.params);
+							long t1 = System.nanoTime();
+							System.out.println("Refreshed call to " + r.method.getName() + " with " + r.params + " in " + (t1-t0)/1000000 + "ms");
+						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt();
+						}
 					}
 				});
 			}

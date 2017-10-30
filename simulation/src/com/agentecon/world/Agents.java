@@ -65,7 +65,11 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	}
 	
 	public void addInheritance(Inheritance left) {
-		this.pendingInheritances.add(left);
+		if (pendingInheritances.size() < 5) {
+			this.pendingInheritances.add(left);
+		} else {
+			this.pendingInheritances.getLast().absorb(left);
+		}
 		this.shareholders.add(left);
 	}
 
