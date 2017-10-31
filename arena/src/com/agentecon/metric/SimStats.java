@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgents;
+import com.agentecon.market.IStatistics;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.sim.SimulationListenerAdapter;
@@ -18,6 +19,10 @@ public abstract class SimStats extends SimulationListenerAdapter {
 	
 	public SimStats(ISimulation sim) {
 		this.sim = sim;
+	}
+	
+	protected IStatistics getStats() {
+		return sim.getStatistics();
 	}
 	
 	protected IAgents getAgents() {
