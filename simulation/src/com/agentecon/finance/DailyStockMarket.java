@@ -19,6 +19,7 @@ import com.agentecon.market.Bid;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.market.MarketListeners;
 import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.Numbers;
 
 public class DailyStockMarket implements IStockMarket {
 
@@ -164,12 +165,16 @@ public class DailyStockMarket implements IStockMarket {
 
 	@Override
 	public double sell(IAgent owner, Position pos, IStock wallet, double shares) {
-		BidFin bid = getBid(pos.getTicker());
-		if (bid != null) {
-			return bid.accept(owner, wallet, pos, shares);
-		} else {
-			return 0.0;
+		double sold = 0.0;
+		while (Numbers.isSmaller(sold, shares) && pos.hasSome()) {
+			BidFin bid = getBid(pos.getTicker());
+			if (bid != null) {
+				sold += bid.accept(owner, wallet, pos, shares);
+			} else {
+				break;
+			}
 		}
+		return sold;
 	}
 
 	@Override

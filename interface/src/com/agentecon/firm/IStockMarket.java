@@ -34,6 +34,12 @@ public interface IStockMarket extends IPriceMakerMarket, IFinancialMarketData {
 	
 	public Position buy(IAgent buyer, Ticker ticker, Position existing, IStock wallet, double budget);
 
+	/**
+	 * Sell up to maxAmount of shares from the given position, putting the proceeds into
+	 * the provided wallet.
+	 * 
+	 * Returns the actual number of shares sold.
+	 */
 	public double sell(IAgent seller, Position pos, IStock wallet, double maxAmount);
 
 	public Ask getAsk(Ticker ticker);

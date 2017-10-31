@@ -218,14 +218,14 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
-		if (includeIndex) {
-			list.add(createTotalReturnIndex(prices.get(index), dividendYield.get(index)));
-		}
 		list.addAll(TimeSeries.prefix("Price", prices.values()));
 		ArrayList<TimeSeries> logReturns = TimeSeries.logReturns(list);
 		list.addAll(logReturns);
 		list.addAll(TimeSeries.prefix("Volume", volumes.values()));
 		list.addAll(TimeSeries.prefix("Dividend yield", dividendYield.values()));
+		if (includeIndex) {
+			list.add(createTotalReturnIndex(prices.get(index), dividendYield.get(index)));
+		}
 		if (investments.getTimeSeries().compact().isInteresting()) {
 			list.add(investments.getTimeSeries());
 			list.add(divestments.getTimeSeries());

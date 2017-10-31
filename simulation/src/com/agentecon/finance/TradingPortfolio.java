@@ -36,9 +36,12 @@ public class TradingPortfolio extends Portfolio {
 
 	public double sell(IStockMarket stocks, IAgent owner, double fraction) {
 		double moneyBefore = wallet.getAmount();
+		double sharesToSell = 0.0;
 		for (Ticker ticker : new ArrayList<>(inv.keySet())) {
 			Position pos = inv.get(ticker);
-			stocks.sell(owner, pos, wallet, pos.getAmount() * fraction);
+			sharesToSell += pos.getAmount() * fraction;
+			double actuallySold = stocks.sell(owner, pos, wallet, sharesToSell);
+			sharesToSell -= actuallySold;
 			if (pos.isEmpty()) {
 				disposePosition(ticker);
 			}

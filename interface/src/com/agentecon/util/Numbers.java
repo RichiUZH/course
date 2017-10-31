@@ -11,19 +11,19 @@ public class Numbers {
 
 	public static final double EPSILON = 0.000001; // 10e-6
 
-	public static boolean isBigger(double bigger, double smaller) {
+	public static final boolean isBigger(double bigger, double smaller) {
 		return bigger - smaller > EPSILON;
 	}
 
-	public static boolean isSmaller(double smaller, double bigger) {
+	public static final boolean isSmaller(double smaller, double bigger) {
 		return isBigger(bigger, smaller);
 	}
 
-	public static String toString(double d) {
+	public static final String toString(double d) {
 		return FORMATTER.format(d);
 	}
 
-	public static String toShortString(double d) {
+	public static final String toShortString(double d) {
 		return SHORT_FORMATTER.format(d);
 	}
 
