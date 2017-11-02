@@ -72,7 +72,7 @@ public class SimulationStepper {
 		stepper.getSimulation(50);
 	}
 	
-	public Object getOrSetCachedItem(Object key, Object value) {
+	public Object getOrCreate(Object key, IFactory<Object> value) throws IOException {
 		return cachedData.getOrSetCachedItem(key, value);
 	}
 

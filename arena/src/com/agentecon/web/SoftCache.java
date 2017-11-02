@@ -1,8 +1,11 @@
 package com.agentecon.web;
 
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import com.agentecon.runner.IFactory;
 
 public class SoftCache<K, V> {
 
@@ -12,9 +15,10 @@ public class SoftCache<K, V> {
 		this.simulations = new HashMap<>();
 	}
 
-	public synchronized V getOrSetCachedItem(K key, V value) {
+	public synchronized V getOrSetCachedItem(K key, IFactory<V> factory) throws IOException {
 		V prev = get(key);
 		if (prev == null) {
+			V value = factory.create();
 			put(key, value);
 			return value;
 		} else {
