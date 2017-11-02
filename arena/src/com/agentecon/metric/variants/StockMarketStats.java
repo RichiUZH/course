@@ -42,9 +42,9 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	public StockMarketStats(ISimulation agents, boolean includeIndex) {
 		super(agents);
 		this.includeIndex = includeIndex;
-		this.investments = new AveragingTimeSeries("Inflows");
-		this.divestments = new AveragingTimeSeries("Outflows");
-		this.difference = new AveragingTimeSeries("Inflows - Outflows");
+		this.investments = new AveragingTimeSeries("Inflows", getMaxDay());
+		this.divestments = new AveragingTimeSeries("Outflows", getMaxDay());
+		this.difference = new AveragingTimeSeries("Inflows - Outflows", getMaxDay());
 		this.averages = new InstantiatingHashMap<Ticker, Average>() {
 
 			@Override
@@ -56,7 +56,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries(key.getName());
+				return new TimeSeries(key.getName(), getMaxDay());
 			}
 
 		};
@@ -64,7 +64,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries(key.getName());
+				return new TimeSeries(key.getName(), getMaxDay());
 			}
 
 		};
@@ -72,7 +72,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries(key.getName());
+				return new TimeSeries(key.getName(), getMaxDay());
 			}
 
 		};
@@ -236,7 +236,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 
 	private TimeSeries createTotalReturnIndex(TimeSeries prices, TimeSeries yields) {
 		TimeSeries returns = prices.getReturns().add(yields);
-		TimeSeries totalReturnIndex = new TimeSeries("Total return index (logarithmic)");
+		TimeSeries totalReturnIndex = new TimeSeries("Total return index (logarithmic)", getMaxDay());
 		double current = Math.E;
 		totalReturnIndex.set(0, current);
 		for (int i=1; i<=returns.getEnd(); i++) {

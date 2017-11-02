@@ -28,7 +28,7 @@ public class InventoryStats extends SimStats {
 
 			@Override
 			protected TimeSeriesCollector create(Good key) {
-				return new TimeSeriesCollector(details);
+				return new TimeSeriesCollector(details, getMaxDay());
 			}
 		};
 	}

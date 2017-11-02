@@ -26,13 +26,13 @@ public class TypeStatistics extends SimStats {
 
 	public TypeStatistics(ISimulation sim) {
 		super(sim);
-		this.agentCounts = new TimeSeriesCollector();
+		this.agentCounts = new TimeSeriesCollector(getMaxDay());
 		this.indicators = sim.getConfig().getOptimalFirmCountIndicators();
 		this.optimalCount = new InstantiatingHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries("Optimal number of " + key.getName().toLowerCase() + " producers");
+				return new TimeSeries("Optimal number of " + key.getName().toLowerCase() + " producers", getMaxDay());
 			}
 		};
 	}

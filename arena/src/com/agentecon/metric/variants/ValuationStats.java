@@ -24,9 +24,9 @@ public class ValuationStats extends SimStats {
 
 	public ValuationStats(ISimulation agents) {
 		super(agents);
-		this.innerValue = new TimeSeries("Inner Value");
-		this.outerValue = new TimeSeries("Outer Value");
-		this.valueRatio = new TimeSeries("Ratio");
+		this.innerValue = new TimeSeries("Inner Value", getMaxDay());
+		this.outerValue = new TimeSeries("Outer Value", getMaxDay());
+		this.valueRatio = new TimeSeries("Ratio", getMaxDay());
 	}
 
 	@Override

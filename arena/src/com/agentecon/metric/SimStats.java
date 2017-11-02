@@ -15,35 +15,67 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class SimStats extends SimulationListenerAdapter {
 
-	private final ISimulation sim;
-	
+	private boolean completed;
+	private Throwable problem;
+	private ISimulation sim;
+
 	public SimStats(ISimulation sim) {
 		this.sim = sim;
 	}
-	
+
 	protected IStatistics getStats() {
 		return sim.getStatistics();
 	}
-	
+
 	protected IAgents getAgents() {
 		return sim.getAgents();
 	}
 	
+	protected int getMaxDay() {
+		return sim.getConfig().getRounds() - 1;
+	}
+
+	public double getCompleteness() {
+		if (sim == null) {
+			return 1.0;
+		} else if (problem == null) {
+			return ((double) sim.getDay()) / sim.getConfig().getRounds();
+		} else {
+			throw new RuntimeException(problem);
+		}
+	}
+
+	public synchronized void abort(Throwable t) {
+		this.problem = t;
+		this.completed = true;
+		this.notifyAll();
+	}
+	
+	public synchronized double join(int patience) throws InterruptedException {
+		if (!completed) {
+			this.wait(patience);
+		}
+		return getCompleteness();
+	}
+	
+	public synchronized void notifySimEnded() {
+		this.sim = null; 
+		this.completed = true;
+		this.notifyAll();
+	}
+
 	public int getDay() {
 		return sim.getDay();
 	}
 
-	public Collection<? extends Chart> getCharts(){
+	public Collection<? extends Chart> getCharts() {
 		throw new NotImplementedException();
 	}
 
 	public void notifySimStarting(ISimulation sim) {
 		sim.addListener(this);
 	}
-
-	public void notifySimEnded(ISimulation sim) {
-	}
-
+	
 	public String getName() {
 		return getClass().getSimpleName();
 	}
@@ -71,7 +103,7 @@ public abstract class SimStats extends SimulationListenerAdapter {
 				ofInterest.add(ts);
 			}
 		}
-		if (ofInterest.isEmpty()){
+		if (ofInterest.isEmpty()) {
 			throw new NoInterestingTimeSeriesFoundException();
 		}
 		out.println();

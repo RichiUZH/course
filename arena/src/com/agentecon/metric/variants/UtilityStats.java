@@ -24,16 +24,16 @@ public class UtilityStats extends SimStats {
 
 	public UtilityStats(ISimulation sim) {
 		super(sim);
-		this.tot = new TimeSeries("Average");
-		this.min = new TimeSeries("Min");
-		this.max = new TimeSeries("Max");
-		this.retirees = new AveragingTimeSeries("Retirees");
-		this.shareHolders = new AveragingTimeSeries("Shareholders");
+		this.tot = new TimeSeries("Average", getMaxDay());
+		this.min = new TimeSeries("Min", getMaxDay());
+		this.max = new TimeSeries("Max", getMaxDay());
+		this.retirees = new AveragingTimeSeries("Retirees", getMaxDay());
+		this.shareHolders = new AveragingTimeSeries("Shareholders", getMaxDay());
 		this.utilities = new InstantiatingHashMap<String, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(String key) {
-				return new TimeSeries(key);
+				return new TimeSeries(key, getMaxDay());
 			}
 		};
 	}

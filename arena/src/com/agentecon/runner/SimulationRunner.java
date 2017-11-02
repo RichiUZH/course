@@ -107,7 +107,7 @@ public class SimulationRunner {
 					}
 				}
 				for (SimStats stat : currentStats) {
-					stat.notifySimEnded(sim);
+					stat.notifySimEnded();
 				}
 
 				if (iter == null) {

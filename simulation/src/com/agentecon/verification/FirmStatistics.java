@@ -24,6 +24,7 @@ public class FirmStatistics extends SimulationListenerAdapter {
 
 	@Override
 	public void notifyDayEnded(IStatistics stats) {
+		super.notifyDayEnded(stats);
 		for (AccumulatingAverage a: avg.values()){
 			a.flush();
 		}

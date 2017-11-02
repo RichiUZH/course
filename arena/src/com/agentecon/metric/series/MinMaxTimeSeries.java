@@ -9,11 +9,8 @@ public class MinMaxTimeSeries extends TimeSeries {
 	
 	private Line minmax;
 	
-	protected MinMaxTimeSeries(){
-	}
-
-	public MinMaxTimeSeries(String name) {
-		super(name);
+	public MinMaxTimeSeries(String name, int max) {
+		super(name, max);
 		this.minmax = new CompactLine();
 	}
 	

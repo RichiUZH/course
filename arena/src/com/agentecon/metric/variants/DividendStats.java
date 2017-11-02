@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.agentecon.ISimulation;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
+import com.agentecon.market.IStatistics;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.metric.series.TimeSeriesCollector;
@@ -17,7 +18,7 @@ public class DividendStats extends SimStats {
 
 	public DividendStats(ISimulation agents, ArrayList<AgentQuery> selection) {
 		super(agents);
-		this.collector = new TimeSeriesCollector();
+		this.collector = new TimeSeriesCollector(getMaxDay());
 	}
 
 	@Override
@@ -33,7 +34,9 @@ public class DividendStats extends SimStats {
 	}
 
 	@Override
-	public void notifyDayEnded(int day) {
+	public void notifyDayEnded(IStatistics stats) {
+		super.notifyDayEnded(stats);
+		int day = stats.getDay();
 		collector.reportZeroIfNoData();
 		collector.flushDay(day, true);
 	}

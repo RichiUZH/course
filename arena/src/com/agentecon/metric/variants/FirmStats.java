@@ -56,10 +56,10 @@ public class FirmStats extends SimStats {
 
 		public FirmTimeSeries(IFirm firm) {
 			this.name = firm.getName();
-			this.dividends = new TimeSeries("Dividends");
-			this.cogs = new TimeSeries("Cost of goods sold");
-			this.revenue = new TimeSeries("Revenue");
-			this.cash = new TimeSeries("Cash");
+			this.dividends = new TimeSeries("Dividends", getMaxDay());
+			this.cogs = new TimeSeries("Cost of goods sold", getMaxDay());
+			this.revenue = new TimeSeries("Revenue", getMaxDay());
+			this.cash = new TimeSeries("Cash", getMaxDay());
 			firm.addFirmMonitor(this);
 		}
 

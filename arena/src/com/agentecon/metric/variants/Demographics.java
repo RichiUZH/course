@@ -23,16 +23,16 @@ public class Demographics extends SimStats {
 
 	public Demographics(ISimulation agents) {
 		super(agents);
-		this.retired = new TimeSeries("Retirees");
-		this.working = new TimeSeries("Workers");
-		this.population = new TimeSeries("Population");
-		this.dependency = new TimeSeries("Dependency Ratio");
-		this.dailyutility = new TimeSeries("Average Daily Utility");
+		this.retired = new TimeSeries("Retirees", getMaxDay());
+		this.working = new TimeSeries("Workers", getMaxDay());
+		this.population = new TimeSeries("Population", getMaxDay());
+		this.dependency = new TimeSeries("Dependency Ratio", getMaxDay());
+		this.dailyutility = new TimeSeries("Average Daily Utility", getMaxDay());
 		this.utilityOnDeath = new InstantiatingHashMap<String, AveragingTimeSeries>() {
 
 			@Override
 			protected AveragingTimeSeries create(String key) {
-				return new AveragingTimeSeries(key);
+				return new AveragingTimeSeries(key, getMaxDay());
 			}
 		};
 	}
@@ -74,10 +74,6 @@ public class Demographics extends SimStats {
 			ts.add(pc.getTimeSeries());
 		}
 		return ts;
-	}
-
-	public boolean isRelevat() {
-		return false;
 	}
 
 	@Override

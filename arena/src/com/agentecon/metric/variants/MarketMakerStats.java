@@ -22,8 +22,8 @@ public class MarketMakerStats extends SimStats {
 	public MarketMakerStats(ISimulation sim, String classname) {
 		super(sim);
 		this.classname = classname;
-		this.bids = new TimeSeriesCollector();
-		this.asks = new TimeSeriesCollector();
+		this.bids = new TimeSeriesCollector(getMaxDay());
+		this.asks = new TimeSeriesCollector(getMaxDay());
 	}
 
 	@Override

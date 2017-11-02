@@ -14,6 +14,7 @@ import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
+import com.agentecon.market.IStatistics;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Line;
@@ -34,7 +35,7 @@ public class OwnershipStats extends SimStats {
 
 					@Override
 					protected TimeSeries create(String key) {
-						return new TimeSeries(key, new Line());
+						return new TimeSeries(key, new Line(), getMaxDay());
 					}
 				};
 			}
@@ -42,7 +43,9 @@ public class OwnershipStats extends SimStats {
 	}
 
 	@Override
-	public void notifyDayEnded(int day) {
+	public void notifyDayEnded(IStatistics stats) {
+		super.notifyDayEnded(stats);
+		int day = stats.getDay();
 		if (day % 10 == 0) {
 			HashMap<String, OwnershipStructure> owners = new InstantiatingHashMap<String, OwnershipStats.OwnershipStructure>() {
 

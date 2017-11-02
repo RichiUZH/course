@@ -16,18 +16,18 @@ public class TimeSeriesCollector {
 	private HashMap<String, TimeSeries> individual;
 	private AveragingTimeSeries firms, consumers;
 
-	public TimeSeriesCollector() {
-		this(true);
+	public TimeSeriesCollector(int maxDay) {
+		this(true, maxDay);
 	}
 
-	public TimeSeriesCollector(boolean includeIndividuals) {
-		this.firms = new AveragingTimeSeries("Firms");
-		this.consumers = new AveragingTimeSeries("Consumers");
+	public TimeSeriesCollector(boolean includeIndividuals, int maxDay) {
+		this.firms = new AveragingTimeSeries("Firms", maxDay);
+		this.consumers = new AveragingTimeSeries("Consumers", maxDay);
 		this.type = new InstantiatingHashMap<String, AveragingTimeSeries>() {
 
 			@Override
 			protected AveragingTimeSeries create(String key) {
-				return new AveragingTimeSeries(key, new Line());
+				return new AveragingTimeSeries(key, new Line(), maxDay);
 			}
 		};
 		if (includeIndividuals) {
@@ -35,7 +35,7 @@ public class TimeSeriesCollector {
 
 				@Override
 				protected TimeSeries create(String key) {
-					return new TimeSeries(key);
+					return new TimeSeries(key, maxDay);
 				}
 			};
 		}

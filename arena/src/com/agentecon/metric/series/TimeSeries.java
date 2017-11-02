@@ -14,23 +14,22 @@ import com.agentecon.util.Numbers;
 
 public class TimeSeries implements Comparable<TimeSeries> {
 
+	private int max;
 	private String name;
 	protected Line line;
 
-	protected TimeSeries() {
+	public TimeSeries(String name, int max) {
+		this(name, new Line(), max);
 	}
 
-	public TimeSeries(String name) {
-		this(name, new Line());
-	}
-
-	public TimeSeries(String name, Line line) {
+	public TimeSeries(String name, Line line, int max) {
+		this.max = max;
 		this.name = name;
 		this.line = line;
 	}
 
 	public TimeSeries compact() {
-		return new TimeSeries(name, new CompactLine(line));
+		return new TimeSeries(name, new CompactLine(line), max);
 	}
 
 	public TimeSeries prefix(String prefix) {
@@ -38,7 +37,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	}
 
 	public TimeSeries rename(String name) {
-		return new TimeSeries(name, line);
+		return new TimeSeries(name, line, max);
 	}
 
 	public boolean has(int pos) {
@@ -50,8 +49,8 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	}
 
 	public void set(int pos, double average) {
-		assert!Double.isNaN(average);
-		assert!Double.isInfinite(average);
+		assert !Double.isNaN(average);
+		assert !Double.isInfinite(average);
 		assert pos > line.getEnd() : "Adding points in the middle is not yet supported";
 		line.add(new Point(pos, (float) average));
 	}
@@ -69,7 +68,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	}
 
 	public TimeSeriesData getRawData() {
-		return new TimeSeriesData(name, line.getPoints());
+		return new TimeSeriesData(name, line.getPoints(), max);
 	}
 
 	public boolean isInteresting() {
@@ -96,7 +95,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 		}
 		return list;
 	}
-	
+
 	public static Collection<? extends TimeSeries> absolute(ArrayList<? extends TimeSeries> in) {
 		ArrayList<TimeSeries> list = new ArrayList<>();
 		for (TimeSeries ts : in) {
@@ -145,7 +144,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 			return covariance / Math.sqrt(avg1.getVariance() * avg2.getVariance());
 		}
 	}
-	
+
 	public int getEnd() {
 		return line.getEnd();
 	}
@@ -161,11 +160,11 @@ public class TimeSeries implements Comparable<TimeSeries> {
 		}
 		return pos;
 	}
-	
+
 	public TimeSeries absolute() {
-		TimeSeries ts = new TimeSeries("Absolute " + getName());
+		TimeSeries ts = new TimeSeries("Absolute " + getName(), max);
 		if (isInteresting()) {
-			for (Point p: line.getPoints()){
+			for (Point p : line.getPoints()) {
 				ts.set(p.x, Math.abs(p.y));
 			}
 		}
@@ -182,7 +181,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	}
 
 	public TimeSeries divideBy(TimeSeries referencePrice) {
-		TimeSeries ts = new TimeSeries(getName() + "/" + referencePrice.getName());
+		TimeSeries ts = new TimeSeries(getName() + "/" + referencePrice.getName(), max);
 		ArrayList<Point> p1 = line.getPoints();
 		ArrayList<Point> p2 = referencePrice.line.getPoints();
 		int pos1 = 0, pos2 = 0;
@@ -197,21 +196,21 @@ public class TimeSeries implements Comparable<TimeSeries> {
 		}
 		return ts;
 	}
-	
+
 	public TimeSeries add(TimeSeries other) {
-		TimeSeries ts = new TimeSeries(getName() + " + " + other.getName());
+		TimeSeries ts = new TimeSeries(getName() + " + " + other.getName(), max);
 		if (isInteresting() || other.isInteresting()) {
 			int start = Math.min(getStart(), other.getStart());
 			int end = Math.max(getEnd(), other.getEnd());
-			for (int i=start; i<=end; i++) {
+			for (int i = start; i <= end; i++) {
 				ts.set(i, get(i) + other.get(i));
 			}
 		}
 		return ts;
 	}
-	
+
 	public TimeSeries getReturns() {
-		TimeSeries ts = new TimeSeries("Returns of " + getName());
+		TimeSeries ts = new TimeSeries("Returns of " + getName(), max);
 		if (isInteresting()) {
 			Iterator<Point> iter = line.getPoints().iterator();
 			Point prev = iter.next();
@@ -226,7 +225,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	}
 
 	public TimeSeries getLogReturns() {
-		TimeSeries ts = new TimeSeries("log return of " + getName());
+		TimeSeries ts = new TimeSeries("log return of " + getName(), max);
 		if (isInteresting()) {
 			Iterator<Point> iter = line.getPoints().iterator();
 			Point prev = iter.next();
@@ -246,7 +245,7 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	public TimeSeries buildMovingAverage(int days) {
 		int additionalDays = days - 1;
 		assert additionalDays > 0;
-		TimeSeries ts = new TimeSeries(getName());
+		TimeSeries ts = new TimeSeries(getName(), max);
 		if (isInteresting()) {
 			int start = line.getFirst().x;
 			int pos = start;
@@ -277,9 +276,9 @@ public class TimeSeries implements Comparable<TimeSeries> {
 				if (diff != 0) {
 					return diff;
 				}
-			} else if (mine.hasMoreTokens()){
+			} else if (mine.hasMoreTokens()) {
 				return 1;
-			} else if (other.hasMoreTokens()){
+			} else if (other.hasMoreTokens()) {
 				return -1;
 			} else {
 				return 0;
@@ -298,22 +297,22 @@ public class TimeSeries implements Comparable<TimeSeries> {
 	}
 
 	private boolean isNumber(String myNext) {
-		for (char ch: myNext.toCharArray()) {
+		for (char ch : myNext.toCharArray()) {
 			if (!Character.isDigit(ch)) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	public static List<TimeSeries> sort(Collection<TimeSeries> series){
+
+	public static List<TimeSeries> sort(Collection<TimeSeries> series) {
 		ArrayList<TimeSeries> list = new ArrayList<>(series);
 		Collections.sort(list);
 		return list;
 	}
-	
+
 	public static void main(String[] args) {
-		TimeSeries ts = new TimeSeries("test");
+		TimeSeries ts = new TimeSeries("test", 1000);
 		for (int i = 0; i < 100; i++) {
 			ts.set(i, i);
 		}

@@ -2,19 +2,18 @@ package com.agentecon.metric.series;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 public class AveragingTimeSeries {
 
 	private TimeSeries series;
 	private double tot, weight;
 
-	public AveragingTimeSeries(String key) {
-		this.series = new TimeSeries(key);
+	public AveragingTimeSeries(String key, int max) {
+		this.series = new TimeSeries(key, max);
 	}
 
-	public AveragingTimeSeries(String key, Line line) {
-		this.series = new TimeSeries(key, line);
+	public AveragingTimeSeries(String key, Line line, int max) {
+		this.series = new TimeSeries(key, line, max);
 	}
 
 	public void add(double delta) {

@@ -3,20 +3,19 @@
 package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.agentecon.IIteratedSimulation;
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
+import com.agentecon.market.IOffer;
+import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.metric.SimStats;
-import com.agentecon.metric.series.Chart;
+import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
@@ -28,11 +27,12 @@ public class MarketStats extends SimStats implements IMarketListener {
 	private HashMap<Good, TimeSeries> prices;
 	// private HashMap<Good, MinMaxTimeSeries> priceBeliefs; // de facto almost same as prices
 	private HashMap<Good, TimeSeries> volume;
+	private HashMap<Good, AveragingTimeSeries> unfilledOffers;
 	private TimeSeries index;
 
 	public MarketStats(ISimulation sim, boolean inclVolume) {
 		super(sim);
-		this.index = new TimeSeries("Price Index");
+		this.index = new TimeSeries("Price Index", getMaxDay());
 		this.averages = new InstantiatingHashMap<Good, Average>() {
 
 			@Override
@@ -40,35 +40,28 @@ public class MarketStats extends SimStats implements IMarketListener {
 				return new Average();
 			}
 		};
-		// this.averageOffers = new InstantiatingHashMap<Good, Average>() {
-		//
-		// @Override
-		// protected Average create(Good key) {
-		// return new Average();
-		// }
-		// };
 		this.prices = new InstantiatingHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries(key.getName());
+				return new TimeSeries(key.getName(), getMaxDay());
 			}
 
 		};
-		// this.priceBeliefs = new InstantiatingHashMap<Good, MinMaxTimeSeries>() {
-		//
-		// @Override
-		// protected MinMaxTimeSeries create(Good key) {
-		// return new MinMaxTimeSeries(key.getName());
-		// }
-		//
-		// };
+		this.unfilledOffers = new InstantiatingHashMap<Good, AveragingTimeSeries>() {
+
+			@Override
+			protected AveragingTimeSeries create(Good key) {
+				return new AveragingTimeSeries("Unfilled " + key.getName() + " offer volume after market close", getMaxDay());
+			}
+
+		};
 		if (inclVolume) {
 			this.volume = new InstantiatingHashMap<Good, TimeSeries>() {
 
 				@Override
 				protected TimeSeries create(Good key) {
-					return new TimeSeries(key.getName());
+					return new TimeSeries(key.getName(), getMaxDay());
 				}
 
 			};
@@ -89,14 +82,6 @@ public class MarketStats extends SimStats implements IMarketListener {
 		market.addMarketListener(this);
 	}
 
-	private String comment;
-
-	@Override
-	public void notifySimEnded(ISimulation sim) {
-		super.notifySimEnded(sim);
-		comment = sim instanceof IIteratedSimulation ? ((IIteratedSimulation) sim).getComment() : null;
-	}
-	
 	@Override
 	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 		if (quantity >= 0.001) {
@@ -106,6 +91,21 @@ public class MarketStats extends SimStats implements IMarketListener {
 
 	@Override
 	public void notifyTradesCancelled() {
+	}
+	
+	@Override
+	public void notifyMarketClosed(int day, IPriceTakerMarket market) {
+		notifyMarketClosed(day);
+		for (IOffer offer: market.getBids()) {
+			unfilledOffers.get(offer.getGood()).add(offer.getAmount());
+		}
+		for (IOffer offer: market.getAsks()) {
+			unfilledOffers.get(offer.getGood()).add(offer.getAmount());
+		}
+		for (AveragingTimeSeries ts: unfilledOffers.values()) {
+			ts.pushSum(day);
+			ts.pushZeroIfNothing();
+		}
 	}
 	
 	@Override
@@ -132,33 +132,17 @@ public class MarketStats extends SimStats implements IMarketListener {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts() {
-		ArrayList<TimeSeries> price = new ArrayList<>(prices.values());
-		boolean useIndex = prices.size() > 2;
-		if (volume != null && useIndex) {
-			price.add(index);
-		}
-		Chart ch1 = new Chart(comment == null || comment.isEmpty() ? "Prices" : "Prices (" + comment + ")", "Average transacted price for each good", price);
-		if (volume == null) {
-			return Collections.singleton(ch1);
-		} else {
-			Chart volumeChart = new Chart("Trade Volume", "Trade volume for each good", volume.values());
-			if (useIndex){
-				Chart real = new Chart("Real Prices", "Nominal prices divided by index", createRealPrices());
-				return Arrays.asList(ch1, real, volumeChart);
-			} else {
-				return Arrays.asList(ch1, volumeChart);
-			}
-		}
-	}
-
-	@Override
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
 		list.addAll(TimeSeries.prefix("Price", prices.values()));
+		list.add(index);
+		list.add(index.getLogReturns().rename("Inflation rate"));
+		for (TimeSeries ts: AveragingTimeSeries.unwrap(unfilledOffers.values())) {
+			if (ts.isInteresting()) {
+				list.add(ts);
+			}
+		}
 		if (volume != null) {
-			list.add(index);
-			list.add(index.getLogReturns().rename("Inflation rate"));
 			list.addAll(createRealPrices());
 			list.addAll(TimeSeries.prefix("Volume", volume.values()));
 		}

@@ -22,6 +22,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.goods.Inventory;
+import com.agentecon.market.IStatistics;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
@@ -47,7 +48,7 @@ public class UtilityRanking extends SimStats {
 
 			@Override
 			protected AveragingTimeSeries create(String key) {
-				return new AveragingTimeSeries(key);
+				return new AveragingTimeSeries(key, getMaxDay());
 			}
 		};
 	}
@@ -60,7 +61,9 @@ public class UtilityRanking extends SimStats {
 	}
 
 	@Override
-	public void notifyDayEnded(int day) {
+	public void notifyDayEnded(IStatistics stats) {
+		super.notifyDayEnded(stats);
+		int day = stats.getDay();
 		if (enableTimeSeries) {
 			Iterator<ConsumerListener> iter = list.iterator();
 			while (iter.hasNext()) {

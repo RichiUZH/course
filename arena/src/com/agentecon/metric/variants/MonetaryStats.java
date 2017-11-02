@@ -26,22 +26,22 @@ public class MonetaryStats extends SimStats {
 
 	public MonetaryStats(ISimulation agents) {
 		super(agents);
-		this.moneySupply = new TimeSeries("Money Supply");
+		this.moneySupply = new TimeSeries("Money Supply", getMaxDay());
 		this.prices = new InstantiatingHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries(key.getName() + " price");
+				return new TimeSeries(key.getName() + " price", getMaxDay());
 			}
 		};
 		this.volumes = new InstantiatingHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries(key.getName() + " volume");
+				return new TimeSeries(key.getName() + " volume", getMaxDay());
 			}
 		};
-		this.velocity = new TimeSeries("Velocity of Money");
+		this.velocity = new TimeSeries("Velocity of Money", getMaxDay());
 	}
 
 	@Override

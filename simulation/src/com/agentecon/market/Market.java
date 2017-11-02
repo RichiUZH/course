@@ -150,8 +150,8 @@ public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 	
 	public void close(int day) {
 		assert open;
+		listeners.notifyMarketClosed(day, this);
 		open = false;
-		listeners.notifyMarketClosed(day);
 	}
 
 }
