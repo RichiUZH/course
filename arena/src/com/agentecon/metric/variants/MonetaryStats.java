@@ -3,7 +3,7 @@ package com.agentecon.metric.variants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
@@ -15,26 +15,26 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class MonetaryStats extends SimStats {
 
 	private TimeSeries velocity;
 	private TimeSeries moneySupply;
-	private HashMap<Good, TimeSeries> prices;
-	private HashMap<Good, TimeSeries> volumes;
+	private Map<Good, TimeSeries> prices;
+	private Map<Good, TimeSeries> volumes;
 
 	public MonetaryStats(ISimulation agents) {
 		super(agents);
 		this.moneySupply = new TimeSeries("Money Supply", getMaxDay());
-		this.prices = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.prices = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
 				return new TimeSeries(key.getName() + " price", getMaxDay());
 			}
 		};
-		this.volumes = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.volumes = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {

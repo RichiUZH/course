@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.Agent;
@@ -29,7 +30,7 @@ import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
 import com.agentecon.util.IAverage;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 import com.agentecon.util.MovingAverage;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -37,14 +38,14 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class UtilityRanking extends SimStats {
 
 	private boolean enableTimeSeries;
-	private HashMap<String, AveragingTimeSeries> timeSeries;
+	private Map<String, AveragingTimeSeries> timeSeries;
 	private ArrayList<ConsumerListener> list;
 
 	public UtilityRanking(ISimulation sim, boolean enableTimeSeries) {
 		super(sim);
 		this.enableTimeSeries = enableTimeSeries;
 		this.list = new ArrayList<>();
-		this.timeSeries = new InstantiatingHashMap<String, AveragingTimeSeries>() {
+		this.timeSeries = new InstantiatingConcurrentHashMap<String, AveragingTimeSeries>() {
 
 			@Override
 			protected AveragingTimeSeries create(String key) {

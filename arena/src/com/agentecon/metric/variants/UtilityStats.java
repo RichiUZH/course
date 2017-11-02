@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 
 import com.agentecon.ISimulation;
 import com.agentecon.consumer.IConsumer;
@@ -14,13 +14,13 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class UtilityStats extends SimStats {
 
 	private TimeSeries tot, min, max;
 	private AveragingTimeSeries retirees, shareHolders;
-	private HashMap<String, TimeSeries> utilities;
+	private Map<String, TimeSeries> utilities;
 
 	public UtilityStats(ISimulation sim) {
 		super(sim);
@@ -29,7 +29,7 @@ public class UtilityStats extends SimStats {
 		this.max = new TimeSeries("Max", getMaxDay());
 		this.retirees = new AveragingTimeSeries("Retirees", getMaxDay());
 		this.shareHolders = new AveragingTimeSeries("Shareholders", getMaxDay());
-		this.utilities = new InstantiatingHashMap<String, TimeSeries>() {
+		this.utilities = new InstantiatingConcurrentHashMap<String, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(String key) {

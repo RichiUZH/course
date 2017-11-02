@@ -3,17 +3,17 @@ package com.agentecon.metric.series;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class TimeSeriesCollector {
 
-	private HashMap<String, AveragingTimeSeries> type;
-	private HashMap<String, TimeSeries> individual;
+	private Map<String, AveragingTimeSeries> type;
+	private Map<String, TimeSeries> individual;
 	private AveragingTimeSeries firms, consumers;
 
 	public TimeSeriesCollector(int maxDay) {
@@ -23,7 +23,7 @@ public class TimeSeriesCollector {
 	public TimeSeriesCollector(boolean includeIndividuals, int maxDay) {
 		this.firms = new AveragingTimeSeries("Firms", maxDay);
 		this.consumers = new AveragingTimeSeries("Consumers", maxDay);
-		this.type = new InstantiatingHashMap<String, AveragingTimeSeries>() {
+		this.type = new InstantiatingConcurrentHashMap<String, AveragingTimeSeries>() {
 
 			@Override
 			protected AveragingTimeSeries create(String key) {
@@ -31,7 +31,7 @@ public class TimeSeriesCollector {
 			}
 		};
 		if (includeIndividuals) {
-			this.individual = new InstantiatingHashMap<String, TimeSeries>() {
+			this.individual = new InstantiatingConcurrentHashMap<String, TimeSeries>() {
 
 				@Override
 				protected TimeSeries create(String key) {

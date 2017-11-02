@@ -16,7 +16,7 @@ import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.metric.series.TimeSeriesCollector;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.IOptimalityIndicator;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class TypeStatistics extends SimStats {
 
@@ -28,7 +28,7 @@ public class TypeStatistics extends SimStats {
 		super(sim);
 		this.agentCounts = new TimeSeriesCollector(getMaxDay());
 		this.indicators = sim.getConfig().getOptimalFirmCountIndicators();
-		this.optimalCount = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.optimalCount = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {

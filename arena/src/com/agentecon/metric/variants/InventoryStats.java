@@ -1,7 +1,7 @@
 package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
@@ -16,15 +16,15 @@ import com.agentecon.market.IMarketListener;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.metric.series.TimeSeriesCollector;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class InventoryStats extends SimStats {
 
-	private HashMap<Good, TimeSeriesCollector> inventoriesByGoods;
+	private Map<Good, TimeSeriesCollector> inventoriesByGoods;
 
 	public InventoryStats(ISimulation agents, boolean details) {
 		super(agents);
-		this.inventoriesByGoods = new InstantiatingHashMap<Good, TimeSeriesCollector>() {
+		this.inventoriesByGoods = new InstantiatingConcurrentHashMap<Good, TimeSeriesCollector>() {
 
 			@Override
 			protected TimeSeriesCollector create(Good key) {

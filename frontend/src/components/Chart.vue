@@ -23,8 +23,9 @@
         </el-dropdown-menu>
       </el-dropdown>
     </template>
+    <el-button v-if="renderRefresh" v-on:click="updateChart">Refresh</el-button>
     <el-button v-if="renderRemove" v-on:click="removeSeries">Remove</el-button>
-    <el-button v-if="renderAdd" v-on:click="addSeries">Add</el-button>
+    <el-button v-if="renderRefresh" v-on:click="addSeries">Add</el-button>
     <div class="chart" id="chart"></div>
   </div>
 </template>
@@ -63,7 +64,9 @@ export default {
       description: '',
       selectedSeries: ['Loading...'],
       series: [],
+      renderAdd: false,
       renderRemove: false,
+      renderRefresh: false,
     };
   },
   created() {
@@ -178,6 +181,7 @@ export default {
                 b: 50,
               },
             };
+            this.renderRefresh = !response.complete;
             this.selectedSeries = newSelection;
             Plotly.newPlot('chart', data, layout);
           },

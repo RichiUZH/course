@@ -4,7 +4,7 @@ package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.agentecon.ISimulation;
@@ -18,29 +18,29 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class MarketStats extends SimStats implements IMarketListener {
 
-	private HashMap<Good, Average> averages;
+	private Map<Good, Average> averages;
 	// private HashMap<Good, Average> averageOffers;
-	private HashMap<Good, TimeSeries> prices;
+	private Map<Good, TimeSeries> prices;
 	// private HashMap<Good, MinMaxTimeSeries> priceBeliefs; // de facto almost same as prices
-	private HashMap<Good, TimeSeries> volume;
-	private HashMap<Good, AveragingTimeSeries> unfilledOffers;
+	private Map<Good, TimeSeries> volume;
+	private Map<Good, AveragingTimeSeries> unfilledOffers;
 	private TimeSeries index;
 
 	public MarketStats(ISimulation sim, boolean inclVolume) {
 		super(sim);
 		this.index = new TimeSeries("Price Index", getMaxDay());
-		this.averages = new InstantiatingHashMap<Good, Average>() {
+		this.averages = new InstantiatingConcurrentHashMap<Good, Average>() {
 
 			@Override
 			protected Average create(Good key) {
 				return new Average();
 			}
 		};
-		this.prices = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.prices = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
@@ -48,7 +48,7 @@ public class MarketStats extends SimStats implements IMarketListener {
 			}
 
 		};
-		this.unfilledOffers = new InstantiatingHashMap<Good, AveragingTimeSeries>() {
+		this.unfilledOffers = new InstantiatingConcurrentHashMap<Good, AveragingTimeSeries>() {
 
 			@Override
 			protected AveragingTimeSeries create(Good key) {
@@ -57,7 +57,7 @@ public class MarketStats extends SimStats implements IMarketListener {
 
 		};
 		if (inclVolume) {
-			this.volume = new InstantiatingHashMap<Good, TimeSeries>() {
+			this.volume = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 				@Override
 				protected TimeSeries create(Good key) {

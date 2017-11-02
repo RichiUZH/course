@@ -6,14 +6,14 @@ import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.market.IStatistics;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.AccumulatingAverage;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class FirmStatistics extends SimulationListenerAdapter {
 	
-	private InstantiatingHashMap<String, AccumulatingAverage> avg;
+	private Map<String, AccumulatingAverage> avg;
 	
 	public FirmStatistics(){
-		this.avg = new InstantiatingHashMap<String, AccumulatingAverage>() {
+		this.avg = new InstantiatingConcurrentHashMap<String, AccumulatingAverage>() {
 			
 			@Override
 			protected AccumulatingAverage create(String key) {

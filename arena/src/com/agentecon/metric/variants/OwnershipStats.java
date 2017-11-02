@@ -19,19 +19,20 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Line;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 import com.agentecon.util.InstantiatingHashMap;
 
 public class OwnershipStats extends SimStats {
 
-	private HashMap<String, HashMap<String, TimeSeries>> structure;
+	private Map<String, Map<String, TimeSeries>> structure;
 
 	public OwnershipStats(ISimulation agents) {
 		super(agents);
-		this.structure = new InstantiatingHashMap<String, HashMap<String, TimeSeries>>() {
+		this.structure = new InstantiatingConcurrentHashMap<String, Map<String, TimeSeries>>() {
 
 			@Override
-			protected HashMap<String, TimeSeries> create(String key) {
-				return new InstantiatingHashMap<String, TimeSeries>() {
+			protected Map<String, TimeSeries> create(String key) {
+				return new InstantiatingConcurrentHashMap<String, TimeSeries>() {
 
 					@Override
 					protected TimeSeries create(String key) {
@@ -94,7 +95,7 @@ public class OwnershipStats extends SimStats {
 	public class OwnershipStructure {
 
 		private String type;
-		private HashMap<String, Double> owners;
+		private Map<String, Double> owners;
 
 		public OwnershipStructure(String type) {
 			this.type = type;
@@ -107,10 +108,9 @@ public class OwnershipStats extends SimStats {
 			};
 		}
 
-		public void push(int day, HashMap<String, TimeSeries> hashMap) {
+		public void push(int day, Map<String, TimeSeries> hashMap) {
 			for (Map.Entry<String, Double> e : owners.entrySet()) {
 				hashMap.get(e.getKey()).set(day, e.getValue());
-				;
 			}
 		}
 
@@ -123,7 +123,7 @@ public class OwnershipStats extends SimStats {
 	@Override
 	public Collection<? extends Chart> getCharts() {
 		ArrayList<Chart> charts = new ArrayList<>();
-		for (Map.Entry<String, HashMap<String, TimeSeries>> owned : structure.entrySet()) {
+		for (Map.Entry<String, Map<String, TimeSeries>> owned : structure.entrySet()) {
 			Collection<TimeSeries> ts = owned.getValue().values();
 			Chart ch = new Chart(owned.getKey() + " Owners", "Owners of an average firm of type " + owned.getKey(), ts);
 			ch.setStacking("percent");
@@ -135,7 +135,7 @@ public class OwnershipStats extends SimStats {
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
-		for (Map.Entry<String, HashMap<String, TimeSeries>> owned : structure.entrySet()) {
+		for (Map.Entry<String, Map<String, TimeSeries>> owned : structure.entrySet()) {
 			Collection<TimeSeries> ts = owned.getValue().values();
 			list.addAll(TimeSeries.prefix(owned.getKey() + " owner", ts));
 		}

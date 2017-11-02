@@ -25,16 +25,17 @@ import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.Numbers;
 
 public class StockMarketStats extends SimStats implements IMarketListener, IConsumerListener {
 
 	private Good index = new Good("Index");
-	private HashMap<Ticker, Average> averages;
-	private HashMap<Good, TimeSeries> prices;
-	private HashMap<Good, TimeSeries> volumes;
-	private HashMap<Good, TimeSeries> dividendYield;
+	private Map<Ticker, Average> averages;
+	private Map<Good, TimeSeries> prices;
+	private Map<Good, TimeSeries> volumes;
+	private Map<Good, TimeSeries> dividendYield;
 	private AveragingTimeSeries investments, divestments, difference;
 
 	private boolean includeIndex;
@@ -45,14 +46,14 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 		this.investments = new AveragingTimeSeries("Inflows", getMaxDay());
 		this.divestments = new AveragingTimeSeries("Outflows", getMaxDay());
 		this.difference = new AveragingTimeSeries("Inflows - Outflows", getMaxDay());
-		this.averages = new InstantiatingHashMap<Ticker, Average>() {
+		this.averages = new InstantiatingConcurrentHashMap<Ticker, Average>() {
 
 			@Override
 			protected Average create(Ticker key) {
 				return new Average();
 			}
 		};
-		this.prices = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.prices = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
@@ -60,7 +61,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			}
 
 		};
-		this.volumes = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.volumes = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {
@@ -68,7 +69,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			}
 
 		};
-		this.dividendYield = new InstantiatingHashMap<Good, TimeSeries>() {
+		this.dividendYield = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
 			protected TimeSeries create(Good key) {

@@ -16,6 +16,7 @@ import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 import com.agentecon.util.InstantiatingHashMap;
 
 public class MarketStats extends SimulationListenerAdapter implements IMarketListener {
@@ -24,11 +25,11 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 
 	private IAgents world;
 	private Good index = new Good("Index");
-	private HashMap<Good, Average> averages;
+	private Map<Good, Average> averages;
 
 	public MarketStats(IAgents world) {
 		this.world = world;
-		this.averages = new InstantiatingHashMap<Good, Average>() {
+		this.averages = new InstantiatingConcurrentHashMap<Good, Average>() {
 
 			@Override
 			protected Average create(Good key) {

@@ -71,7 +71,7 @@ public class ChartMethod extends SimSpecificMethod {
 					return stats;
 				}
 			});
-			double completeness = stats.join(1000);
+			double completeness = stats.join(100);
 			return new ChartData(metric.getDescription(), stats.getTimeSeries(), completeness, Arrays.asList(params.getParam(ROW).split(",")));
 		}
 	}

@@ -3,7 +3,7 @@ package com.agentecon.metric.variants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
 import com.agentecon.ISimulation;
 import com.agentecon.consumer.IConsumer;
@@ -12,14 +12,14 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
-import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.InstantiatingConcurrentHashMap;
 
 public class Demographics extends SimStats {
 
 	private TimeSeries retired;
 	private TimeSeries working;
 	private TimeSeries population, dependency, dailyutility;
-	private HashMap<String, AveragingTimeSeries> utilityOnDeath;
+	private Map<String, AveragingTimeSeries> utilityOnDeath;
 
 	public Demographics(ISimulation agents) {
 		super(agents);
@@ -28,7 +28,7 @@ public class Demographics extends SimStats {
 		this.population = new TimeSeries("Population", getMaxDay());
 		this.dependency = new TimeSeries("Dependency Ratio", getMaxDay());
 		this.dailyutility = new TimeSeries("Average Daily Utility", getMaxDay());
-		this.utilityOnDeath = new InstantiatingHashMap<String, AveragingTimeSeries>() {
+		this.utilityOnDeath = new InstantiatingConcurrentHashMap<String, AveragingTimeSeries>() {
 
 			@Override
 			protected AveragingTimeSeries create(String key) {
