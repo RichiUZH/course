@@ -11,7 +11,7 @@ public interface ISimulationListener {
 	public void notifyDayStarted(int day);
 	
 	public void notifyDayEnded(IStatistics stats);
-
+	
 	public void notifyGoodsMarketOpened(IMarket market);
 	
 	public void notifyStockMarketOpened(IMarket market);

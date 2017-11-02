@@ -28,7 +28,8 @@ public abstract class GrowthEvent extends RandomEvent {
 		int population = sim.getAgents().getConsumers().size();
 		if (probabilistic) {
 			for (int i=0; i<population; i++) {
-				if (rand.nextDouble() <= probPerConsumer) {
+				double random = rand.nextDouble();
+				if (random <= probPerConsumer) {
 					execute(sim);
 				}
 			}

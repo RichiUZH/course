@@ -22,14 +22,8 @@ public interface IPriceTakerMarket extends IMarket {
 	// */
 	// public double trade(Wallet wallet, Stock stock, double amount);
 
-	/**
-	 * Convenience method for getPrices
-	 */
 	public Collection<IOffer> getBids();
 
-	/**
-	 * Convenience method for getPrices
-	 */
 	public Collection<IOffer> getAsks();
 
 	public Collection<IOffer> getOffers(IPriceFilter bidAskFilter);

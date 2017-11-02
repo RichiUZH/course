@@ -24,7 +24,7 @@ public class ShareRegister implements IRegister {
 	public ShareRegister(Ticker ticker, IStock wallet) {
 		this.ticker = ticker;
 		this.all = new LinkedList<>();
-		this.dividend = new MovingAverage(0.8);
+		this.dividend = new MovingAverage(0.5);
 		this.rootPosition = new Position(this, ticker, wallet.getGood(), SHARES_PER_COMPANY, false);
 		this.all.add(rootPosition);
 	}

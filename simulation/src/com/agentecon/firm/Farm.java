@@ -31,14 +31,14 @@ public class Farm extends Producer {
 
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
-		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble()/2 + 0.25);
-//		this.control = new QuadraticMaximizer(0.95, id.getRand().nextLong(), 100, 10000);
+		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble() / 2 + 0.25);
+		// this.control = new QuadraticMaximizer(0.95, id.getRand().nextLong(), 100, 10000);
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
 		assert getMoney().getAmount() > 0;
 	}
-	
+
 	protected double getInitialBudget(IStatistics stats) {
 		try {
 			return stats.getGoodsMarketStats().getPriceBelief(FarmingConfiguration.MAN_HOUR) * 10;
@@ -68,7 +68,7 @@ public class Farm extends Producer {
 	public void produce() {
 		super.produce();
 	}
-	
+
 	protected IFinancials getFinancials() {
 		return marketing.getFinancials(getInventory(), getProductionFunction());
 	}
@@ -98,9 +98,9 @@ public class Farm extends Producer {
 		} else {
 			daysWithoutProfit = 0;
 		}
-//		if (getAgentId() == 33) {
-//			System.out.println(stats.getDay() + "\tProfits\t" + profits + "\tRevenue\t" + fin.getLatestRevenue() + "\tCash\t" + getMoney().getAmount() + "\t" + daysWithoutProfit);
-//		}
+		// if (getAgentId() == 33) {
+		// System.out.println(stats.getDay() + "\tProfits\t" + profits + "\tRevenue\t" + fin.getLatestRevenue() + "\tCash\t" + getMoney().getAmount() + "\t" + daysWithoutProfit);
+		// }
 		return daysWithoutProfit > 100;
 	}
 

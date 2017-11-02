@@ -18,6 +18,8 @@ public class CeilingFactor extends Factor {
 	public void adapt(double min) {
 		if (prevOffer != null) {
 			price.adaptWithFloor(shouldIncrease(), min);
+		} else if (price.getValue() < min) {
+			price.adaptWithFloor(true, min);
 		}
 	}
 

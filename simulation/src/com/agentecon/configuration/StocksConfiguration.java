@@ -20,7 +20,6 @@ import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.InvestingConsumer;
 import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
-import com.agentecon.events.MinPopulationGrowthEvent;
 import com.agentecon.events.SimEvent;
 import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.FarmingConfiguration;
@@ -33,12 +32,12 @@ import com.agentecon.world.ICountry;
 
 public class StocksConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
 
-	private static final int BASIC_AGENTS = 30;
+	private static final int BASIC_AGENTS = 100;
 	public static final String BASIC_AGENT = "com.agentecon.exercise5.Investor";
 
 	public static final double GROWTH_RATE = 0.004;
 	public static final int MAX_AGE = 500;
-	private static final int GROW_UNTIL = 800; // day at which growth stops
+	private static final int GROW_UNTIL = 500; // day at which growth stops
 
 	public StocksConfiguration() throws SocketTimeoutException, IOException {
 		this(new ExerciseAgentLoader(BASIC_AGENT), BASIC_AGENTS);
@@ -81,7 +80,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	}
 
 	protected void addMarketMakers() {
-		addEvent(new SimEvent(0, 0, 5) {
+		addEvent(new SimEvent(0, 0, 10) {
 
 			@Override
 			public void execute(int day, ICountry sim) {
@@ -104,16 +103,16 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	}
 
 	protected void createBasicPopulation(Endowment workerEndowment) {
-		addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS) {
-
-			@Override
-			protected void execute(ICountry sim) {
-				IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
-				sim.add(cons);
-			}
-
-		});
-		addEvent(new GrowthEvent(0, GROWTH_RATE) {
+//		addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS) {
+//
+//			@Override
+//			protected void execute(ICountry sim) {
+//				IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
+//				sim.add(cons);
+//			}
+//
+//		});
+		addEvent(new GrowthEvent(0, GROWTH_RATE, false) {
 
 			@Override
 			protected void execute(ICountry sim) {
@@ -124,7 +123,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 			}
 
 		});
-		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / MAX_AGE) {
+		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / MAX_AGE, false) {
 
 			@Override
 			protected void execute(ICountry sim) {

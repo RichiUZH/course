@@ -11,6 +11,11 @@ public interface IMarketListener {
 	
 	public void notifyTradesCancelled();
 	
+	@Deprecated
 	public void notifyMarketClosed(int day);
+	
+	public default void notifyMarketClosed(int day, IPriceTakerMarket market) {
+		notifyMarketClosed(day);
+	}
 
 }

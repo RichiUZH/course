@@ -15,6 +15,7 @@ import com.agentecon.configuration.GrowthConfiguration;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
+import com.agentecon.finance.HighestYieldPickingStrategy;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
@@ -39,7 +40,7 @@ import com.agentecon.util.Numbers;
  */
 public class InvestingConsumer extends MortalConsumer implements IFounder {
 
-	private static final double DISCOUNT_RATE = 0.99;
+	private static final double DISCOUNT_RATE = 0.995;
 	
 	private static final double SELL_LAND_IF_LESS = 20;
 	private static final double CAPITAL_BUFFER = 0.80;
@@ -67,6 +68,7 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 			double consumption = getDailySpendings();
 			double optimalSavings = (consumption * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor + dividends - getDailySpendings();
 			double actualInvestment = getPortfolio().invest(stocks, this, optimalSavings);
+//			double actualInvestment = getPortfolio().invest(new HighestYieldPickingStrategy(), stocks, this, optimalSavings);
 			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 		}
 	}

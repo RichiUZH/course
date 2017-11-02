@@ -2,7 +2,6 @@ package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.Factor;
-import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.IBelief;
@@ -19,6 +18,8 @@ public class FloorFactor extends Factor {
 	public void adapt(double max) {
 		if (prevOffer != null) {
 			price.adaptWithCeiling(shouldIncrease(), max);
+		} else if (price.getValue() > max){
+			price.adaptWithCeiling(true, max);
 		}
 	}
 
