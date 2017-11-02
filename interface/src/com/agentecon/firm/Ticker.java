@@ -31,4 +31,14 @@ public class Ticker extends Good {
 		return type;
 	}
 	
+	@Override
+	public boolean equals(Object o){
+		return number == ((Ticker)o).number;
+	}
+	
+	@Override
+	public int hashCode(){
+		return number;
+	}
+	
 }
