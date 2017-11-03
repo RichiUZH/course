@@ -25,7 +25,7 @@
     </template>
     <el-button v-if="renderRefresh" v-on:click="updateChart">Refresh</el-button>
     <el-button v-if="renderRemove" v-on:click="removeSeries">Remove</el-button>
-    <el-button v-if="renderRefresh" v-on:click="addSeries">Add</el-button>
+    <el-button v-if="renderAdd" v-on:click="addSeries">Add</el-button>
     <div class="chart" id="chart"></div>
   </div>
 </template>
