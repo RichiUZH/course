@@ -66,7 +66,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	
 	@Override
 	public LogUtilWithFloor create(int number) {
-		return super.create(number); //.wiggle(rand);
+		return super.create(number).wiggle(rand);
 	}
 	
 	protected void addMarketMakers() {

@@ -115,10 +115,10 @@ public abstract class AbstractWeightedUtil implements IUtility {
 
 	protected Weight[] copyWeights(Random rand) {
 		Weight[] newWeights = new Weight[weights.length];
-		for (int i=0; i<weights.length; i++){
-			double factor = 0.5 + rand.nextDouble();
-			newWeights[i] = new Weight(weights[i].good, weights[i].weight * factor);
-		}
+		assert newWeights.length == 2;
+		double first = rand.nextDouble() + 0.5;
+		newWeights[0] = new Weight(weights[0].good, first);
+		newWeights[1] = new Weight(weights[1].good, 2 - first);
 		return newWeights;
 	}
 	
