@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.agentecon.ISimulation;
-import com.agentecon.metric.variants.CashStats;
+import com.agentecon.metric.variants.WealthStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.Equality;
@@ -96,7 +96,7 @@ public enum EMetrics {
 		case MARKETMAKER:
 			return new MarketMakerStats(sim, "MarketMaker");
 		case CASH:
-			return new CashStats(sim);
+			return new WealthStats(sim, details);
 		case MONETARY:
 			return new MonetaryStats(sim);
 		case OWNERSHIP:

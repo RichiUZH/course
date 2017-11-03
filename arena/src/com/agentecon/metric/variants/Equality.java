@@ -1,7 +1,6 @@
 package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -20,29 +19,32 @@ import com.agentecon.metric.series.TimeSeries;
 
 public class Equality extends SimStats implements IMarketListener {
 
+	private static final int STEP = 100;
 	private static final int AGGREGATION_PERIOD = 20;
-	
+
 	private List<AveragingTimeSeries> wealth;
 	private List<AveragingTimeSeries> utility;
+	private int maxAge;
 
 	public Equality(ISimulation agents) {
 		super(agents);
+		this.maxAge = agents.getConfig().getMaxAge();
 		this.wealth = new ArrayList<>();
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini", getMaxDay()));
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini Young (<100 days)", getMaxDay()));
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini Midlife (100 - 200)", getMaxDay()));
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini Midlife (200 - 300)", getMaxDay()));
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini Midlife (300 - 400)", getMaxDay()));
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini around Retirement (380 - 420)", getMaxDay()));
-		this.wealth.add(new AveragingTimeSeries("Wealth Gini Retirees", getMaxDay()));
 		this.utility = new ArrayList<>();
+		this.wealth.add(new AveragingTimeSeries("Wealth Gini", getMaxDay()));
 		this.utility.add(new AveragingTimeSeries("Utility Gini", getMaxDay()));
-		this.utility.add(new AveragingTimeSeries("Utility Gini Young (<100 days)", getMaxDay()));
-		this.utility.add(new AveragingTimeSeries("Utility Gini Midlife (100 - 200)", getMaxDay()));
-		this.utility.add(new AveragingTimeSeries("Utility Gini Midlife (200 - 300)", getMaxDay()));
-		this.utility.add(new AveragingTimeSeries("Utility Gini Midlife (300 - 400)", getMaxDay()));
-		this.utility.add(new AveragingTimeSeries("Utility Gini around Retirement (380 - 420)", getMaxDay()));
-		this.utility.add(new AveragingTimeSeries("Utility Gini Retirees", getMaxDay()));
+		if (maxAge < Integer.MAX_VALUE) {
+			this.wealth.addAll(createTimeSeries("Wealth", maxAge, STEP));
+			this.utility.addAll(createTimeSeries("Utility", maxAge, STEP));
+		}
+	}
+
+	private Collection<AveragingTimeSeries> createTimeSeries(String string, int maxAge, int step) {
+		ArrayList<AveragingTimeSeries> list = new ArrayList<>();
+		for (int from = 0; from < maxAge; from += step) {
+			list.add(new AveragingTimeSeries(string + " Gini (age " + from + " to " + (from + step) + ")", getMaxDay()));
+		}
+		return list;
 	}
 
 	private double calculateGini(List<GiniData> list) {
@@ -71,30 +73,31 @@ public class Equality extends SimStats implements IMarketListener {
 	@Override
 	public void notifyDayEnded(IStatistics stats) {
 		int day = stats.getDay();
-		List<List<GiniData>> data = getCollections(c -> c.getUtilityFunction().getLatestExperiencedUtility());
+		List<List<GiniData>> data = getCollections(c -> c.getUtilityFunction().getLatestExperiencedUtility(), STEP);
 		assert data.size() == utility.size();
-		for (int i=0; i<data.size(); i++) {
+		for (int i = 0; i < data.size(); i++) {
 			utility.get(i).add(calculateGini(data.get(i)));
 		}
 		if (day % AGGREGATION_PERIOD == AGGREGATION_PERIOD - 1) {
-			for (AveragingTimeSeries ts: wealth) {
+			for (AveragingTimeSeries ts : wealth) {
 				ts.push(day);
 			}
-			for (AveragingTimeSeries ts: utility) {
+			for (AveragingTimeSeries ts : utility) {
 				ts.push(day);
 			}
 		}
 	}
-	
-	private List<List<GiniData>> getCollections(Function<IConsumer, Double> fun){
+
+	private List<List<GiniData>> getCollections(Function<IConsumer, Double> fun, int step) {
+		ArrayList<List<GiniData>> lists = new ArrayList<>();
 		List<GiniData> all = getAgents().getConsumers().stream().map(c -> new GiniData(c, fun.apply(c))).collect(Collectors.toList());
-		List<GiniData> young = new ArrayList<>(all.stream().filter(c -> c.c.getAge() < 100).collect(Collectors.toList()));
-		List<GiniData> midlife1 = new ArrayList<>(all.stream().filter(c -> c.c.getAge() >= 100 && c.c.getAge() < 200).collect(Collectors.toList()));
-		List<GiniData> midlife2 = new ArrayList<>(all.stream().filter(c -> c.c.getAge() >= 200 && c.c.getAge() < 300).collect(Collectors.toList()));
-		List<GiniData> midlife3 = new ArrayList<>(all.stream().filter(c -> c.c.getAge() >= 300 && c.c.getAge() < 400).collect(Collectors.toList()));
-		List<GiniData> aroundRet = new ArrayList<>(all.stream().filter(c -> c.c.getAge() >= 380 && c.c.getAge() < 420).collect(Collectors.toList()));
-		List<GiniData> retired = new ArrayList<>(all.stream().filter(c -> c.c.isRetired()).collect(Collectors.toList()));
-		return Arrays.asList(all, young, midlife1, midlife2, midlife3, aroundRet, retired);
+		lists.add(all);
+		for (int from = 0; from < maxAge; from += step) {
+			final int fromFinal = from;
+			lists.add(all.stream().filter(c -> c.c.getAge() >= fromFinal && c.c.getAge() < (fromFinal + step)).collect(Collectors.toList()));
+		}
+		// List<GiniData> retired = new ArrayList<>(all.stream().filter(c -> c.c.isRetired()).collect(Collectors.toList()));
+		return lists;
 	}
 
 	@Override
@@ -117,20 +120,25 @@ public class Equality extends SimStats implements IMarketListener {
 	public void notifyMarketClosed(int day) {
 		// Calculate wealth after market close so goods that will be consumed soon are included
 		IStatistics stats = getStats();
-		List<List<GiniData>> data = getCollections(c -> c.getWealth(stats));
+		List<List<GiniData>> data = getCollections(c -> c.getWealth(stats), STEP);
 		assert data.size() == wealth.size();
-		for (int i=0; i<data.size(); i++) {
+		for (int i = 0; i < data.size(); i++) {
 			wealth.get(i).add(calculateGini(data.get(i)));
 		}
 	}
-	
+
 	class GiniData {
 		IConsumer c;
 		double value;
-		
+
 		public GiniData(IConsumer c, double value) {
 			this.c = c;
 			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return c.getName() + " has " + value;
 		}
 	}
 
