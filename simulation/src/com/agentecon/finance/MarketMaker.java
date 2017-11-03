@@ -24,7 +24,7 @@ import com.agentecon.util.Average;
 public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, IMarketParticipant {
 
 	private static final double BUDGET_FRACTION = 0.2;
-	private static final double OFFER_FRACTION = 0.05;
+	private static final double OFFER_FRACTION = 0.10;
 	private static final double TARGET_OWNER_SHIP_SHARE = 0.02;
 
 	private Portfolio portfolio;

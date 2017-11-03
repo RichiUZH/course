@@ -43,6 +43,10 @@ public class MarketMakerPrice {
 			ceiling.createOffers(dsm, owner, wallet, toOffer);
 		}
 		if (Numbers.isBigger(budget, 0.0)) {
+			double spread = (ceiling.getPrice() - floor.getPrice()) / floor.getPrice();
+			if (spread > 0.1) {
+				budget *= 5;
+			}
 			floor.adapt(ceiling.getPrice() / SPREAD_MULTIPLIER);
 			floor.createOffers(dsm, owner, wallet, budget / floor.getPrice());
 			assert floor.getPrice() < ceiling.getPrice();
