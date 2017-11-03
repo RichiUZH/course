@@ -68,6 +68,11 @@ public class CustomConfiguration extends SimulationConfig {
 	public void addEvent(Event e) {
 		delegate.addEvent(e);
 	}
+	
+	@Override
+	public int getMaxAge() {
+		return delegate.getMaxAge();
+	}
 
 	@Override
 	public int getRounds() {

@@ -92,9 +92,11 @@ public class Equality extends SimStats implements IMarketListener {
 		ArrayList<List<GiniData>> lists = new ArrayList<>();
 		List<GiniData> all = getAgents().getConsumers().stream().map(c -> new GiniData(c, fun.apply(c))).collect(Collectors.toList());
 		lists.add(all);
-		for (int from = 0; from < maxAge; from += step) {
-			final int fromFinal = from;
-			lists.add(all.stream().filter(c -> c.c.getAge() >= fromFinal && c.c.getAge() < (fromFinal + step)).collect(Collectors.toList()));
+		if (maxAge < Integer.MAX_VALUE) {
+			for (int from = 0; from < maxAge; from += step) {
+				final int fromFinal = from;
+				lists.add(all.stream().filter(c -> c.c.getAge() >= fromFinal && c.c.getAge() < (fromFinal + step)).collect(Collectors.toList()));
+			}
 		}
 		// List<GiniData> retired = new ArrayList<>(all.stream().filter(c -> c.c.isRetired()).collect(Collectors.toList()));
 		return lists;
