@@ -87,6 +87,11 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int getMaxAge() {
+		return MAX_AGE;
+	}
 
 	public static void main(String[] args) {
 		System.out.println("asdasd");

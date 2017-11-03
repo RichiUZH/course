@@ -42,6 +42,10 @@ public class SimulationConfig implements IDiscountRate {
 		return MONEY;
 	}
 
+	public int getMaxAge() {
+		return Integer.MAX_VALUE;
+	}
+	
 	public long getSeed() {
 		return seed;
 	}

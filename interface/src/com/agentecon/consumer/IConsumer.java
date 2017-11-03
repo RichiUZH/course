@@ -3,10 +3,8 @@
 package com.agentecon.consumer;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.goods.Inventory;
-import com.agentecon.market.IStatistics;
 
 public interface IConsumer extends IAgent, IMarketParticipant {
 	
@@ -37,13 +35,6 @@ public interface IConsumer extends IAgent, IMarketParticipant {
 		Inheritance inh = considerDeath();
 		inheritance.absorb(inh.getPortfolio());
 		return inh.getInventory();
-	}
-	
-	public default double getWealth(IStatistics stats) {
-		if (this instanceof IShareholder) {
-			((IShareholder)this).getPortfolio().calculateValue(stats.getStockMarketStats());
-		}
-		return getInventory().calculateValue(stats.getGoodsMarketStats());
 	}
 	
 	/**

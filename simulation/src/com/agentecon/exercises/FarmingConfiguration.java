@@ -88,7 +88,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	}
 
 	@Override
-	public IUtility create(int number) {
+	public LogUtilWithFloor create(int number) {
 		return new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
 	}
 

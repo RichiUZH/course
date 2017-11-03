@@ -2,8 +2,10 @@
 
 package com.agentecon.agent;
 
+import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.market.IStatistics;
 
 public interface IAgent extends Cloneable {
 
@@ -26,6 +28,13 @@ public interface IAgent extends Cloneable {
 	 * The inventory of the agent, including its money.
 	 */
 	public Inventory getInventory();
+	
+	public default double getWealth(IStatistics stats) {
+		if (this instanceof IShareholder) {
+			((IShareholder)this).getPortfolio().calculateValue(stats.getStockMarketStats());
+		}
+		return getInventory().calculateValue(stats.getGoodsMarketStats());
+	}
 	
 	public boolean isAlive();
 	

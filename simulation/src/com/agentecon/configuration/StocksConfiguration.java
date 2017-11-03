@@ -10,7 +10,7 @@ package com.agentecon.configuration;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.HashSet;
+import java.util.Random;
 
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
@@ -18,10 +18,10 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.InvestingConsumer;
+import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
 import com.agentecon.events.SimEvent;
-import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.MarketMaker;
@@ -33,27 +33,24 @@ import com.agentecon.world.ICountry;
 public class StocksConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
 
 	private static final int BASIC_AGENTS = 100;
-	public static final String BASIC_AGENT = "com.agentecon.exercise5.Investor";
 
 	public static final double GROWTH_RATE = 0.004;
 	public static final int MAX_AGE = 500;
-	private static final int GROW_UNTIL = 500; // day at which growth stops
+	private static final int GROW_UNTIL = 400; // day at which growth stops
+	
+	private Random rand = new Random(1313);
 
 	public StocksConfiguration() throws SocketTimeoutException, IOException {
-		this(new ExerciseAgentLoader(BASIC_AGENT), BASIC_AGENTS);
-	}
-
-	public StocksConfiguration(IAgentFactory loader, int agents) {
 		super(new IAgentFactory() {
 
 			private int number = 1;
 
 			@Override
 			public IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility utility) {
-				int maxAge = number++ * MAX_AGE / agents;
+				int maxAge = number++ * MAX_AGE / BASIC_AGENTS;
 				return new InvestingConsumer(id, maxAge, end, utility);
 			}
-		}, agents);
+		}, BASIC_AGENTS);
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);
@@ -61,24 +58,17 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 		addEvent(new CentralBankEvent(POTATOE));
 //		addCustomInvestors(loader, workerEndowment);
 	}
-
-	private void addCustomInvestors(IAgentFactory loader, Endowment end) {
-		addEvent(new SimEvent(ROUNDS - MAX_AGE - 1, 0, 5) {
-
-			private HashSet<String> types = new HashSet<>();
-
-			@Override
-			public void execute(int day, ICountry sim) {
-				for (int i = 0; i < 10; i++) {
-					IConsumer newConsumer = loader.createConsumer(sim, MAX_AGE, end, create(0));
-					if (newConsumer != null && types.add(newConsumer.getType())) {
-						sim.add(newConsumer);
-					}
-				}
-			}
-		});
+	
+	@Override
+	public int getMaxAge() {
+		return MAX_AGE;
 	}
-
+	
+	@Override
+	public LogUtilWithFloor create(int number) {
+		return super.create(number).wiggle(rand);
+	}
+	
 	protected void addMarketMakers() {
 		addEvent(new SimEvent(0, 0, 10) {
 

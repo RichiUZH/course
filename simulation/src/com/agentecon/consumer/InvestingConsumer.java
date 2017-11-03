@@ -67,8 +67,7 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 			double constantFactor = Numbers.geometricSum(DISCOUNT_RATE, daysToRetirement);
 			double consumption = getDailySpendings();
 			double optimalSavings = (consumption * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor + dividends - getDailySpendings();
-			double actualInvestment = getPortfolio().invest(stocks, this, optimalSavings);
-//			double actualInvestment = getPortfolio().invest(new HighestYieldPickingStrategy(), stocks, this, optimalSavings);
+			double actualInvestment = getPortfolio().invest(new HighestYieldPickingStrategy(), stocks, this, optimalSavings);
 			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 		}
 	}

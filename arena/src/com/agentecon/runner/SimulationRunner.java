@@ -13,7 +13,7 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Correlator;
 import com.agentecon.metric.series.TimeSeries;
-import com.agentecon.metric.variants.CashStats;
+import com.agentecon.metric.variants.WealthStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.MarketStats;
@@ -54,7 +54,7 @@ public class SimulationRunner {
 			this.stats.add(new ValuationStats(sim));
 			this.stats.add(new OwnershipStats(sim));
 			this.stats.add(new DividendStats(sim, new ArrayList<>()));
-			this.stats.add(new CashStats(sim));
+			this.stats.add(new WealthStats(sim, false));
 			// this.stats.add(new ProductionStats());
 			// this.stats.add(new SingleFirmStats());
 			// this.stats.add(new InventoryStats(sim));
