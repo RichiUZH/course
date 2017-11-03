@@ -15,15 +15,15 @@ public class Line {
 		this.points.addAll(line.getPoints());
 	}
 
-	public void add(Point newpoint) {
+	public synchronized void add(Point newpoint) {
 		add(newpoint, 1);
 	}
 
-	public void add(Point newpoint, int agg) {
+	public synchronized void add(Point newpoint, int agg) {
 		points.add(newpoint);
 	}
 
-	public float[][] getData() {
+	public synchronized float[][] getData() {
 		float[][] arr = new float[points.size()][];
 		for (int i = 0; i < arr.length; i++) {
 			Point p = points.get(i);
@@ -32,27 +32,27 @@ public class Line {
 		return arr;
 	}
 
-	public Point getFirst() {
+	public synchronized Point getFirst() {
 		return points.get(0);
 	}
 
-	public Point getLast() {
+	public synchronized Point getLast() {
 		return points.get(points.size() - 1);
 	}
 
-	public ArrayList<Point> getPoints() {
-		return points;
+	public synchronized ArrayList<Point> getPoints() {
+		return new ArrayList<>(points);
 	}
 
-	public float getLatest() {
+	public synchronized float getLatest() {
 		return points.isEmpty() ? 0.0f : points.get(points.size() - 1).y;
 	}
 
-	public boolean has(int pos) {
+	public synchronized boolean has(int pos) {
 		return Collections.binarySearch(points, new Point(pos)) >= 0;
 	}
 
-	public float get(int pos) {
+	public synchronized float get(int pos) {
 		int index = Collections.binarySearch(points, new Point(pos));
 		if (index >= 0) {
 			return points.get(index).y;
@@ -68,11 +68,11 @@ public class Line {
 		}
 	}
 
-	public int getStart() {
-		return points.get(0).x;
+	public synchronized int getStart() {
+		return getFirst().x;
 	}
 
-	public int getEnd() {
+	public synchronized int getEnd() {
 		if (points.size() == 0) {
 			return -1;
 		} else {
