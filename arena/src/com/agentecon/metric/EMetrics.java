@@ -30,7 +30,7 @@ import com.agentecon.web.query.AgentQuery;
 
 public enum EMetrics {
 
-	CASH, DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, RANKING, UTILITY, TYPE;
+	DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, RANKING, UTILITY, WEALTH, TYPE;
 
 	public SimStats createAndRegister(ISimulation sim, List<String> list, boolean details) {
 		ArrayList<AgentQuery> queries = new ArrayList<>();
@@ -44,8 +44,8 @@ public enum EMetrics {
 
 	public String getDescription() {
 		switch (this) {
-		case CASH:
-			return "Total nightly cash holdings.";
+		case WEALTH:
+			return "Nightly cash holdings and net worth.";
 		case DEMOGRAPHICS:
 			return "The size of the population and related figures.";
 		case DIVIDENDS:
@@ -95,7 +95,7 @@ public enum EMetrics {
 			return new MarketStats(sim, true);
 		case MARKETMAKER:
 			return new MarketMakerStats(sim, "MarketMaker");
-		case CASH:
+		case WEALTH:
 			return new WealthStats(sim, details);
 		case MONETARY:
 			return new MonetaryStats(sim);

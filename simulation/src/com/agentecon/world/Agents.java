@@ -1,6 +1,7 @@
 package com.agentecon.world;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	// private ArrayList<Fundamentalist> fundies;
 	private ArrayList<IMarketMaker> marketMakers;
 	private ArrayList<IShareholder> shareholders;
-	private LinkedList<Inheritance> pendingInheritances;
+	private Inheritance pendingInheritance;
 
 	private HashSet<String> consumerTypes;
 	private HashSet<String> firmTypes;
@@ -53,24 +54,28 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		this.marketMakers = new ArrayList<>();
 		this.consumerTypes = new HashSet<>();
 		this.firmTypes = new HashSet<>();
-		this.pendingInheritances = new LinkedList<>();
+		this.pendingInheritance = null;
 		this.listeners = listeners;
 		this.seed = seed;
 		this.agentId = newAgentId;
 	}
-	
+
 	@Override
 	public Collection<Inheritance> getPendingInheritances() {
-		return pendingInheritances;
-	}
-	
-	public void addInheritance(Inheritance left) {
-		if (pendingInheritances.size() < 5) {
-			this.pendingInheritances.add(left);
+		if (pendingInheritance == null) {
+			return Collections.emptyList();
 		} else {
-			this.pendingInheritances.getLast().absorb(left);
+			return Collections.singleton(pendingInheritance);
 		}
-		this.shareholders.add(left);
+	}
+
+	public void addInheritance(Inheritance left) {
+		if (pendingInheritance == null) {
+			pendingInheritance = left;
+			shareholders.add(pendingInheritance);
+		} else {
+			pendingInheritance.absorb(left);
+		}
 	}
 
 	public Collection<IFirm> getFirms() {
@@ -128,11 +133,6 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		}
 		if (agent instanceof IConsumer) {
 			IConsumer consumer = (IConsumer) agent;
-			if (newAgent && !pendingInheritances.isEmpty()) {
-				Inheritance inh = pendingInheritances.removeFirst();
-				shareholders.remove(inh);
-				consumer.inherit(inh);
-			}
 			consumers.add(consumer);
 			consumerTypes.add(agent.getType());
 		}
@@ -185,9 +185,6 @@ public class Agents implements IAgents, IAgentIdGenerator {
 
 	public Agents renew(long seed) {
 		Agents copy = new Agents(listeners, seed, agentId);
-		for (Inheritance inh: this.pendingInheritances) {
-			copy.addInheritance(inh);
-		}
 		for (Agent a : all.values()) {
 			if (a.isAlive()) {
 				copy.include(a, false);
@@ -195,16 +192,25 @@ public class Agents implements IAgents, IAgentIdGenerator {
 				listeners.notifyAgentDied(a);
 			}
 		}
+		if (pendingInheritance != null) {
+			copy.distribute(pendingInheritance);
+		}
 		return copy;
 	}
 
+	private void distribute(Inheritance inheritance) {
+		double sharePerConsumer = 1.0 / consumers.size();
+		for (IConsumer consumer: consumers) {
+			consumer.inherit(inheritance.getFraction(sharePerConsumer));
+		}
+		consumers.iterator().next().inherit(inheritance);
+	}
+	
 	public Agents duplicate() {
 		long seed = getCurrentSeed();
 		assert rand == null;
 		Agents duplicate = new Agents(listeners, seed, agentId);
-		for (Inheritance inh: pendingInheritances) {
-			duplicate.addInheritance(inh.clone());
-		}
+		duplicate.pendingInheritance = pendingInheritance == null ? null : pendingInheritance.clone();
 		for (Agent a : all.values()) {
 			duplicate.include(a.clone(), false);
 		}
@@ -258,7 +264,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	public Collection<IAgent> getAgents(String type) {
 		if (consumerTypes.contains(type)) {
 			return extract(getConsumers(), type);
-		} else if (firmTypes.contains(type)){
+		} else if (firmTypes.contains(type)) {
 			return extract(getFirms(), type);
 		} else {
 			return Collections.emptyList();
@@ -279,7 +285,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	public int createUniqueAgentId() {
 		return agentId++;
 	}
-	
+
 	@Override
 	public String toString() {
 		return all.size() + " agents out of which " + consumers.size() + " are consumers and " + firms.size() + " firms.";

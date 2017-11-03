@@ -109,9 +109,9 @@ public class Country implements ICountry {
 	public void finishDay(IStatistics stats) {
 		consume();
 		
-		handleDeath();
-		
 		dismantleFirms(stats);
+		
+		handleDeath();
 
 		listeners.notifyDayEnded(stats);
 	}
