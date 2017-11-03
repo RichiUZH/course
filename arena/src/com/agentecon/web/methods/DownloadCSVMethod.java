@@ -28,6 +28,8 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class DownloadCSVMethod extends SimSpecificMethod {
 
+	private static final String KEY_PREFIX = "CSV-";
+
 	public static final String CHOICE_PARAMETER = "metric";
 
 	public DownloadCSVMethod(ListMethod listing) {
@@ -44,26 +46,34 @@ public class DownloadCSVMethod extends SimSpecificMethod {
 		return superSample + CHOICE_PARAMETER + "=" + EMetrics.PRODUCTION.getName();
 	}
 
+	private String getCacheKey(EMetrics metric) {
+		return KEY_PREFIX + metric;
+	}
+
 	@Override
 	public Response execute(IHTTPSession session, Parameters params) throws IOException {
 		EMetrics metric = EMetrics.parse(params.getParam(CHOICE_PARAMETER));
 		SimulationStepper stepper = getSimulation(params);
-		ISimulation sim = stepper.getSimulation(0).getItem();
-		SimStats stats = metric.createAndRegister(sim, params.getSelection(), true);
-		sim.run();
-		ByteArrayOutputStream csvData = new ByteArrayOutputStream();
-		try (PrintStream writer = new PrintStream(csvData)) {
-			try {
-				stats.print(writer, ", ");
-			} catch (NoInterestingTimeSeriesFoundException e) {
-				// send empty file
-				writer.println("No interesting data found.");
-				writer.println("Maybe the chosen metric is not relevant in this simulation, e.g. asking for stock market statistics in a simulation without stock market?");
-				writer.println("Or the simulation might be disfunctional, e.g. no trade taking place.");
+		byte[] rawData = (byte[]) stepper.getCachedItem(getCacheKey(metric));
+		if (rawData == null) {
+			ISimulation sim = stepper.getSimulation(0).getItem();
+			SimStats stats = metric.createAndRegister(sim, params.getSelection(), true);
+			sim.run();
+			ByteArrayOutputStream csvData = new ByteArrayOutputStream();
+			try (PrintStream writer = new PrintStream(csvData)) {
+				try {
+					stats.print(writer, ", ");
+				} catch (NoInterestingTimeSeriesFoundException e) {
+					// send empty file
+					writer.println("No interesting data found.");
+					writer.println("Maybe the chosen metric is not relevant in this simulation, e.g. asking for stock market statistics in a simulation without stock market?");
+					writer.println("Or the simulation might be disfunctional, e.g. no trade taking place.");
+				}
 			}
+			rawData = csvData.toByteArray();
+			stepper.putCached(getCacheKey(metric), rawData);
 		}
-		byte[] data = csvData.toByteArray();
-		Response resp = NanoHTTPD.newFixedLengthResponse(Status.OK, "text/csv", new ByteArrayInputStream(data), data.length);
+		Response resp = NanoHTTPD.newFixedLengthResponse(Status.OK, "text/csv", new ByteArrayInputStream(rawData), rawData.length);
 		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		String simName = params.getSimulation();
 		resp.addHeader("Content-Disposition", "inline; filename=\"" + dateString + " " + simName + " " + metric.getName() + ".csv\"");
