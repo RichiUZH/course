@@ -35,22 +35,28 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	private static final int BASIC_AGENTS = 100;
 
 	public static final double GROWTH_RATE = 0.004;
-	public static final int MAX_AGE = 500;
+	
 	private static final int GROW_UNTIL = 350; // day at which growth stops
 	
 	private Random rand = new Random(1313);
-
+	private int maxAge;
+	
 	public StocksConfiguration() throws SocketTimeoutException, IOException {
+		this(500);
+	}
+
+	public StocksConfiguration(int maxAgeParam) throws SocketTimeoutException, IOException {
 		super(new IAgentFactory() {
 
 			private int number = 1;
 
 			@Override
 			public IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility utility) {
-				int maxAge = number++ * MAX_AGE / BASIC_AGENTS;
+				int maxAge = number++ * maxAgeParam / BASIC_AGENTS;
 				return new InvestingConsumer(id, maxAge, end, utility);
 			}
 		}, BASIC_AGENTS);
+		this.maxAge = maxAgeParam;
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);
@@ -61,7 +67,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 	
 	@Override
 	public int getMaxAge() {
-		return MAX_AGE;
+		return maxAge;
 	}
 	
 	@Override
@@ -98,17 +104,17 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 			@Override
 			protected void execute(ICountry sim) {
 				if (sim.getDay() < GROW_UNTIL) {
-					IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
+					IConsumer cons = new InvestingConsumer(sim, getMaxAge(), workerEndowment, create(0));
 					sim.add(cons);
 				}
 			}
 
 		});
-		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / MAX_AGE, false) {
+		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / getMaxAge(), false) {
 
 			@Override
 			protected void execute(ICountry sim) {
-				IConsumer cons = new InvestingConsumer(sim, MAX_AGE, workerEndowment, create(0));
+				IConsumer cons = new InvestingConsumer(sim, getMaxAge(), workerEndowment, create(0));
 				sim.add(cons);
 			}
 
