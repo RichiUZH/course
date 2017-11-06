@@ -62,8 +62,7 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 	}
 
 	private void doStats(IAgent counterParty, double moneyFlow, double goodsFlow) {
-		this.volume += Math.abs(moneyFlow);
-		this.quantity -= Math.abs(goodsFlow);
+		reduceOffer(moneyFlow, goodsFlow);
 		if (moneyFlow >= 0) {
 			assert goodsFlow <= 0;
 			// we receive money and give goods
@@ -72,6 +71,12 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 			assert goodsFlow > 0;
 			listener.notifyTraded(counterParty, owner, getGood(), goodsFlow, -moneyFlow);
 		}
+	}
+	
+	protected void reduceOffer(double moneyFlow, double goodsFlow) {
+		this.volume += Math.abs(moneyFlow);
+		this.quantity -= Math.abs(goodsFlow);
+		assert isBid() || this.quantity <= stock.getAmount();
 	}
 	
 	public Quantity getQuantity(){

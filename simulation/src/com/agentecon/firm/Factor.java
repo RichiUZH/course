@@ -21,6 +21,10 @@ public abstract class Factor {
 		this.stock = stock;
 		this.price = price;
 	}
+	
+	public boolean isOfferUsed() {
+		return prevOffer.isUsed();
+	}
 
 	public void adaptPrice() {
 		if (prevOffer != null) {

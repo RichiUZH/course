@@ -53,8 +53,11 @@ public class Bid extends AbstractOffer {
 	
 	public void match(Ask ask) {
 		if (!ask.getPrice().isAbove(getPrice())){
+			double moneyBefore = wallet.getAmount();
 			double amount = ask.accept(getOwner(), wallet, stock, getQuantity());
 			assert amount >= 0;
+			double moneySpent = moneyBefore - wallet.getAmount();
+			super.reduceOffer(moneySpent, amount);
 		}
 	}
 

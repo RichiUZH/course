@@ -14,11 +14,15 @@ public class Ask extends AbstractOffer {
 
 	public Ask(IAgent initiator, IStock wallet, IStock stock, Price price, double amount) {
 		super(initiator, wallet, stock, price, amount);
+		assert amount <= stock.getAmount();
 	}
 
 	@Override
 	public double getAmount() {
-		return Math.min(stock.getAmount(), super.getAmount());
+		double quant = super.getAmount();
+		assert quant <= stock.getAmount();
+		return quant;
+//		return Math.min(stock.getAmount(), super.getAmount());
 	}
 	
 	@Override
@@ -33,6 +37,7 @@ public class Ask extends AbstractOffer {
 		}
 		assert amount >= 0;
 		transfer(acceptingAgent, payer, total, target, -amount);
+		assert getAmount() <= stock.getAmount();
 		return amount;
 	}
 
@@ -48,7 +53,10 @@ public class Ask extends AbstractOffer {
 
 	public void match(Bid bid) {
 		if (!getPrice().isAbove(bid.getPrice())){
-			bid.accept(getOwner(), wallet, stock, getQuantity());
+			double moneyBefore = wallet.getAmount();
+			double amount = bid.accept(getOwner(), wallet, stock, getQuantity());
+			double moneyReceived = wallet.getAmount() - moneyBefore;
+			super.reduceOffer(moneyReceived, amount);
 		}
 	}
 
