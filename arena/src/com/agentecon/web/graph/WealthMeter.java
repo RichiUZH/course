@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
-import com.agentecon.firm.IShareholder;
 import com.agentecon.market.IStatistics;
 import com.agentecon.util.Average;
 import com.agentecon.util.Numbers;
@@ -30,10 +29,7 @@ public class WealthMeter extends AgentSize {
 			
 			@Override
 			public void accept(IAgent t) {
-				double wealth = t.getInventory().calculateValue(stats.getGoodsMarketStats());
-				if (t instanceof IShareholder){
-					((IShareholder)t).getPortfolio().calculateValue(stats.getStockMarketStats());
-				}
+				double wealth = t.getWealth(stats);
 				average.add(wealth);
 			}
 		});

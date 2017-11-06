@@ -30,10 +30,11 @@ public interface IAgent extends Cloneable {
 	public Inventory getInventory();
 	
 	public default double getWealth(IStatistics stats) {
+		double value = getInventory().calculateValue(stats.getGoodsMarketStats());
 		if (this instanceof IShareholder) {
-			((IShareholder)this).getPortfolio().calculateValue(stats.getStockMarketStats());
+			value += ((IShareholder)this).getPortfolio().calculateValue(stats.getStockMarketStats());
 		}
-		return getInventory().calculateValue(stats.getGoodsMarketStats());
+		return value;
 	}
 	
 	public boolean isAlive();

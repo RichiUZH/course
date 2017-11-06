@@ -19,9 +19,9 @@ import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.export.ExcelWriter;
 import com.agentecon.metric.variants.DividendStats;
-import com.agentecon.metric.variants.MarketStats;
 import com.agentecon.metric.variants.ProductionStats;
 import com.agentecon.metric.variants.UtilityRanking;
+import com.agentecon.metric.variants.WealthStats;
 import com.agentecon.production.PriceUnknownException;
 
 public class LocalSimulationRunner {
@@ -36,13 +36,13 @@ public class LocalSimulationRunner {
 
 	private void run() throws IOException {
 		UtilityRanking ranking = new UtilityRanking(sim, false);
-		SimStats prodStats = new ProductionStats(sim, false);
-		SimStats stats = new DividendStats(sim, new ArrayList<>());
-		SimStats prices = new MarketStats(sim, true);
+//		SimStats prodStats = new ProductionStats(sim, false);
+//		SimStats stats = new DividendStats(sim, new ArrayList<>());
+		SimStats prices = new WealthStats(sim, true);
 		sim.addListener(prices);
-		sim.addListener(stats);
+//		sim.addListener(stats);
 		sim.addListener(ranking);
-		sim.addListener(prodStats);
+//		sim.addListener(prodStats);
 		sim.run();
 		// stats.print(System.out);
 		ranking.print(System.out);

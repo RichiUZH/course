@@ -8,6 +8,7 @@ import com.agentecon.util.Numbers;
 
 public class MarketMakerPrice {
 
+	private static final double MIN_PRICE = 1.0;
 	private static final double INITIAL_PRICE_BELIEF = 10;
 
 	public static final double MIN_SPREAD = 0.01;
@@ -16,9 +17,11 @@ public class MarketMakerPrice {
 	private FloorFactor floor;
 	private CeilingFactor ceiling;
 	private double targetOwnership;
+	private double offerFraction;
 
-	public MarketMakerPrice(IStock pos, double targetOwnership) {
+	public MarketMakerPrice(IStock pos, double targetOwnership, double offerFraction) {
 		this.targetOwnership = targetOwnership;
+		this.offerFraction = offerFraction;
 		this.floor = new FloorFactor(pos, new ExpSearchBelief(0.1, INITIAL_PRICE_BELIEF / SPREAD_MULTIPLIER) {
 			@Override
 			protected double getMax() {
@@ -37,15 +40,15 @@ public class MarketMakerPrice {
 	public void trade(IPriceMakerMarket dsm, IAgent owner, IStock wallet, double budget) {
 		double sharesOwned = ceiling.getStock().getAmount();
 		if (ceiling.getStock().getAmount() > 0.0) {
-			ceiling.adapt(0);
+			ceiling.adapt(MIN_PRICE);
 			// offer a fraction of the present shares, but offer more if we have more
-			double toOffer = Math.max(sharesOwned - targetOwnership, sharesOwned * 0.05);
+			double toOffer = Math.max(sharesOwned - targetOwnership, sharesOwned * offerFraction);
 			ceiling.createOffers(dsm, owner, wallet, toOffer);
 		}
 		if (Numbers.isBigger(budget, 0.0)) {
 			double spread = (ceiling.getPrice() - floor.getPrice()) / floor.getPrice();
 			if (spread > 0.1) {
-				budget *= 5;
+				budget *= 10;
 			}
 			floor.adapt(ceiling.getPrice() / SPREAD_MULTIPLIER);
 			floor.createOffers(dsm, owner, wallet, budget / floor.getPrice());

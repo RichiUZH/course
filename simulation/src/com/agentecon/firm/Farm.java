@@ -27,12 +27,14 @@ public class Farm extends Producer {
 	private static final double CAPITAL_TO_SPENDINGS_RATIO = 1 / (1 - CAPITAL_BUFFER);
 
 	private IControl control;
+	// private MovingAverage spendings;
 	private MarketingDepartment marketing;
 
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
 		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble() / 2 + 0.25);
-		// this.control = new QuadraticMaximizer(0.95, id.getRand().nextLong(), 100, 10000);
+		// this.control = new QuadraticMaximizer(0.75, id.getRand().nextLong(), 100, 10000);
+		// this.spendings = new MovingAverage(0.95);
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
@@ -50,10 +52,16 @@ public class Farm extends Producer {
 	@Override
 	public void offer(IPriceMakerMarket market) {
 		double budget = calculateBudget();
+		// spendings.add(budget);
 		marketing.createOffers(market, this, budget);
 	}
 
 	private double calculateBudget() {
+		// try {
+		// return getProductionFunction().getCostOfMaximumProfit(getInventory(), marketing);
+		// } catch (PriceUnknownException e) {
+		// return getMoney().getAmount() * (1 - CAPITAL_BUFFER);
+		// }
 		double profits = marketing.getFinancials(getInventory(), getProductionFunction()).getProfits();
 		control.reportOutput(profits);
 		return control.getCurrentInput();
@@ -80,7 +88,7 @@ public class Farm extends Producer {
 		double excessReserve = getMoney().getAmount() - targetSize;
 		if (excessReserve > 0) {
 			// only adjust reserves slowly
-			return excessReserve / 10;
+			return excessReserve / 20;
 		} else {
 			return 0;
 		}

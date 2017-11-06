@@ -66,7 +66,7 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	public void notifyFirmCreated(IFirm firm) {
 		Position pos = firm.getShareRegister().createPosition(false);
 		portfolio.addPosition(pos);
-		MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos, OFFER_FRACTION * IRegister.SHARES_PER_COMPANY));
+		MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos, TARGET_OWNER_SHIP_SHARE * IRegister.SHARES_PER_COMPANY, OFFER_FRACTION));
 		assert prev == null;
 	}
 

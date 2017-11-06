@@ -35,7 +35,7 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 
 	public static final String AGENT_CLASS_NAME = "com.agentecon.exercise1.Hermit";
 
-	public static final Good POTATOE = new Good("Potatoe", 0.95);
+	public static final Good POTATOE = new Good("Potatoe", 0.99);
 	public static final Good MAN_HOUR = new Good("Man-hour", 0.0);
 	public static final int DAILY_ENDOWMENT = 24;
 

@@ -11,7 +11,6 @@ import com.agentecon.firm.IFirmListener;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
-import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 
@@ -160,10 +159,6 @@ public abstract class Agent implements IAgent, Cloneable {
 		assert isAlive();
 		inv.deprecate();
 		inv.receive(end.getDaily());
-	}
-
-	public double getWealth(IStatistics stats) {
-		return inv.calculateValue(stats.getGoodsMarketStats());
 	}
 
 	@Override

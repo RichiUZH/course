@@ -109,8 +109,9 @@ public abstract class AbstractWeightedUtil implements IUtility {
 		return getWeight(good) > 0.0;
 	}
 
+	@Override
 	public String toString() {
-		return "Log utility function with weights " + Arrays.toString(weights);
+		return "Utility function with weights " + Arrays.toString(weights);
 	}
 
 	protected Weight[] copyWeights(Random rand) {

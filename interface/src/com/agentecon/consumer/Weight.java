@@ -3,6 +3,7 @@
 package com.agentecon.consumer;
 
 import com.agentecon.goods.Good;
+import com.agentecon.util.Numbers;
 
 public class Weight {
 	
@@ -21,7 +22,8 @@ public class Weight {
 		assert weight != 0.0;
 	}
 	
+	@Override
 	public String toString(){
-		return weight + " " + good;
+		return Numbers.toString(weight) + " " + good;
 	}
 }
