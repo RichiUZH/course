@@ -25,11 +25,14 @@ public class Average implements Cloneable, IAverage {
 
 	public void add(double weight, Average other) {
 		double ratio = weight / other.weight;
-		this.weight += weight;
-		this.sum += other.sum * ratio;
-		this.squaredSum += other.squaredSum * ratio;
-		this.min = Math.min(min, other.min);
-		this.max = Math.max(max, other.max);
+		if (Double.isFinite(ratio)) {
+			this.weight += weight;
+			this.sum += other.sum * ratio;
+			this.squaredSum += other.squaredSum * ratio;
+			this.min = Math.min(min, other.min);
+			this.max = Math.max(max, other.max);
+			assert Double.isFinite(sum);
+		}
 	}
 
 	public void add(double x) {
@@ -37,11 +40,14 @@ public class Average implements Cloneable, IAverage {
 	}
 
 	public void add(double weight, double x) {
+		assert Double.isFinite(weight);
+		assert Double.isFinite(x);
 		this.weight += weight;
 		this.sum += weight * x;
 		this.squaredSum += weight * x * x;
 		this.min = Math.min(min, x);
 		this.max = Math.max(max, x);
+		assert Double.isFinite(sum);
 	}
 
 	public double getTotal() {

@@ -28,14 +28,14 @@ public abstract class Firm extends Agent implements IFirm {
 		this.register.claimCompanyShares(ownerPosition);
 		owner.getPortfolio().addPosition(ownerPosition);
 	}
-	
+
 	public Firm(IAgentIdGenerator ids, Endowment end) {
 		super(ids, end);
 		this.ticker = new Ticker(getType(), getAgentId());
 		this.register = new ShareRegister(ticker, getDividendWallet());
 		this.monitor = new FirmListeners();
 	}
-	
+
 	@Override
 	public ShareRegister getShareRegister() {
 		return register;
@@ -61,8 +61,8 @@ public abstract class Firm extends Agent implements IFirm {
 	}
 
 	protected abstract double calculateDividends(int day);
-	
-	public boolean considerBankruptcy(IStatistics stats){
+
+	public boolean considerBankruptcy(IStatistics stats) {
 		super.age();
 		return false;
 	}
@@ -70,20 +70,22 @@ public abstract class Firm extends Agent implements IFirm {
 	@Override
 	public final void payDividends(int day) {
 		double dividend = calculateDividends(day);
+		// pay at most 20% of the available cash
 		if (dividend > 0) {
-			// pay at most 20% of the available cash
 			double consumerOwned = getShareRegister().getConsumerOwnedShare();
 			dividend /= consumerOwned;
 			dividend = Math.min(dividend, getDividendWallet().getAmount() * 0.2);
-			monitor.reportDividend(this, dividend);
-			register.payDividend(getDividendWallet(), dividend);
+		} else {
+			dividend = 0.0; // cannot pay a negative dividend
 		}
+		monitor.reportDividend(this, dividend);
+		register.payDividend(getDividendWallet(), dividend);
 	}
-	
-	public final double dispose(Inventory inv, Portfolio shares){
+
+	public final double dispose(Inventory inv, Portfolio shares) {
 		inv.absorb(super.dispose());
-		if (this instanceof IShareholder){
-			IShareholder meAsShareholder = (IShareholder)this;
+		if (this instanceof IShareholder) {
+			IShareholder meAsShareholder = (IShareholder) this;
 			shares.absorb(meAsShareholder.getPortfolio());
 		}
 		return register.getFreeFloatShares();

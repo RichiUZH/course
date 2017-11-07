@@ -32,11 +32,11 @@ import com.agentecon.world.ICountry;
 
 public class StocksConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
 
-	private static final int BASIC_AGENTS = 100;
+	private static final int BASIC_AGENTS = 30;
 
-	public static final double GROWTH_RATE = 0.004;
+	public static final double GROWTH_RATE = 0.005;
 	
-	private static final int GROW_UNTIL = 350; // day at which growth stops
+	private static final int GROW_UNTIL = 400; // day at which growth stops
 	
 	private Random rand = new Random(1313);
 	private int maxAge;

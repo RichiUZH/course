@@ -8,7 +8,6 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
-import com.agentecon.firm.IRegister;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
@@ -24,7 +23,6 @@ import com.agentecon.util.Average;
 public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, IMarketParticipant {
 
 	private static final double BUDGET_FRACTION = 0.2;
-	private static final double OFFER_FRACTION = 0.10;
 	private static final double TARGET_OWNER_SHIP_SHARE = 0.02;
 
 	private Portfolio portfolio;
@@ -66,7 +64,7 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	public void notifyFirmCreated(IFirm firm) {
 		Position pos = firm.getShareRegister().createPosition(false);
 		portfolio.addPosition(pos);
-		MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos, TARGET_OWNER_SHIP_SHARE * IRegister.SHARES_PER_COMPANY, OFFER_FRACTION));
+		MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos, TARGET_OWNER_SHIP_SHARE));
 		assert prev == null;
 	}
 
@@ -108,13 +106,24 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 
 	@Override
 	protected double calculateDividends(int day) {
-		double cash = getMoney().getAmount();
-		double portfolioValue = getPortfolio().calculateValue(this);
-		double targetCash = OFFER_FRACTION * portfolioValue / BUDGET_FRACTION;
-		double excessCash = cash - targetCash;
-		double ownerShipShare = getAverageOwnershipShare().getAverage();
-		double ownerShipBasedDividend = cash * (ownerShipShare - TARGET_OWNER_SHIP_SHARE);
-		return Math.max(0, Math.max(excessCash / 10, ownerShipBasedDividend));
+//		double cash = getMoney().getAmount();
+		double receivedDividend = getPortfolio().getLatestDividendIncome();
+//		double portfolioValue = getPortfolio().calculateValue(this);
+//		double targetCash = Math.max(MIN_CASH, OFFER_FRACTION * portfolioValue / BUDGET_FRACTION);
+//		double excessCash = cash - targetCash;
+		double excessAssets = calculateExcessAssets(TARGET_OWNER_SHIP_SHARE);
+		return 0.0 + receivedDividend;
+//		double ownerShipShare = getAverageOwnershipShare().getAverage();
+//		double ownerShipBasedDividend = cash * (ownerShipShare - TARGET_OWNER_SHIP_SHARE);
+//		return Math.max(0, Math.max(excessCash / 10, ownerShipBasedDividend));
+	}
+
+	private double calculateExcessAssets(double targetShareCount) {
+		double excess = 0.0;
+		for (Position pos: getPortfolio().getPositions()) {
+			excess += getPrice(pos.getTicker()) * (pos.getAmount() - targetShareCount);
+		}
+		return excess;
 	}
 
 	@Override

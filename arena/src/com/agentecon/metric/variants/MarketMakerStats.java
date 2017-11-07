@@ -2,7 +2,9 @@ package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.function.BiConsumer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.AgentRef;
@@ -12,48 +14,84 @@ import com.agentecon.market.IStatistics;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.metric.series.TimeSeriesCollector;
+import com.agentecon.util.InstantiatingHashMap;
 
 public class MarketMakerStats extends SimStats {
 
-	private AgentRef marketMaker;
-	private TimeSeriesCollector bids, asks;
+	private ArrayList<AgentRef> marketMakers;
+	private TimeSeriesCollector bids, asks, size;
 	private String classname;
 
 	public MarketMakerStats(ISimulation sim, String classname) {
 		super(sim);
 		this.classname = classname;
-		this.bids = new TimeSeriesCollector(getMaxDay());
-		this.asks = new TimeSeriesCollector(getMaxDay());
+		this.marketMakers = new ArrayList<>();
+		this.bids = new TimeSeriesCollector(false, getMaxDay());
+		this.asks = new TimeSeriesCollector(false, getMaxDay());
+		this.size = new TimeSeriesCollector(getMaxDay());
 	}
 
 	@Override
 	public void notifyFirmCreated(IFirm firm) {
-		if (marketMaker == null && firm instanceof IMarketMaker && firm.getClass().getSimpleName().equals(classname)) {
-			marketMaker = firm.getReference();
+		if (firm instanceof IMarketMaker && firm.getClass().getSimpleName().equals(classname)) {
+			marketMakers.add(firm.getReference());
 		}
 	}
 
 	@Override
 	public void notifyDayEnded(IStatistics stats) {
-		if (marketMaker != null) {
-			int day = stats.getDay();
-			IMarketMaker maker = (IMarketMaker) marketMaker.get();
+		HashMap<IFirm, Spread> spreads = new InstantiatingHashMap<IFirm, Spread>() {
+
+			@Override
+			protected Spread create(IFirm key) {
+				return new Spread();
+			}
+		};
+		for (AgentRef ref : marketMakers) {
+			IMarketMaker maker = (IMarketMaker) ref.get();
 			for (IFirm firm : getAgents().getFirms()) {
 				if (firm != maker && firm.isAlive()) {
-					bids.record(day, firm, maker.getBid(firm.getTicker()));
-					asks.record(day, firm, maker.getAsk(firm.getTicker()));
+					spreads.get(firm).record(maker.getBid(firm.getTicker()), maker.getAsk(firm.getTicker()));
 				}
 			}
-			bids.flushDay(day, true);
-			asks.flushDay(day, true);
 		}
+		int day = stats.getDay();
+		for (AgentRef ref : marketMakers) {
+			size.record(day, ref.get(), ref.get().getWealth(stats));
+		}
+		spreads.forEach(new BiConsumer<IFirm, Spread>() {
+
+			@Override
+			public void accept(IFirm t, Spread u) {
+				bids.record(day, t, u.bid);
+				asks.record(day, t, u.ask);
+			}
+		});
+
+		bids.flushDay(day, true);
+		asks.flushDay(day, true);
+		size.flushDay(day, true);
+	}
+
+	class Spread {
+
+		private double bid = 0.0;
+		private double ask = Double.MAX_VALUE;
+
+		public void record(double bid, double ask) {
+			this.bid = Math.max(bid, this.bid);
+			this.ask = Math.min(ask, this.ask);
+		}
+
 	}
 
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
 		Collection<TimeSeries> allBids = TimeSeries.prefix("Bid", bids.getTimeSeries());
 		Collection<TimeSeries> allAsks = TimeSeries.prefix("Ask", asks.getTimeSeries());
-		return interleave(allBids, allAsks);
+		Collection<TimeSeries> temp = interleave(allBids, allAsks);
+		temp.addAll(TimeSeries.prefix("Wealth of ", size.getTimeSeries()));
+		return temp;
 	}
 
 	private Collection<TimeSeries> interleave(Collection<TimeSeries> allBids, Collection<TimeSeries> allAsks) {

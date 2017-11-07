@@ -1,6 +1,7 @@
 package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.firm.IRegister;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.market.IPriceMakerMarket;
@@ -16,12 +17,10 @@ public class MarketMakerPrice {
 
 	private FloorFactor floor;
 	private CeilingFactor ceiling;
-	private double targetOwnership;
-	private double offerFraction;
+	private double targetSharesOwned;
 
-	public MarketMakerPrice(IStock pos, double targetOwnership, double offerFraction) {
-		this.targetOwnership = targetOwnership;
-		this.offerFraction = offerFraction;
+	public MarketMakerPrice(IStock pos, double targetOwnerShipShare) {
+		this.targetSharesOwned = targetOwnerShipShare * IRegister.SHARES_PER_COMPANY;
 		this.floor = new FloorFactor(pos, new ExpSearchBelief(0.1, INITIAL_PRICE_BELIEF / SPREAD_MULTIPLIER) {
 			@Override
 			protected double getMax() {
@@ -41,17 +40,23 @@ public class MarketMakerPrice {
 		double sharesOwned = ceiling.getStock().getAmount();
 		if (ceiling.getStock().getAmount() > 0.0) {
 			ceiling.adapt(MIN_PRICE);
+			double ownershipShare = sharesOwned / IRegister.SHARES_PER_COMPANY;
+			double offerFraction = Math.sqrt(ownershipShare);
 			// offer a fraction of the present shares, but offer more if we have more
-			double toOffer = Math.max(sharesOwned - targetOwnership, sharesOwned * offerFraction);
+			double toOffer = sharesOwned * offerFraction;
+			if (sharesOwned - targetSharesOwned > toOffer) {
+				toOffer = sharesOwned - targetSharesOwned;
+			}
 			ceiling.createOffers(dsm, owner, wallet, toOffer);
 		}
 		if (Numbers.isBigger(budget, 0.0)) {
-			double spread = (ceiling.getPrice() - floor.getPrice()) / floor.getPrice();
-			if (spread > 0.1) {
-				budget *= 10;
-			}
+//			double ceilingOfferSize = 5 * Math.max(budget, ceiling.getQuantity() * ceiling.getPrice());
+			// double spread = (ceiling.getPrice() - floor.getPrice()) / floor.getPrice();
+			// if (spread > 0.1) {
+			// budget *= 10;
+			// }
 			floor.adapt(ceiling.getPrice() / SPREAD_MULTIPLIER);
-			floor.createOffers(dsm, owner, wallet, budget / floor.getPrice());
+			floor.createOffers(dsm, owner, wallet, budget);
 			assert floor.getPrice() < ceiling.getPrice();
 		}
 	}

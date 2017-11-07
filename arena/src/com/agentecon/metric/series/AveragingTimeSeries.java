@@ -15,10 +15,14 @@ public class AveragingTimeSeries {
 	public AveragingTimeSeries(String key, Line line, int max) {
 		this.series = new TimeSeries(key, line, max);
 	}
+	
+	public void add(double weight, double value) {
+		this.tot += value;
+		this.weight += 1.0;
+	}
 
 	public void add(double delta) {
-		this.tot += delta;
-		this.weight += 1.0;
+		add(1.0, delta);
 	}
 
 	public void pushSum(int day) {

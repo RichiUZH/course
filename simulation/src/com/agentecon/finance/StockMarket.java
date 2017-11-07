@@ -2,7 +2,6 @@ package com.agentecon.finance;
 
 import java.util.Collection;
 
-import com.agentecon.firm.FirmFinancials;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
@@ -43,9 +42,9 @@ public class StockMarket {
 		listeners.notifyStockMarketOpened(dsm);
 
 		for (IMarketMaker mm : mms) {
-			// System.out.println(day + ": " + mm);
 			mm.postOffers(dsm);
 		}
+		
 		// System.out.println(day + " trading stats " + dsm.getTradingStats());
 		for (IFirm pc : ags.getFirms()) {
 			pc.raiseCapital(dsm);
