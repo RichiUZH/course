@@ -10,6 +10,7 @@ package com.agentecon.firm;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.finance.AbstractMarketMakerPrice;
 import com.agentecon.finance.Firm;
 import com.agentecon.finance.MarketMakerPrice;
 import com.agentecon.goods.Good;
@@ -23,7 +24,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	
 //	private double capital;
 	private double minCashLevel;
-	private MarketMakerPrice priceBelief;
+	private AbstractMarketMakerPrice priceBelief;
 //	private QuadraticMaximizer profitModel; 
 
 	public RealEstateAgent(IAgentIdGenerator id, IStock initialMoney, Good land) {
@@ -48,7 +49,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 
 	@Override
 	public void offer(IPriceMakerMarket market) {
-		this.priceBelief.trade(market, this, getMoney(), getMoney().getAmount() / 10);
+		this.priceBelief.trade(market, this, getMoney());
 	}
 	
 	@Override
