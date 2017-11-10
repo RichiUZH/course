@@ -19,10 +19,8 @@ public class Ask extends AbstractOffer {
 
 	@Override
 	public double getAmount() {
-		double quant = super.getAmount();
-		assert quant <= stock.getAmount();
-		return quant;
-//		return Math.min(stock.getAmount(), super.getAmount());
+		// allow to make offers whose stock only gets filled over the course of trading
+		return Math.min(stock.getAmount(), super.getAmount());
 	}
 	
 	@Override

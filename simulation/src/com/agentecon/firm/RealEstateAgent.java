@@ -32,7 +32,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 		getMoney().absorb(initialMoney);
 		
 		this.minCashLevel = getMoney().getAmount();
-		this.priceBelief = new MarketMakerPrice(getStock(land), 0.1);
+//		this.priceBelief = new MarketMakerPrice(getStock(land), 0.1);
 //		this.profitModel = new QuadraticMaximizer(0.98, id.getRand().nextLong(), initialMoney.getAmount(), initialMoney.getAmount() * 1000);
 //		this.capital = calculateCapital();
 	}
@@ -49,7 +49,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 
 	@Override
 	public void offer(IPriceMakerMarket market) {
-		this.priceBelief.trade(market, this, getMoney());
+//		this.priceBelief.trade(market, this, getMoney());
 	}
 	
 	@Override

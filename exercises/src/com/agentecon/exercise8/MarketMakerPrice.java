@@ -2,7 +2,6 @@ package com.agentecon.exercise8;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.finance.AbstractMarketMakerPrice;
-import com.agentecon.firm.IRegister;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.ConstantFactorBelief;
@@ -14,8 +13,6 @@ import com.agentecon.market.IPriceMakerMarket;
 public class MarketMakerPrice extends AbstractMarketMakerPrice {
 
 	private static final double RELATIVE_OFFER_SIZE = 0.10;
-	private static final double TARGET_OWNERSHIP_SHARE = 0.05;
-
 	private static final double INITIAL_SPREAD = 0.05;
 
 	private IBelief priceBelief;
@@ -23,9 +20,12 @@ public class MarketMakerPrice extends AbstractMarketMakerPrice {
 
 	private IOffer latestBid;
 	private IOffer latestAsk;
+	
+	private double targetInventory;
 
-	public MarketMakerPrice(IStock wallet, Position shares, double initialPrice) {
+	public MarketMakerPrice(IStock wallet, Position shares, double initialPrice, double targetInventory) {
 		super(wallet, shares);
+		this.targetInventory = targetInventory;
 		this.priceBelief = new ExpSearchBelief(initialPrice);
 		this.spreadBelief = new ConstantFactorBelief(INITIAL_SPREAD, 0.1);
 	}
@@ -43,9 +43,9 @@ public class MarketMakerPrice extends AbstractMarketMakerPrice {
 		if (latestAsk != null && latestAsk.isUsed()) {
 			priceBelief.adapt(true);
 		}
-		if (getPosition().getOwnershipShare() < TARGET_OWNERSHIP_SHARE) {
+		if (getPosition().getAmount() < targetInventory) {
 			spreadBelief.adapt(true);
-		} else if (getPosition().getOwnershipShare() > TARGET_OWNERSHIP_SHARE) {
+		} else if (getPosition().getAmount() > targetInventory) {
 			spreadBelief.adapt(false);
 		}
 	}
@@ -54,7 +54,7 @@ public class MarketMakerPrice extends AbstractMarketMakerPrice {
 		double offerSize = getPosition().getAmount() * RELATIVE_OFFER_SIZE;
 		double adjustmentFactor = getAdjustmentFactor();
 		latestAsk = super.placeAsk(dsm, owner, offerSize / adjustmentFactor);
-		double idealOfferSize = TARGET_OWNERSHIP_SHARE * RELATIVE_OFFER_SIZE * IRegister.SHARES_PER_COMPANY;
+		double idealOfferSize = targetInventory * RELATIVE_OFFER_SIZE;
 		latestBid = super.placeBid(dsm, owner, idealOfferSize * adjustmentFactor);
 	}
 

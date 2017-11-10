@@ -1,6 +1,9 @@
-package com.agentecon.finance;
+package com.agentecon.exercise8;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.finance.AbstractMarketMakerPrice;
+import com.agentecon.finance.CeilingFactor;
+import com.agentecon.finance.FloorFactor;
 import com.agentecon.firm.IRegister;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
@@ -20,9 +23,9 @@ public class OldMarketMakerPrice extends AbstractMarketMakerPrice {
 	private FloorFactor floor;
 	private CeilingFactor ceiling;
 
-	public OldMarketMakerPrice(IStock wallet, Position pos, double targetOwnerShipShare) {
+	public OldMarketMakerPrice(IStock wallet, Position pos, double targetShareCount) {
 		super(wallet, pos);
-		this.targetSharesOwned = targetOwnerShipShare * IRegister.SHARES_PER_COMPANY;
+		this.targetSharesOwned = targetShareCount;
 		this.floor = new FloorFactor(pos, new ExpSearchBelief(0.1, INITIAL_PRICE_BELIEF / SPREAD_MULTIPLIER) {
 			@Override
 			protected double getMax() {
@@ -61,7 +64,8 @@ public class OldMarketMakerPrice extends AbstractMarketMakerPrice {
 			// }
 			floor.adapt(ceiling.getPrice() / SPREAD_MULTIPLIER);
 			double budget = floor.getPrice() * targetSharesOwned;
-			floor.createOffers(dsm, owner, getWallet(), budget);
+			double maxBudget = getWallet().getAmount() / 10;
+			floor.createOffers(dsm, owner, getWallet(), Math.min(maxBudget, budget));
 			assert floor.getPrice() < ceiling.getPrice();
 		}
 	}

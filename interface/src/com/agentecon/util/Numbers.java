@@ -11,10 +11,18 @@ public class Numbers {
 
 	public static final double EPSILON = 0.000001; // 10e-6
 
+	/**
+	 * Returns true if the bigger number is considerably bigger, and not just
+	 * bigger by epsilon.
+	 */
 	public static final boolean isBigger(double bigger, double smaller) {
 		return bigger - smaller > EPSILON;
 	}
 
+	/**
+	 * Returns true if the smaller number is considerably smaller, and not just
+	 * smaller by epsilon.
+	 */
 	public static final boolean isSmaller(double smaller, double bigger) {
 		return isBigger(bigger, smaller);
 	}
@@ -61,6 +69,8 @@ public class Numbers {
 		double worked = 6.899999999999999d;
 		double target = 6.9d;
 		System.out.println(isSmaller(worked, target));
+		assert isBigger(10.0, 10.0 + EPSILON);
+		assert isSmaller(10.0 + EPSILON, 10.0);
 	}
 
 	/**
@@ -70,5 +80,5 @@ public class Numbers {
 		double power = Math.pow(rate, n + 1);
 		return (1 - power) / (1 - rate);
 	}
-
+	
 }

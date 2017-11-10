@@ -76,7 +76,6 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 	protected void reduceOffer(double moneyFlow, double goodsFlow) {
 		this.volume += Math.abs(moneyFlow);
 		this.quantity -= Math.abs(goodsFlow);
-		assert isBid() || this.quantity <= stock.getAmount();
 	}
 	
 	public Quantity getQuantity(){
