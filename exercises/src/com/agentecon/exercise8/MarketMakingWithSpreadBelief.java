@@ -1,7 +1,7 @@
 package com.agentecon.exercise8;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.finance.AbstractMarketMakerPrice;
+import com.agentecon.finance.AbstractMarketMaking;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.ConstantFactorBelief;
@@ -10,7 +10,7 @@ import com.agentecon.learning.IBelief;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceMakerMarket;
 
-public class MarketMakerPrice extends AbstractMarketMakerPrice {
+public class MarketMakingWithSpreadBelief extends AbstractMarketMaking {
 
 	private static final double RELATIVE_OFFER_SIZE = 0.10;
 	private static final double INITIAL_SPREAD = 0.05;
@@ -23,7 +23,7 @@ public class MarketMakerPrice extends AbstractMarketMakerPrice {
 	
 	private double targetInventory;
 
-	public MarketMakerPrice(IStock wallet, Position shares, double initialPrice, double targetInventory) {
+	public MarketMakingWithSpreadBelief(IStock wallet, Position shares, double initialPrice, double targetInventory) {
 		super(wallet, shares);
 		this.targetInventory = targetInventory;
 		this.priceBelief = new ExpSearchBelief(initialPrice);

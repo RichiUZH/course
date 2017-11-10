@@ -10,7 +10,7 @@ package com.agentecon.firm;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.finance.AbstractMarketMakerPrice;
+import com.agentecon.finance.AbstractMarketMaking;
 import com.agentecon.finance.Firm;
 import com.agentecon.finance.MarketMakerPrice;
 import com.agentecon.goods.Good;
@@ -24,7 +24,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	
 //	private double capital;
 	private double minCashLevel;
-	private AbstractMarketMakerPrice priceBelief;
+	private AbstractMarketMaking priceBelief;
 //	private QuadraticMaximizer profitModel; 
 
 	public RealEstateAgent(IAgentIdGenerator id, IStock initialMoney, Good land) {

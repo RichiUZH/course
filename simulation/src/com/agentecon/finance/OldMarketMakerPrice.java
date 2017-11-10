@@ -7,7 +7,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.market.IPriceMakerMarket;
 
-public class OldMarketMakerPrice extends AbstractMarketMakerPrice {
+public class OldMarketMakerPrice extends AbstractMarketMaking {
 
 	static final double MIN_PRICE = 1.0;
 	private static final double INITIAL_PRICE_BELIEF = 10;

@@ -1,7 +1,7 @@
 package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.finance.AbstractMarketMakerPrice;
+import com.agentecon.finance.AbstractMarketMaking;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.ExpSearchBelief;
@@ -9,7 +9,7 @@ import com.agentecon.learning.IBelief;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceMakerMarket;
 
-public class MarketMakerPrice extends AbstractMarketMakerPrice {
+public class MarketMakerPrice extends AbstractMarketMaking {
 	
 	private static final double RELATIVE_OFFER_SIZE = 0.05;
 	private static final double TARGET_OWNERSHIP_SHARE = 0.05;

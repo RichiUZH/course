@@ -7,12 +7,12 @@ import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
 
-public abstract class AbstractMarketMakerPrice {
+public abstract class AbstractMarketMaking {
 
 	private Position shares;
 	private IStock wallet;
 
-	public AbstractMarketMakerPrice(IStock wallet, Position shares) {
+	public AbstractMarketMaking(IStock wallet, Position shares) {
 		this.wallet = wallet;
 		this.shares = shares;
 	}

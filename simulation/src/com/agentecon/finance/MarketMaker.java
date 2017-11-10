@@ -23,12 +23,12 @@ import com.agentecon.util.Average;
 public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, IMarketParticipant {
 
 	private Portfolio portfolio;
-	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
+	private HashMap<Ticker, AbstractMarketMaking> priceBeliefs;
 
 	public MarketMaker(IAgentIdGenerator id, IStock money, Collection<IFirm> firms) {
 		super(id, new Endowment(money));
 		this.portfolio = new Portfolio(getMoney(), false);
-		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();
+		this.priceBeliefs = new HashMap<Ticker, AbstractMarketMaking>();
 		for (IFirm firm : firms) {
 			notifyFirmCreated(firm);
 		}
@@ -44,7 +44,7 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	}
 
 	public void postOffers(IPriceMakerMarket dsm) {
-		for (AbstractMarketMakerPrice e : priceBeliefs.values()) {
+		for (AbstractMarketMaking e : priceBeliefs.values()) {
 			e.trade(dsm, this);
 		}
 	}
@@ -58,8 +58,13 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	public void notifyFirmCreated(IFirm firm) {
 		Position pos = firm.getShareRegister().createPosition(false);
 		portfolio.addPosition(pos);
-		AbstractMarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(getMoney(), pos, 10.0));
+		AbstractMarketMaking price = createPriceBelief(getMoney(), pos, 10.0, 2);
+		AbstractMarketMaking prev = priceBeliefs.put(pos.getTicker(), price);
 		assert prev == null;
+	}
+
+	protected MarketMakerPrice createPriceBelief(IStock wallet, Position pos, double initialPrice, double targetShareCount) {
+		return new MarketMakerPrice(wallet, pos, initialPrice);
 	}
 
 	@Override
@@ -92,7 +97,7 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 
 	private Average getIndex() {
 		Average avg = new Average();
-		for (AbstractMarketMakerPrice mmp : priceBeliefs.values()) {
+		for (AbstractMarketMaking mmp : priceBeliefs.values()) {
 			avg.add(mmp.getPrice());
 		}
 		return avg;
