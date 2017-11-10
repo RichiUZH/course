@@ -16,4 +16,4 @@ Next week, we will also run these in competition with each other, and see how we
 
 The only deliverable this time is the code. No need to write a journal as long as your code is meaningfully commented.
 
-The deadline for submitting the lab journal to github is 2017-11-09 at 24:00.
+The deadline for submitting the lab journal to github is 2017-11-16 at 24:00.
