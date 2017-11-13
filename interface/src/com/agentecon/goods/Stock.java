@@ -90,7 +90,7 @@ public class Stock implements IStock {
 	@Override
 	public void transfer(IStock source, double amount) {
 		assert source.getGood().equals(getGood());
-		assert this != source;
+		assert this != source : "You cannot transfer/sell " + getGood() + " to yourself";
 		assert source.getAmount() - amount >= -Numbers.EPSILON;
 		assert this.getAmount() + amount >= -Numbers.EPSILON;
 		this.amount = Math.max(0.0, this.amount + amount);
