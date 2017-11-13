@@ -13,10 +13,9 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
+import com.agentecon.util.MovingCovarianceAlt;
 
 public class MarketMakingTest {
-
-	private double TARGET_SHARE_COUNT = 2;
 
 	private Random rand;
 
@@ -31,30 +30,21 @@ public class MarketMakingTest {
 		// Start with 1000$ and 5 shares
 		this.rand = new Random(1313);
 		this.wallet = new Stock(new Good("Money"), 1000);
-		this.shares = new Position(null, new Ticker("COMP", 1), wallet.getGood(), TARGET_SHARE_COUNT, false);
-		this.price = new MarketMaking(wallet, shares, 10.0, TARGET_SHARE_COUNT);
+		this.shares = new Position(null, new Ticker("COMP", 1), wallet.getGood(), 2.0, false);
+		this.price = new MarketMaking(wallet, shares, 10.0, 2.0);
 		this.investorPosition = new Position(null, shares.getTicker(), wallet.getGood(), 10000, true);
 		this.investorMoney = new Stock(new Good("Money"), 100000);
-	}
-
-	/**
-	 * The bid price must always be below the ask price. Otherwise, the bid would be matched with the own ask and they would neutralize themselves.
-	 */
-	@Test
-	public void testSpread() {
-		assert price.getBid() < price.getAsk() : "The bid must be lower than the ask";
 	}
 
 	// Test buying.
 	@Test
 	public void testBuying() {
 		double initialPrice = price.getAsk();
-		for (int day = 0; day < 10; day++) {
+		for (int day = 0; day < 5; day++) {
 			DailyStockMarket dsm = new DailyStockMarket(null, rand);
 			price.trade(dsm, null);
 			Ask ask = dsm.getAsk(investorPosition.getTicker());
 			ask.accept(null, investorMoney, investorPosition, ask.getQuantity());
-			testSpread();
 		}
 		assert initialPrice < price.getAsk() : "Buying shares should move the price up";
 	}
@@ -62,12 +52,11 @@ public class MarketMakingTest {
 	@Test
 	public void testSelling() {
 		double initialPrice = price.getAsk();
-		for (int day = 0; day < 10; day++) {
+		for (int day = 0; day < 5; day++) {
 			DailyStockMarket dsm = new DailyStockMarket(null, rand);
 			price.trade(dsm, null);
 			Bid bid = dsm.getBid(investorPosition.getTicker());
 			bid.accept(null, investorMoney, investorPosition, bid.getQuantity());
-			testSpread();
 		}
 		assert initialPrice > price.getAsk() : "Selling shares should move the price down";
 	}
@@ -79,7 +68,6 @@ public class MarketMakingTest {
 			price.trade(dsm, null);
 			Ask ask = dsm.getAsk(investorPosition.getTicker());
 			ask.accept(null, investorMoney, investorPosition, ask.getQuantity());
-			testSpread();
 		}
 		assert shares.hasSome() : "The market maker should never run out of shares";
 	}
@@ -94,9 +82,47 @@ public class MarketMakingTest {
 			dsm.buy(null, investorPosition.getTicker(), investorPosition, investorMoney, equilibriumPrice * dailySharesTraded);
 			dsm.sell(null, investorPosition, investorMoney, dailySharesTraded);
 //			printDiagnostics(day);
-			testSpread();
 		}
 		assert Math.abs(price.getPrice() - equilibriumPrice) < 5.0 : "After 100 days, the price belief should have approached the equilibrium price of 100, but it actually is " + price;
+	}
+	
+	@Test
+	public void testMilking() {
+		double dividends = testMilking(1000);
+		System.out.println(dividends);
+	}
+		
+	public double testMilking(double reserve) {
+		double equilibriumPrice = 100;
+		double dailySharesTraded = 0.1;
+		for (int day = 0; day < 100; day++) {
+			DailyStockMarket dsm = new DailyStockMarket(null, rand);
+			price.trade(dsm, null);
+			dsm.buy(null, investorPosition.getTicker(), investorPosition, investorMoney, equilibriumPrice * dailySharesTraded);
+			dsm.sell(null, investorPosition, investorMoney, dailySharesTraded);
+		}
+		double dividends = 0.0;
+//		double profitReserve = 0.0;
+		MovingCovarianceAlt profitMaximization = new MovingCovarianceAlt(0.8);
+		for (int day = 0; day < 1000; day++) {
+			double moneyBefore = wallet.getAmount();
+			DailyStockMarket dsm = new DailyStockMarket(null, rand);
+			price.trade(dsm, null);
+			dsm.buy(null, investorPosition.getTicker(), investorPosition, investorMoney, equilibriumPrice * dailySharesTraded);
+			dsm.sell(null, investorPosition, investorMoney, dailySharesTraded);
+			double profit = wallet.getAmount() - moneyBefore;
+//			profitReserve += profit;
+			profitMaximization.add(moneyBefore, profit);
+			double dividend = Math.max(0, wallet.getAmount() - reserve);
+			double corr = profitMaximization.getCorrelation();
+//			double dividend = corr < 0.0 ? wallet.getAmount() * Math.min(0.5, -corr) : 0.0;
+			wallet.remove(dividend);
+//			profitReserve -= dividend;
+//			System.out.println(wallet.getAmount() + "\t" + profit + "\t" + profitMaximization.getCorrelation() + "\t" + dividend);
+			dividends += dividend;
+//			printDiagnostics(day);
+		}
+		return dividends;
 	}
 
 	@Test
@@ -108,14 +134,8 @@ public class MarketMakingTest {
 			price.trade(dsm, null);
 			dsm.buy(null, investorPosition.getTicker(), investorPosition, investorMoney, equilibriumPrice * dailySharesTraded);
 			dsm.sell(null, investorPosition, investorMoney, dailySharesTraded);
-			printDiagnostics(day);
-			testSpread();
+//			printDiagnostics(day);
 		}
-		checkInventory(TARGET_SHARE_COUNT);
-	}
-
-	private void checkInventory(double initialInventory) {
-		assert Math.abs(initialInventory - shares.getAmount()) < initialInventory / 10 : "The inventory should recover back to " + initialInventory + " over time, but it is " + shares.getAmount();
 	}
 
 	@Test
@@ -135,10 +155,8 @@ public class MarketMakingTest {
 			dsm.buy(null, investorPosition.getTicker(), investorPosition, investorMoney, equilibriumPrice * dailySharesTraded);
 			dsm.sell(null, investorPosition, investorMoney, dailySharesTraded);
 			printDiagnostics(day);
-			testSpread();
 		}
 		assert Math.abs(price.getPrice() - equilibriumPrice) < 5.0 : "The price belief should have approached the equilibrium price of 100, but it actually is " + price;
-		checkInventory(TARGET_SHARE_COUNT);
 	}
 	
 	/**
@@ -155,9 +173,7 @@ public class MarketMakingTest {
 			dsm.buy(null, investorPosition.getTicker(), investorPosition, investorMoney, equilibriumPrice * dailySharesTraded);
 			dsm.sell(null, investorPosition, investorMoney, dailySharesTraded);
 //			printDiagnostics(day);
-			testSpread();
 		}
-		checkInventory(TARGET_SHARE_COUNT);
 	}
 
 	private boolean printedLabels = false;
