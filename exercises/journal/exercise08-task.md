@@ -10,7 +10,7 @@ Try to make the class [MarketMaking](../src/com/agentecon/exercise8/MarketMaking
 * Is the code well-structured and non-obvious ideas documented? (See also the slides on documentation and clean code.)
 * Did you think on your own or did you just copy things from me?
 
-Next week, we will also run these in competition with each other, and see how well your algorithms do in the simulation. However, this is not graded so you can focus on making it work under the testing conditions.
+Even if your idea does not work, you can still get a good score just by structuring and documenting your code well (descriptive method and variable names, short methods, comments that explain the "why").
 
 ## Deliverables and deadline
 
