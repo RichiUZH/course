@@ -69,16 +69,10 @@ public class Farm extends Producer {
 	@Override
 	public void offer(IPriceMakerMarket market) {
 		double budget = calculateBudget();
-		// spendings.add(budget);
 		marketing.createOffers(market, this, budget);
 	}
 
 	private double calculateBudget() {
-		// try {
-		// return getProductionFunction().getCostOfMaximumProfit(getInventory(), marketing);
-		// } catch (PriceUnknownException e) {
-		// return getMoney().getAmount() * (1 - CAPITAL_BUFFER);
-		// }
 		double profits = marketing.getFinancials(getInventory(), getProductionFunction()).getProfits();
 		control.reportOutput(profits);
 		return control.getCurrentInput();

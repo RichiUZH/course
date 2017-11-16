@@ -27,8 +27,7 @@ import com.agentecon.production.PriceUnknownException;
  * 
  * They start with an inventory of 1000 taler and 10 units of land.
  * 
- * All four real estate agents share the same production function, and the production
- * function has a memory! So production gets harder and harder with every function call...
+ * All four real estate agents share the same production function, and the production function has a memory! So production gets harder and harder with every function call...
  */
 public class RealEstateAgent extends Producer {
 
@@ -69,21 +68,23 @@ public class RealEstateAgent extends Producer {
 	@Override
 	public void offer(IPriceMakerMarket market) {
 		this.priceBelief.trade(market, this); // trade land using the market making formula
-		
+
 		// buy some man-hours to produce additional land
-		this.input.createOffers(market, this, getMoney(), getMoney().getAmount() / 10);
+		if (getMoney().getAmount() > minCashLevel) {
+			this.input.createOffers(market, this, getMoney(), (getMoney().getAmount() - minCashLevel) / 10);
+		}
 	}
 
 	@Override
 	public void adaptPrices() {
 		input.adaptPrice();
-		
+
 		// market making already adapts prices during offer phase, no need to act here
 	}
-	
+
 	@Override
 	public void produce() {
-		super.produce(); // just use all available man-hours to produce some land 
+		super.produce(); // just use all available man-hours to produce some land
 	}
 
 	@Override

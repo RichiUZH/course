@@ -65,6 +65,7 @@ public class PersistentProductionFunction implements IProductionFunction {
 			Good good = previousInputs[i].getGood();
 			total[i] = new Quantity(good, previousInputs[i].getAmount() + inventory.getStock(good).consume());
 		}
+		this.previousInputs = total;
 		Quantity output = function.calculateOutput(total);
 		Quantity actualOutput = new Quantity(output.getGood(), output.getAmount() - previousOutput);
 		this.previousOutput = output.getAmount();

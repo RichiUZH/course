@@ -39,14 +39,7 @@ public class CustomConfiguration extends SimulationConfig {
 	}
 
 	protected ClassLoader findLoader(RemoteLoader parent, SimulationHandle handle) throws SocketTimeoutException, IOException {
-		synchronized (parent) {
-			ClassLoader loader = parent.getSubloader(handle);
-			if (loader == null) {
-				return new CompilingClassLoader(parent, handle);
-			} else {
-				return loader;
-			}
-		}
+		return parent.obtainChildLoader(handle);
 	}
 
 	@Override

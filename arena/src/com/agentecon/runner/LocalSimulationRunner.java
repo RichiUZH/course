@@ -45,14 +45,14 @@ public class LocalSimulationRunner {
 		// stats.print(System.out);
 		ranking.print(System.out);
 //
-		System.out.println();
-		try {
-			writer.export(prices);
-			System.out.println();
-		} catch (NoInterestingTimeSeriesFoundException e) {
-			System.out.println("Not creating an excel file for " + prices.getName() + " as there is no interesting data");
-		}
-		sim.getConfig().diagnoseResult(System.out, sim);
+//		System.out.println();
+//		try {
+//			writer.export(prices);
+//			System.out.println();
+//		} catch (NoInterestingTimeSeriesFoundException e) {
+//			System.out.println("Not creating an excel file for " + prices.getName() + " as there is no interesting data");
+//		}
+//		sim.getConfig().diagnoseResult(System.out, sim);
 	}
 
 	public static void main(String[] args) throws SocketTimeoutException, IOException, PriceUnknownException {

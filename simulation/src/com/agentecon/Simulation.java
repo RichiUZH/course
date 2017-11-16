@@ -9,8 +9,8 @@ import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
+import com.agentecon.configuration.CapitalConfiguration;
 import com.agentecon.configuration.IConfiguration;
-import com.agentecon.configuration.StocksConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
 import com.agentecon.goods.Good;
@@ -43,7 +43,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private MarketStatistics goodsMarketStats;
 
 	public Simulation() throws IOException {
-		this(new StocksConfiguration());
+		this(new CapitalConfiguration());
 	}
 	
 	public Simulation(IConfiguration metaConfig) {

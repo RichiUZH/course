@@ -87,14 +87,14 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 		addInitialFarms();
 		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
 		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-		addCustomFarms(CapitalConfiguration.class.getClassLoader(), "team002");
-		addCustomFarms(CapitalConfiguration.class.getClassLoader(), "team003");
+		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
+		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
 		addEvent(new CentralBankEvent(POTATOE));
 	}
 
-	private void addCustomFarms(ClassLoader parent, String team) throws IOException {
+	private void addCustomFarms(RemoteLoader parent, String team) throws IOException {
 		try {
-			ClassLoader loader = new CompilingClassLoader((RemoteLoader)parent, shouldLoadRemoteTeams() ? new GitSimulationHandle("meisser", team, false) : new LocalSimulationHandle(false));
+			ClassLoader loader = parent.obtainChildLoader(shouldLoadRemoteTeams() ? new GitSimulationHandle("meisser", team, false) : new LocalSimulationHandle(false));
 			ILandbuyingFarmFactory factory = (ILandbuyingFarmFactory) loader.loadClass(FARM_FACTORY).newInstance();
 			addEvent(new SimEvent(20) {
 				

@@ -29,6 +29,24 @@ public abstract class RemoteLoader extends ClassLoader {
 		this.bytecode = new HashMap<>();
 		this.subLoaderCache = new HashMap<>();
 	}
+	
+	public synchronized RemoteLoader obtainChildLoader(SimulationHandle source) throws IOException {
+		RemoteLoader existing = subLoaderCache.get(source);
+		if (existing == null) {
+			CompilingClassLoader loader = new CompilingClassLoader(this, source, true);
+			RemoteLoader prev = subLoaderCache.put(source, loader);
+			assert prev == null;
+			return loader;
+		} else {
+			return existing;
+		}
+	}
+	
+	@Deprecated
+	public void ensureRegistered(CompilingClassLoader loader) {
+		RemoteLoader prev = subLoaderCache.put(source, loader);
+		assert prev == null || prev == loader;
+	}
 
 	protected byte[] loadBytecode(String classname) throws ClassNotFoundException {
 		throw new ClassNotFoundException(classname);
@@ -69,15 +87,6 @@ public abstract class RemoteLoader extends ClassLoader {
 		return subLoaderCache.values();
 	}
 	
-	public void registerSubloader(RemoteLoader loader) {
-		registerSubloader(loader.getSource(), loader);
-	}
-
-	public void registerSubloader(SimulationHandle source, RemoteLoader loader) {
-		RemoteLoader prev = this.subLoaderCache.put(source, loader);
-		assert prev == null || loader == prev;
-	}
-
 	public RemoteLoader getSubloader(SimulationHandle handle) {
 		return this.subLoaderCache.get(handle);
 	}

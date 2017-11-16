@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.classloader.CompilingClassLoader;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.RemoteLoader;
@@ -24,7 +23,7 @@ public class ReflectiveAgentFactory implements IAgentFactory {
 	private ClassLoader loader;
 
 	public ReflectiveAgentFactory(RemoteLoader parent, String team, String name) throws IOException {
-		this(new CompilingClassLoader(parent, team.equals(LOCAL) ? new LocalSimulationHandle(false) : new GitSimulationHandle("meisser", team, false)), name);
+		this(parent.obtainChildLoader(team.equals(LOCAL) ? new LocalSimulationHandle(false) : new GitSimulationHandle("meisser", team, false)), name);
 	}
 
 	public ReflectiveAgentFactory(ClassLoader loader, String name) {

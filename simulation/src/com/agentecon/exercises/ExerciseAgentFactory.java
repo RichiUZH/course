@@ -39,12 +39,7 @@ public class ExerciseAgentFactory implements IAgentFactory {
 		if (parent == null) {
 			this.loader = new CompilingClassLoader(handle);
 		} else {
-			RemoteLoader loader = parent.getSubloader(handle);
-			if (loader == null) {
-				this.loader = new CompilingClassLoader(parent, handle);
-			} else {
-				this.loader = loader;
-			}
+			this.loader = parent.obtainChildLoader(handle);
 		}
 	}
 
