@@ -8,6 +8,7 @@
  */
 package com.agentecon.firm;
 
+import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.finance.Producer;
@@ -27,23 +28,39 @@ public class Farm extends Producer {
 	private static final double CAPITAL_TO_SPENDINGS_RATIO = 1 / (1 - CAPITAL_BUFFER);
 
 	private IControl control;
-	// private MovingAverage spendings;
 	private MarketingDepartment marketing;
 
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
 		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble() / 2 + 0.25);
-		// this.control = new QuadraticMaximizer(0.75, id.getRand().nextLong(), 100, 10000);
-		// this.spendings = new MovingAverage(0.95);
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
 		assert getMoney().getAmount() > 0;
 	}
+	
+	public Farm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+		this(id, end, prodFun, null);
+	}
+
+	public Farm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun, IStatistics stats) {
+		super(id, end, prodFun);
+		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble() / 2 + 0.25);
+		this.marketing = new MarketingDepartment(getMoney(), stats == null ? null : stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
+		assert getMoney().getAmount() > 0;
+	}
+
+	protected IStock getLand() {
+		return getInventory().getStock(FarmingConfiguration.LAND);
+	}
 
 	protected double getInitialBudget(IStatistics stats) {
 		try {
-			return stats.getGoodsMarketStats().getPriceBelief(FarmingConfiguration.MAN_HOUR) * 10;
+			if (stats != null) {
+				return stats.getGoodsMarketStats().getPriceBelief(FarmingConfiguration.MAN_HOUR) * 10;
+			} else {
+				return 100;
+			}
 		} catch (PriceUnknownException e) {
 			return 100;
 		}
@@ -87,7 +104,6 @@ public class Farm extends Producer {
 		double targetSize = spending * CAPITAL_TO_SPENDINGS_RATIO;
 		double excessReserve = getMoney().getAmount() - targetSize;
 		if (excessReserve > 0) {
-			// only adjust reserves slowly
 			return excessReserve / 20;
 		} else {
 			return 0;
@@ -106,9 +122,6 @@ public class Farm extends Producer {
 		} else {
 			daysWithoutProfit = 0;
 		}
-		// if (getAgentId() == 33) {
-		// System.out.println(stats.getDay() + "\tProfits\t" + profits + "\tRevenue\t" + fin.getLatestRevenue() + "\tCash\t" + getMoney().getAmount() + "\t" + daysWithoutProfit);
-		// }
 		return daysWithoutProfit > 100;
 	}
 

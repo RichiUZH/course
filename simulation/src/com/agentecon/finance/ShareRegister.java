@@ -33,11 +33,11 @@ public class ShareRegister implements IRegister {
 		owner.transfer(rootPosition, rootPosition.getAmount() / 2);
 	}
 
-	public void raiseCapital(IStockMarket dsm, IAgent owner, IStock wallet) {
+	public void raiseCapital(IStockMarket dsm, IAgent owner, IStock wallet, double minAcceptableValuation) {
 		if (!rootPosition.isEmpty()) {
 			collectRootDividend(wallet);
 			Bid bid = dsm.getBid(getTicker());
-			if (bid != null) {
+			if (bid != null && bid.getPrice().getPrice() > minAcceptableValuation / SHARES_PER_COMPANY) {
 				double volume = Math.min(rootPosition.getAmount(), bid.getAmount() / 2);
 				bid.accept(owner, wallet, rootPosition, new Quantity(rootPosition.getGood(), volume));
 			}

@@ -30,7 +30,11 @@ public class MarketingDepartment implements IPriceProvider {
 
 	private IBelief getPriceBelief(IMarketStatistics stats, Good good) {
 		try {
-			return new ExpSearchBelief(stats.getPriceBelief(good));
+			if (stats != null) {
+				return new ExpSearchBelief(stats.getPriceBelief(good));
+			} else {
+				return new ExpSearchBelief();
+			}
 		} catch (PriceUnknownException e) {
 			// price not known, use default belief
 			return new ExpSearchBelief();

@@ -23,7 +23,7 @@ public interface IProductionFunction {
 	 * Returns the relative weight of the given input goods and
 	 * whether they are capital goods or transformed goods.
 	 */
-	public Weight getWeight(Good manhours);
+	public Weight getWeight(Good good);
 	
 	/**
 	 * Returns the number of units of the given good that are needed

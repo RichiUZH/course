@@ -10,11 +10,10 @@ package com.agentecon.firm;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.finance.AbstractMarketMaking;
 import com.agentecon.finance.Firm;
-import com.agentecon.finance.MarketMakerPrice;
 import com.agentecon.goods.Good;
-import com.agentecon.goods.IStock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.production.IGoodsTrader;
 
@@ -26,10 +25,13 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	private double minCashLevel;
 	private AbstractMarketMaking priceBelief;
 //	private QuadraticMaximizer profitModel; 
+	
+	public RealEstateAgent(IAgentIdGenerator id, Endowment end) {
+		this(id, end, FarmingConfiguration.LAND);
+	}
 
-	public RealEstateAgent(IAgentIdGenerator id, IStock initialMoney, Good land) {
-		super(id, new Endowment(initialMoney.getGood()));
-		getMoney().absorb(initialMoney);
+	public RealEstateAgent(IAgentIdGenerator id, Endowment initialMoney, Good land) {
+		super(id, initialMoney);
 		
 		this.minCashLevel = getMoney().getAmount();
 //		this.priceBelief = new MarketMakerPrice(getStock(land), 0.1);

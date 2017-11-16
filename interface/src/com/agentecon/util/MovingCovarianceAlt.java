@@ -25,7 +25,7 @@ public class MovingCovarianceAlt {
 	}
 	
 	public double getCorrelation(){
-		return getCovariance() / Math.sqrt(x.getVariance() * y.getVariance());
+		return Math.min(1.0, Math.max(-1.0, getCovariance() / Math.sqrt(x.getVariance() * y.getVariance())));
 	}
 
 }

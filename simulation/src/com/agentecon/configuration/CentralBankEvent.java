@@ -39,9 +39,4 @@ public class CentralBankEvent extends SimEvent {
 		}		
 	}
 
-	@Override
-	public void execute(int day, ICountry sim) {
-		throw new RuntimeException();
-	}
-
 }

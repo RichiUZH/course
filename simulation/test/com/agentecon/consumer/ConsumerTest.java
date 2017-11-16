@@ -32,11 +32,11 @@ public class ConsumerTest implements IAgentIdGenerator {
 	public static final Good SWISSTIME = new Good("Swiss man-hours", 0.0);
 	public static final Good ITALTIME = new Good("Italian man-hours", 0.0);
 
-	public static IOffer createBid() {
+	public static Bid createBid() {
 		return new Bid(null, new Stock(MONEY, 10000), new Stock(SWISSTIME), new Price(SWISSTIME, 2.97287), 1000);
 	}
 
-	public static IOffer createAsk() {
+	public static Ask createAsk() {
 		return new Ask(null, new Stock(MONEY), new Stock(FONDUE, 1000), new Price(FONDUE, 10), 1000);
 	}
 
@@ -63,8 +63,8 @@ public class ConsumerTest implements IAgentIdGenerator {
 		cons.collectDailyEndowment();
 		cons.tradeGoods(new IPriceTakerMarket() {
 
-			private IOffer ask = createAsk();
-			private IOffer bid = createBid();
+			private Ask ask = createAsk();
+			private Bid bid = createBid();
 
 			@Override
 			public Collection<IOffer> getOffers(IPriceFilter bidAskFilter) {
@@ -72,8 +72,13 @@ public class ConsumerTest implements IAgentIdGenerator {
 			}
 
 			@Override
-			public IOffer getOffer(Good good, boolean bid) {
-				return bid ? this.bid : this.ask;
+			public Ask getAsk(Good good) {
+				return ask;
+			}
+			
+			@Override
+			public Bid getBid(Good good) {
+				return bid;
 			}
 
 			@Override
@@ -102,17 +107,20 @@ public class ConsumerTest implements IAgentIdGenerator {
 		cons.collectDailyEndowment();
 		cons.tradeGoods(new IPriceTakerMarket() {
 
-			private IOffer ask = new Ask(null, new Stock(MONEY), new Stock(PIZZA, 1000), new Price(PIZZA, 1.0), 1000);
-			private IOffer bid = new Bid(null, new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);
+			private Ask ask = new Ask(null, new Stock(MONEY), new Stock(PIZZA, 1000), new Price(PIZZA, 1.0), 1000);
+			private Bid bid = new Bid(null, new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);
 
 			@Override
 			public Collection<IOffer> getOffers(IPriceFilter bidAskFilter) {
 				return Arrays.asList(bid, ask);
 			}
 
-			@Override
-			public IOffer getOffer(Good good, boolean bid) {
-				return bid ? this.bid : this.ask;
+			public Ask getAsk(Good good) {
+				return ask;
+			}
+			
+			public Bid getBid(Good good) {
+				return bid;
 			}
 
 			@Override

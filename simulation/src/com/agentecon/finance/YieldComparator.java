@@ -2,12 +2,11 @@ package com.agentecon.finance;
 
 import java.util.Comparator;
 
-import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Ticker;
 import com.agentecon.market.AbstractOffer;
 
-public class YieldComparator implements Comparator<IFirm> {
+public class YieldComparator implements Comparator<Ticker> {
 
 	private boolean buying;
 	private IStockMarket dsm;
@@ -18,15 +17,15 @@ public class YieldComparator implements Comparator<IFirm> {
 	}
 
 	@Override
-	public int compare(IFirm o1, IFirm o2) {
+	public int compare(Ticker o1, Ticker o2) {
 		double yield1 = getYield(o1);
 		double yield2 = getYield(o2);
 		return Double.compare(yield1, yield2);
 	}
 
-	public double getYield(IFirm o1) {
-		double dividend = o1.getShareRegister().getAverageDividend();
-		double price = getPrice(o1.getTicker());
+	public double getYield(Ticker o1) {
+		double dividend = dsm.getFirmData(o1).getDailyDividendPerShare();
+		double price = getPrice(o1);
 		return dividend / price;
 	}
 

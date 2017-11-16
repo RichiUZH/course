@@ -11,24 +11,23 @@ import com.agentecon.goods.Quantity;
 
 public interface IPriceTakerMarket extends IMarket {
 
-	// public double buy(Wallet wallet, Stock stock, double amount);
-	//
-	// public double sell(Wallet wallet, Stock stock, double amount);
-	//
-	// /**
-	// * Convenience method to either buy (if amount positive) or sell (if amount
-	// negative)
-	// * at the current best market price
-	// */
-	// public double trade(Wallet wallet, Stock stock, double amount);
-
 	public Collection<IOffer> getBids();
 
 	public Collection<IOffer> getAsks();
 
 	public Collection<IOffer> getOffers(IPriceFilter bidAskFilter);
+	
+	public default Ask getAsk(Good good) {
+		return (Ask) getOffer(good, false);
+	}
+	
+	public default Bid getBid(Good good) {
+		return (Bid) getOffer(good, true);
+	}
 
-	public IOffer getOffer(Good good, boolean bid);
+	public default IOffer getOffer(Good good, boolean bid) {
+		return bid ? getBid(good) : getAsk(good);
+	}
 	
 	public default void sellSome(IAgent who, IStock wallet, IStock good) {
 		sellSome(who, wallet, good, 1.0);

@@ -2,10 +2,9 @@ package com.agentecon.research;
 
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.firm.IFirm;
-import com.agentecon.firm.IShareholder;
 import com.agentecon.market.IStatistics;
 
-public interface IFounder extends IShareholder {
+public interface IFounder {
 	
 	/**
 	 * Every morning, before trading takes place, all agents that implement IFounder

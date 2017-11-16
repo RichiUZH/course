@@ -20,7 +20,8 @@ public abstract class SimEvent extends Event {
 		super(step, interval, card);
 	}
 	
-	public abstract void execute(int day, ICountry sim);
+	public void execute(int day, ICountry sim) {
+	}
 
 	public void execute(int day, ICountry sim, IStatistics stats) {
 		execute(day, sim);

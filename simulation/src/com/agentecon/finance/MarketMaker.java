@@ -63,8 +63,14 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 		assert prev == null;
 	}
 
-	protected MarketMakerPrice createPriceBelief(IStock wallet, Position pos, double initialPrice, double targetShareCount) {
-		return new MarketMakerPrice(wallet, pos, initialPrice);
+	protected MarketMaking createPriceBelief(IStock wallet, Position pos, double initialPrice, double targetShareCount) {
+		return new MarketMaking(wallet, pos, initialPrice, targetShareCount) {
+			@Override
+			protected IStock getWallet() {
+				int positions = priceBeliefs.size();
+				return wallet.hideRelative(1.0 - 1.0/positions);
+			}
+		};
 	}
 
 	@Override
@@ -105,28 +111,16 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 
 	@Override
 	protected double calculateDividends(int day) {
-		double cash = getMoney().getAmount();
+		double cash = getMoney().getAmount() - 10000;
+		return Math.max(0.0, cash * 0.01);
 //		double receivedDividend = getPortfolio().getLatestDividendIncome();
 //		double portfolioValue = getPortfolio().calculateValue(this);
 //		double targetCash = Math.max(MIN_CASH, OFFER_FRACTION * portfolioValue / BUDGET_FRACTION);
 //		double excessCash = cash - targetCash;
 //		double excessAssets = calculateExcessAssets(TARGET_OWNER_SHIP_SHARE);
-		if (cash < 10000) {
-			return 0;
-		} else {
-			return (cash - 10000) * 0.01;
-		}
 //		double ownerShipShare = getAverageOwnershipShare().getAverage();
 //		double ownerShipBasedDividend = cash * (ownerShipShare - TARGET_OWNER_SHIP_SHARE);
 //		return Math.max(0, Math.max(excessCash / 10, ownerShipBasedDividend));
-	}
-
-	private double calculateExcessAssets(double targetShareCount) {
-		double excess = 0.0;
-		for (Position pos: getPortfolio().getPositions()) {
-			excess += getPrice(pos.getTicker()) * (pos.getAmount() - targetShareCount);
-		}
-		return excess;
 	}
 
 	@Override
