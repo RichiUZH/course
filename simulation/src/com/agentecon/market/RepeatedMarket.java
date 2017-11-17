@@ -126,10 +126,6 @@ public class RepeatedMarket {
 			}
 		}
 
-		@Override
-		public void notifyMarketClosed(int day) {
-		}
-
 	}
 
 }

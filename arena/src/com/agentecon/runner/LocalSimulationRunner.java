@@ -18,6 +18,7 @@ import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.metric.NoInterestingTimeSeriesFoundException;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.export.ExcelWriter;
+import com.agentecon.metric.variants.MarketMakerStats;
 import com.agentecon.metric.variants.UtilityRanking;
 import com.agentecon.metric.variants.WealthStats;
 import com.agentecon.production.PriceUnknownException;
@@ -36,7 +37,7 @@ public class LocalSimulationRunner {
 		UtilityRanking ranking = new UtilityRanking(sim, false);
 //		SimStats prodStats = new ProductionStats(sim, false);
 //		SimStats stats = new DividendStats(sim, new ArrayList<>());
-		SimStats prices = new WealthStats(sim, true);
+		SimStats prices = new MarketMakerStats(sim);
 		sim.addListener(prices);
 //		sim.addListener(stats);
 		sim.addListener(ranking);

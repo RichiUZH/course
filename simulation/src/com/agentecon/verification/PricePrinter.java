@@ -51,10 +51,6 @@ public class PricePrinter extends SimulationListenerAdapter implements IMarketLi
 	}
 	
 	@Override
-	public void notifyMarketClosed(int day) {
-	}
-
-	@Override
 	public void notifyDayEnded(int day) {
 		if (day >= startRecordingDate && day < endRecordingDate) {
 			String line = Integer.toString(day);

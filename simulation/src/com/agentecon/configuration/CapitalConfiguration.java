@@ -16,7 +16,6 @@ import com.agentecon.IAgentFactory;
 import com.agentecon.ReflectiveAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.classloader.CompilingClassLoader;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.RemoteLoader;
@@ -54,7 +53,7 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 
 	public static final double GROWTH_RATE = 0.005;
 
-	private static final int GROW_UNTIL = 300; // day at which growth stops
+	private static final int GROW_UNTIL = 350; // day at which growth stops
 	
 	protected static final double START_CAPITAL = 1000;
 
@@ -85,10 +84,10 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 		createBasicPopulation(workerEndowment);
 		addMarketMakers();
 		addInitialFarms();
-		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
-		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
-		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
+//		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
+//		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
+//		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
+//		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
 		addEvent(new CentralBankEvent(POTATOE));
 	}
 

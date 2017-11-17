@@ -78,10 +78,6 @@ public class TradeMiniChart extends MiniChart {
 			this.price = new Average();
 		}
 
-		@Override
-		public void notifyMarketClosed(int day) {
-		}
-
 		public double getPrice() {
 			return price.getAverage();
 		}

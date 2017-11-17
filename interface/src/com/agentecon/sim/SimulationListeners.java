@@ -43,7 +43,7 @@ public class SimulationListeners extends AbstractListenerList<ISimulationListene
 			l.notifyStockMarketOpened(market);
 		}		
 	}
-
+	
 	@Override
 	public void notifyAgentCreated(IAgent agent) {
 		for (ISimulationListener l: list){
@@ -57,5 +57,5 @@ public class SimulationListeners extends AbstractListenerList<ISimulationListene
 			l.notifyAgentDied(agent);
 		}	
 	}
-
+	
 }

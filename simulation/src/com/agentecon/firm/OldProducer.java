@@ -34,7 +34,7 @@ public class OldProducer extends Firm implements IProducer {
 	private ProducerListeners listeners;
 
 	public OldProducer(IAgentIdGenerator id, Endowment end, IProductionFunction prod) {
-		this(id, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
+		this(id, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalConsumedWeight()));
 	}
 
 	public OldProducer(IAgentIdGenerator id, Endowment end, IProductionFunction prod, IFirmDecisions strategy) {

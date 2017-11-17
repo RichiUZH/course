@@ -111,14 +111,6 @@ public class Equality extends SimStats implements IMarketListener {
 	}
 
 	@Override
-	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
-	}
-
-	@Override
-	public void notifyTradesCancelled() {
-	}
-
-	@Override
 	public void notifyMarketClosed(int day) {
 		// Calculate wealth after market close so goods that will be consumed soon are included
 		IStatistics stats = getStats();

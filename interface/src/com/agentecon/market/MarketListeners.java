@@ -1,6 +1,7 @@
 package com.agentecon.market;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.firm.IStockMarket;
 import com.agentecon.goods.Good;
 import com.agentecon.util.AbstractListenerList;
 
@@ -17,6 +18,13 @@ public class MarketListeners extends AbstractListenerList<IMarketListener> imple
 	public void notifyTradesCancelled() {
 		for (IMarketListener l: list){
 			l.notifyTradesCancelled();
+		}
+	}
+	
+	@Override
+	public void notifyOffersPosted(IStockMarket market) {
+		for (IMarketListener l: list){
+			l.notifyOffersPosted(market);
 		}
 	}
 

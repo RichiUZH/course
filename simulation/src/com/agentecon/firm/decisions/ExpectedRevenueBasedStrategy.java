@@ -1,5 +1,7 @@
 package com.agentecon.firm.decisions;
 
+import com.agentecon.firm.production.CobbDouglasProduction;
+
 public class ExpectedRevenueBasedStrategy implements IFirmDecisions {
 
 	private double laborshare;
@@ -10,6 +12,10 @@ public class ExpectedRevenueBasedStrategy implements IFirmDecisions {
 		this.profitshare = 1.0 - laborshare;
 	}
 	
+	public ExpectedRevenueBasedStrategy(CobbDouglasProduction prodFun) {
+		this(prodFun.getTotalConsumedWeight());
+	}
+
 	protected double getLaborShare(){
 		return laborshare;
 	}
@@ -20,7 +26,7 @@ public class ExpectedRevenueBasedStrategy implements IFirmDecisions {
 	}
 
 	public double calcCogs(IFinancials financials) {
-		return financials.getCash() / 5.0;
+		return financials.getCash() / 5.0 + financials.getFixedCosts();
 	}
 
 	@Override

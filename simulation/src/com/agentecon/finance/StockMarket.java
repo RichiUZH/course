@@ -45,6 +45,8 @@ public class StockMarket {
 			mm.postOffers(dsm);
 		}
 		
+		dsm.notifyOffersPosted();
+		
 		// System.out.println(day + " trading stats " + dsm.getTradingStats());
 		for (IFirm pc : ags.getFirms()) {
 			pc.raiseCapital(dsm);

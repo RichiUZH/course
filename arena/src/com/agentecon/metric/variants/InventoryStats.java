@@ -57,13 +57,11 @@ public class InventoryStats extends SimStats {
 		for (IAgent ag : agents.getAgents()) {
 			Inventory inv = ag.getInventory();
 			for (IStock stock : inv.getAll()) {
-				if (!stock.isEmpty() && stock.getGood().getPersistence() > 0.0) {
-					TimeSeriesCollector collector = inventoriesByGoods.get(stock.getGood());
-					collector.record(day, ag, stock.getAmount());
-				}
+				TimeSeriesCollector collector = inventoriesByGoods.get(stock.getGood());
+				collector.record(day, ag, stock.getAmount());
 			}
 		}
-		for (TimeSeriesCollector c: inventoriesByGoods.values()) {
+		for (TimeSeriesCollector c : inventoriesByGoods.values()) {
 			c.flushDay(day, true);
 		}
 	}

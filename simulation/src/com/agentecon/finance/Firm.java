@@ -76,8 +76,8 @@ public abstract class Firm extends Agent implements IFirm {
 		double dividend = calculateDividends(day);
 		// pay at most 20% of the available cash
 		if (dividend > 0) {
-			double consumerOwned = getShareRegister().getConsumerOwnedShare();
-			dividend /= consumerOwned;
+//			double consumerOwned = getShareRegister().getConsumerOwnedShare();
+//			dividend /= consumerOwned;
 			dividend = Math.min(dividend, getDividendWallet().getAmount() * 0.2);
 		} else {
 			dividend = 0.0; // cannot pay a negative dividend

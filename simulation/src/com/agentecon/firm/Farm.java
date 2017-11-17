@@ -12,10 +12,11 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.finance.Producer;
+import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFinancials;
+import com.agentecon.firm.decisions.IFirmDecisions;
+import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.goods.IStock;
-import com.agentecon.learning.CovarianceControl;
-import com.agentecon.learning.IControl;
 import com.agentecon.learning.MarketingDepartment;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.IStatistics;
@@ -24,15 +25,12 @@ import com.agentecon.production.PriceUnknownException;
 
 public class Farm extends Producer {
 
-	private static final double CAPITAL_BUFFER = 0.9;
-	private static final double CAPITAL_TO_SPENDINGS_RATIO = 1 / (1 - CAPITAL_BUFFER);
-
-	private IControl control;
+	private IFirmDecisions strategy;
 	private MarketingDepartment marketing;
 
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
-		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble() / 2 + 0.25);
+		this.strategy = new ExpectedRevenueBasedStrategy((CobbDouglasProduction)prodFun);
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
@@ -45,7 +43,7 @@ public class Farm extends Producer {
 
 	public Farm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun, IStatistics stats) {
 		super(id, end, prodFun);
-		this.control = new CovarianceControl(getInitialBudget(stats), id.getRand().nextDouble() / 2 + 0.25);
+		this.strategy = new ExpectedRevenueBasedStrategy((CobbDouglasProduction)prodFun);
 		this.marketing = new MarketingDepartment(getMoney(), stats == null ? null : stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		assert getMoney().getAmount() > 0;
 	}
@@ -68,14 +66,8 @@ public class Farm extends Producer {
 
 	@Override
 	public void offer(IPriceMakerMarket market) {
-		double budget = calculateBudget();
+		double budget = strategy.calcCogs(getFinancials());
 		marketing.createOffers(market, this, budget);
-	}
-
-	private double calculateBudget() {
-		double profits = marketing.getFinancials(getInventory(), getProductionFunction()).getProfits();
-		control.reportOutput(profits);
-		return control.getCurrentInput();
 	}
 
 	@Override
@@ -94,14 +86,15 @@ public class Farm extends Producer {
 
 	@Override
 	protected double calculateDividends(int day) {
-		double spending = marketing.getFinancials(getInventory(), getProductionFunction()).getLatestCogs();
-		double targetSize = spending * CAPITAL_TO_SPENDINGS_RATIO;
-		double excessReserve = getMoney().getAmount() - targetSize;
-		if (excessReserve > 0) {
-			return excessReserve / 20;
-		} else {
-			return 0;
-		}
+		return strategy.calcDividend(getFinancials());
+//		double spending = marketing.getFinancials(getInventory(), getProductionFunction()).getLatestCogs();
+//		double targetSize = spending * CAPITAL_TO_SPENDINGS_RATIO;
+//		double excessReserve = getMoney().getAmount() - targetSize;
+//		if (excessReserve > 0) {
+//			return excessReserve / 20;
+//		} else {
+//			return 0;
+//		}
 	}
 
 	private int daysWithoutProfit = 0;

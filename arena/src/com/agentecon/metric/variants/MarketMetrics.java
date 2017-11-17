@@ -95,10 +95,6 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	}
 	
 	@Override
-	public void notifyMarketClosed(int day) {
-	}
-
-	@Override
 	public void notifyAgentCreated(IAgent agent) {
 		agent.addListener(this);
 	}

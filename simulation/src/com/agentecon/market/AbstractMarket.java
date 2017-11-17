@@ -25,16 +25,26 @@ public abstract class AbstractMarket {
 
 	public void offer(Bid bid) {
 		Ask ask = getAsk();
-		if (ask != null) {
+		while (ask != null) {
 			bid.match(ask);
+			if (ask.isUsed()) {
+				ask = getAsk();
+			} else {
+				break;
+			}
 		}
 		insert(getBids(), bid);
 	}
 
 	public void offer(Ask ask) {
 		Bid bid = getBid();
-		if (bid != null) {
+		while (bid != null) {
 			ask.match(bid);
+			if (bid.isUsed()) {
+				bid = getBid();
+			} else {
+				break;
+			}
 		}
 		insert(getAsks(), ask);
 	}
@@ -44,6 +54,7 @@ public abstract class AbstractMarket {
 		if (!offer.isUsed()) {
 			offers.add(offer);
 		}
+		assert getBid() == null || getAsk() == null || getBid().getPrice().getPrice() < getAsk().getPrice().getPrice();
 	}
 
 	public Price getPrice() {

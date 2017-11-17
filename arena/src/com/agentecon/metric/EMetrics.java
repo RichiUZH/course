@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.agentecon.ISimulation;
-import com.agentecon.metric.variants.WealthStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.Equality;
@@ -21,16 +20,18 @@ import com.agentecon.metric.variants.MarketMakerStats;
 import com.agentecon.metric.variants.MarketStats;
 import com.agentecon.metric.variants.MonetaryStats;
 import com.agentecon.metric.variants.OwnershipStats;
+import com.agentecon.metric.variants.ProductionDetailStats;
 import com.agentecon.metric.variants.ProductionStats;
 import com.agentecon.metric.variants.StockMarketStats;
 import com.agentecon.metric.variants.TypeStatistics;
 import com.agentecon.metric.variants.UtilityRanking;
 import com.agentecon.metric.variants.UtilityStats;
+import com.agentecon.metric.variants.WealthStats;
 import com.agentecon.web.query.AgentQuery;
 
 public enum EMetrics {
 
-	DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, RANKING, UTILITY, WEALTH, TYPE;
+	DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, PRODUCTION_DETAILS, RANKING, UTILITY, WEALTH, TYPE;
 
 	public SimStats createAndRegister(ISimulation sim, List<String> list, boolean details) {
 		ArrayList<AgentQuery> queries = new ArrayList<>();
@@ -66,7 +67,9 @@ public enum EMetrics {
 		case OWNERSHIP:
 			return "Some general statistics on firm ownership.";
 		case PRODUCTION:
-			return "Production volume of each firm.";
+			return "Overall production statistics.";
+		case PRODUCTION_DETAILS:
+			return "Production volume of individual firms.";
 		case STOCKMARKET:
 			return "Various stock market statistics: average prices, trading volumes, inflows, outflows, etc."; 
 		case UTILITY:
@@ -94,7 +97,7 @@ public enum EMetrics {
 		case MARKET:
 			return new MarketStats(sim, true);
 		case MARKETMAKER:
-			return new MarketMakerStats(sim, "MarketMaker");
+			return new MarketMakerStats(sim);
 		case WEALTH:
 			return new WealthStats(sim, details);
 		case MONETARY:
@@ -103,6 +106,8 @@ public enum EMetrics {
 			return new OwnershipStats(sim);
 		case PRODUCTION:
 			return new ProductionStats(sim, details);
+		case PRODUCTION_DETAILS:
+			return new ProductionDetailStats(sim);
 		case STOCKMARKET:
 			return new StockMarketStats(sim, true);
 		case RANKING:

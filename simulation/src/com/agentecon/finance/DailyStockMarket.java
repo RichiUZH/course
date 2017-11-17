@@ -211,6 +211,10 @@ public class DailyStockMarket implements IStockMarket {
 		}
 		return asks + "/" + market.size() + " asks and " + bids + "/" + market.size() + " bids left";
 	}
+	
+	public void notifyOffersPosted() {
+		listeners.notifyOffersPosted(this);
+	}
 
 	public void close(int day) {
 		listeners.notifyMarketClosed(day);
