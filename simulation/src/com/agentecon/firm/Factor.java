@@ -29,6 +29,7 @@ public abstract class Factor {
 	public void adaptPrice() {
 		if (prevOffer != null) {
 			price.adapt(shouldIncrease());
+			prevOffer = null;
 		}
 	}
 

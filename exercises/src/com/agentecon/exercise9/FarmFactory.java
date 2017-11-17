@@ -11,14 +11,18 @@ import com.agentecon.market.IStatistics;
  */
 public class FarmFactory implements ILandbuyingFarmFactory {
 
+	private int farmsCreated;
+	
 	public FarmFactory() {
+		this.farmsCreated = 0;
 	}
 
 	/**
 	 * Return a new farm if you want to create one given the market statistics.
 	 */
 	public LandBuyingFarm considerCreatingNewFarm(IAgentIdGenerator id, Endowment end, CobbDouglasProductionWithFixedCost prodFun, IStatistics stats) {
-		if (id.getRand().nextDouble() < 0.01) {
+		if (id.getRand().nextDouble() < 0.1 && farmsCreated < 10) {
+			this.farmsCreated++;
 			// create a farm with a probability of 1%, so every 2000 days...
 			// you should change this...
 			return new LandBuyingFarm(id, end, prodFun, stats);

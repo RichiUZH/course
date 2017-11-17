@@ -10,14 +10,17 @@ package com.agentecon.exercise9;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.finance.MarketMaking;
 import com.agentecon.finance.Producer;
 import com.agentecon.firm.InputFactor;
 import com.agentecon.firm.sensor.SensorInputFactor;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.learning.ExpSearchBelief;
+import com.agentecon.market.Ask;
+import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.Price;
 import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.production.PriceUnknownException;
@@ -34,8 +37,9 @@ public class RealEstateAgent extends Producer {
 	private static final double DISTRIBUTION_RATIO = 0.02;
 
 	private double minCashLevel;
-	private MarketMaking priceBelief;
 	private InputFactor input;
+
+	private Price landPrice;
 
 	public RealEstateAgent(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
 		super(id, end, prodFun);
@@ -43,9 +47,15 @@ public class RealEstateAgent extends Producer {
 		assert prodFun.getInputs().length == 1;
 		Good manhour = prodFun.getInputs()[0];
 		this.input = new SensorInputFactor(getInventory().getStock(manhour), new ExpSearchBelief(10));
-		IStock land = getInventory().getStock(prodFun.getOutput());
-		this.priceBelief = new MarketMaking(getMoney(), land, 10.0, 1.0);
-		this.minCashLevel = getMoney().getAmount();
+
+		// hard-coded land price. Maybe something dynamic works better?
+		this.landPrice = new Price(prodFun.getOutput(), 1000);
+
+		this.minCashLevel = getMoney().getAmount() / 2;
+	}
+
+	private IStock getLand() {
+		return getInventory().getStock(landPrice.getGood());
 	}
 
 	// calculate the value of our inventory (money, land, man-hours)
@@ -56,8 +66,8 @@ public class RealEstateAgent extends Producer {
 			public double getPriceBelief(Good good) throws PriceUnknownException {
 				if (input.getGood().equals(good)) {
 					return input.getPrice();
-				} else if (priceBelief.getTicker().equals(good)) {
-					return priceBelief.getPrice();
+				} else if (landPrice.getGood().equals(good)) {
+					return landPrice.getPrice();
 				} else {
 					throw new PriceUnknownException();
 				}
@@ -67,12 +77,40 @@ public class RealEstateAgent extends Producer {
 
 	@Override
 	public void offer(IPriceMakerMarket market) {
-		this.priceBelief.trade(market, this); // trade land using the market making formula
+		IStock money = getMoney();
+		IStock land = getLand();
+		if (money.getAmount() > 100) {
+			// if we have a minimal amount of money, we bid for land others might want to sell
+			double landBudget = (money.getAmount() - 100) / 10;
+			Price bidPrice = new Price(landPrice.getGood(), landPrice.getPrice() * 0.9);
+			market.offer(new Bid(this, money, land, bidPrice, bidPrice.getAmountAt(landBudget)));
+		}
+		if (land.hasSome()) {
+			// try to sell the land we have 10% above our guess for the right land price
+			Price askPrice = new Price(landPrice.getGood(), landPrice.getPrice() * 1.1);
+			market.offer(new Ask(this, money, land, askPrice, land.getAmount()));
+		}
 
 		// buy some man-hours to produce additional land
 		if (getMoney().getAmount() > minCashLevel) {
-			this.input.createOffers(market, this, getMoney(), (getMoney().getAmount() - minCashLevel) / 10);
+			if (shouldProduce()) {
+				this.input.createOffers(market, this, getMoney(), (getMoney().getAmount() - minCashLevel) / 10);
+			}
 		}
+	}
+
+	/**
+	 * Is it actually still worth producing anything at current prices?
+	 */
+	protected boolean shouldProduce() {
+		double potentialInvestment = 1000;
+		double manHourPrice = input.getPrice();
+		Quantity manhours = new Quantity(input.getGood(), potentialInvestment / manHourPrice);
+		IProductionFunction prodFun = getProductionFunction();
+		Quantity landWeCouldProduce = prodFun.calculateOutput(manhours);
+		double landValue = landWeCouldProduce.getAmount() * landPrice.getPrice();
+		boolean shouldProduce = landValue > manHourPrice;
+		return shouldProduce;
 	}
 
 	@Override

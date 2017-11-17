@@ -78,16 +78,16 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 			}
 		}, BASIC_AGENTS);
 		this.maxAge = maxAgeParam;
-		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, 10, new Weight(MAN_HOUR, 0.2)));
+		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, new Weight(MAN_HOUR, 0.8)));
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);
 		addMarketMakers();
 		addInitialFarms();
-//		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
-//		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-//		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
-//		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
+		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
+		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
+		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
+		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
 		addEvent(new CentralBankEvent(POTATOE));
 	}
 
@@ -95,7 +95,7 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 		try {
 			ClassLoader loader = parent.obtainChildLoader(shouldLoadRemoteTeams() ? new GitSimulationHandle("meisser", team, false) : new LocalSimulationHandle(false));
 			ILandbuyingFarmFactory factory = (ILandbuyingFarmFactory) loader.loadClass(FARM_FACTORY).newInstance();
-			addEvent(new SimEvent(20) {
+			addEvent(new SimEvent(100, 20, 1) {
 				
 				@Override
 				public void execute(int day, ICountry sim, IStatistics stats) {
@@ -124,7 +124,7 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 		return new ReflectiveAgentFactory((RemoteLoader) loader, source, REAL_ESTATE_AGENT) {
 			@Override
 			protected IFirm createDefaultFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun, Exception e) {
-				return new RealEstateAgent(id, end);
+				return new RealEstateAgent(id, end, prodFun);
 			}
 		};
 	}

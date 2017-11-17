@@ -10,69 +10,76 @@ package com.agentecon.firm;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.exercises.FarmingConfiguration;
-import com.agentecon.finance.AbstractMarketMaking;
-import com.agentecon.finance.Firm;
+import com.agentecon.finance.MarketMaking;
+import com.agentecon.finance.Producer;
+import com.agentecon.firm.InputFactor;
+import com.agentecon.firm.sensor.SensorInputFactor;
 import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.production.IGoodsTrader;
+import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.IProductionFunction;
+import com.agentecon.production.PriceUnknownException;
 
-public class RealEstateAgent extends Firm implements IGoodsTrader {
-	
+public class RealEstateAgent extends Producer {
+
 	private static final double DISTRIBUTION_RATIO = 0.02;
-	
-//	private double capital;
+
 	private double minCashLevel;
-	private AbstractMarketMaking priceBelief;
-//	private QuadraticMaximizer profitModel; 
-	
-	public RealEstateAgent(IAgentIdGenerator id, Endowment end) {
-		this(id, end, FarmingConfiguration.LAND);
-	}
+	private MarketMaking priceBelief;
+	private InputFactor input;
 
-	public RealEstateAgent(IAgentIdGenerator id, Endowment initialMoney, Good land) {
-		super(id, initialMoney);
-		
+	public RealEstateAgent(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+		super(id, end, prodFun);
+
+		assert prodFun.getInputs().length == 1;
+		Good manhour = prodFun.getInputs()[0];
+		this.input = new SensorInputFactor(getInventory().getStock(manhour), new ExpSearchBelief(10));
+		IStock land = getInventory().getStock(prodFun.getOutput());
+		this.priceBelief = new MarketMaking(getMoney(), land, 10.0, 1.0);
 		this.minCashLevel = getMoney().getAmount();
-//		this.priceBelief = new MarketMakerPrice(getStock(land), 0.1);
-//		this.profitModel = new QuadraticMaximizer(0.98, id.getRand().nextLong(), initialMoney.getAmount(), initialMoney.getAmount() * 1000);
-//		this.capital = calculateCapital();
 	}
 
-//	private double calculateCapital() {
-//		return getInventory().calculateValue(new IPriceProvider() {
-//			
-//			@Override
-//			public double getPriceBelief(Good good) throws PriceUnknownException {
-//				return priceBelief.getPrice();
-//			}
-//		});
-//	}
+	// calculate the value of our inventory (money, land, man-hours)
+	private double calculateCapital() {
+		return getInventory().calculateValue(new IPriceProvider() {
+
+			@Override
+			public double getPriceBelief(Good good) throws PriceUnknownException {
+				if (input.getGood().equals(good)) {
+					return input.getPrice();
+				} else if (priceBelief.getTicker().equals(good)) {
+					return priceBelief.getPrice();
+				} else {
+					throw new PriceUnknownException();
+				}
+			}
+		});
+	}
 
 	@Override
 	public void offer(IPriceMakerMarket market) {
-//		this.priceBelief.trade(market, this, getMoney());
-	}
-	
-	@Override
-	public void adaptPrices() {
-		// done during offer phase
-	}
-	
-	@Override
-	protected double calculateDividends(int day) {
-//		double profits = calculateProfits();
-		return getMoney().getAmount() * DISTRIBUTION_RATIO - minCashLevel;
+		this.priceBelief.trade(market, this); // trade land using the market making formula
+
+		this.input.createOffers(market, this, getMoney(), getMoney().getAmount() / 10);
 	}
 
-//	private double calculateProfits() {
-//		double currentCapital = calculateCapital();
-//		double prevCapital = this.capital;
-//		double profits = currentCapital - prevCapital;
-////		this.profitModel.update(prevCapital, profits);
-//		this.capital = currentCapital;
-////		System.out.println(prevCapital + "\t" + profits);
-//		return profits;
-//	}
+	@Override
+	public void adaptPrices() {
+		input.adaptPrice();
+
+		// market making already adapts prices during offer phase, no need to act here
+	}
+
+	@Override
+	public void produce() {
+		super.produce(); // just use all available man-hours to produce some land
+	}
+
+	@Override
+	protected double calculateDividends(int day) {
+		return getMoney().getAmount() * DISTRIBUTION_RATIO - minCashLevel;
+	}
 
 }

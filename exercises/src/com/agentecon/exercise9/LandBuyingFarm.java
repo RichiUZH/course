@@ -7,10 +7,13 @@ import com.agentecon.firm.Farm;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
+import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.market.IStatistics;
 
 public class LandBuyingFarm extends Farm implements IMarketParticipant {
+	
+	private static double MINIMUM_AMOUNT_OF_LAND = 50;
 	
 	/**
 	 * Your farms start with an empty inventory. No land. No money.
@@ -29,7 +32,7 @@ public class LandBuyingFarm extends Farm implements IMarketParticipant {
 		// You can look at com.agentecon.firm.InvestmentStrategy for some inspiration
 		IStock land = getLand();
 		Ask ask = market.getAsk(land.getGood());
-		if (ask != null && getMoney().getAmount() > 1000) {
+		if (ask != null && (getMoney().getAmount() > 1000 || land.getAmount() < MINIMUM_AMOUNT_OF_LAND)) {
 			ask.accept(this, getMoney(), land, ask.getQuantity());
 		}
 	}
@@ -45,7 +48,29 @@ public class LandBuyingFarm extends Farm implements IMarketParticipant {
 	 */
 	@Override
 	protected double getValuation() {
-		return 10000;
+		return 5000;
+	}
+	
+	@Override
+	public void offer(IPriceMakerMarket market) {
+		if (getLand().getAmount() > MINIMUM_AMOUNT_OF_LAND) {
+			super.offer(market);
+		}
+	}
+
+	@Override
+	public void produce() {
+		super.produce();
+	}
+	
+	@Override
+	protected double calculateDividends(int day) {
+		if (getLand().getAmount() > MINIMUM_AMOUNT_OF_LAND) {
+			return super.calculateDividends(day);
+		} else {
+			// no dividend until we have acquired some land
+			return 0.0;
+		}
 	}
 
 }

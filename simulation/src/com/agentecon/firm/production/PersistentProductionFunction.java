@@ -79,7 +79,7 @@ public class PersistentProductionFunction implements IProductionFunction {
 			Good good = inputs[i].getGood();
 			quants[i] = new Quantity(good, inputs[i].getAmount() + getPreviousInput(good).getAmount());
 		}
-		double output = function.calculateOutput(inputs).getAmount();
+		double output = function.calculateOutput(quants).getAmount();
 		return new Quantity(getOutput(), output - previousOutput);
 	}
 

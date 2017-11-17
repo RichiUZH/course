@@ -69,6 +69,7 @@ public class SensorInputFactor extends InputFactor {
 			} else {
 				acc.lessAccurate();
 			}
+			prevRealBid = null;
 		}
 	}
 

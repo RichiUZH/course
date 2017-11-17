@@ -60,6 +60,7 @@ public class SensorOutputFactor extends OutputFactor {
 			} else {
 				accuracy.lessAccurate();
 			}
+			prevRealAsk = null;
 		}
 	}
 

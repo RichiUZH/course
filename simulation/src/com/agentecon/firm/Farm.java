@@ -45,7 +45,6 @@ public class Farm extends Producer {
 		super(id, end, prodFun);
 		this.strategy = new ExpectedRevenueBasedStrategy((CobbDouglasProduction)prodFun);
 		this.marketing = new MarketingDepartment(getMoney(), stats == null ? null : stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
-		assert getMoney().getAmount() > 0;
 	}
 
 	protected IStock getLand() {
@@ -87,14 +86,6 @@ public class Farm extends Producer {
 	@Override
 	protected double calculateDividends(int day) {
 		return strategy.calcDividend(getFinancials());
-//		double spending = marketing.getFinancials(getInventory(), getProductionFunction()).getLatestCogs();
-//		double targetSize = spending * CAPITAL_TO_SPENDINGS_RATIO;
-//		double excessReserve = getMoney().getAmount() - targetSize;
-//		if (excessReserve > 0) {
-//			return excessReserve / 20;
-//		} else {
-//			return 0;
-//		}
 	}
 
 	private int daysWithoutProfit = 0;
