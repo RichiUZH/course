@@ -25,7 +25,7 @@ Here is a number of comments and modifications I made:
 * I adjusted the parameters of production function of the real estate agent, it is now: $0.3 h^{0.8}$. The curve is now flatter in the beginning, but less flat later. Total land production in the base case is about 35000 units:
 ![land](images/ex9-land.jpg "Land")
 * The default land price of the real estate agent now is only 100 - way too cheap. There is some land production for a while, but it dies off later. This should change one the farms start to invest more heavily into land.
-* When looking at the stock market, you see that the consumers, who follow a yield-based strategy, only manage to push up the price of the market maker, implying that there is ample room for improvement.
+* Right now, the stock market looks quite boring after a while. However, there is quite some room for speculation when the better farms start to arrive in the market.
 ![stocks](images/ex9-stocks.jpg "Stock Market")
 * The available statistics are not optimal yet. I plan to improve them over the course of the week. Let me know if you want some particular data that is currently not readily available.
 
