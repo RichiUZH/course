@@ -17,9 +17,9 @@ Here is a number of comments and modifications I made:
 
 * My provided DefaultFarm exists from the beginning as before, but now it also trades some land (selling it for too cheap). This helps establishing a market for land.
 * Your custom farm, the LandBuyingFarm, do not enter the simulation before day 1000. At this point in time, the funds and the real estate agents should already be active, making decision taking easier.
-* The provided implementation is far from optimal, but it manages to overtake the DefaultFarm quickly when looking at production:
+* LandBuyingFarm: The provided implementation is far from optimal, but it manages to overtake the DefaultFarm quickly when looking at production:
 ![production](images/ex9-production.jpg "Production")
-* I made the raising of money more explicit in the raiseCapital function.
+* LandBuyingFarm:I made the raising of money more explicit in the raiseCapital function.
 * In order to make ensure a basic level of demand for the stocks of the new farms, I let the investment funds invest 10% of their budget into young firms.
 * As inspired by a student, the funds now have much more information available to base their investment decision on (see sample code in the latest version).
 * I adjusted the parameters of production function of the real estate agent, it is now: $0.3 h^{0.8}$. The curve is now flatter in the beginning, but less flat later. Total land production in the base case is about 35000 units:
