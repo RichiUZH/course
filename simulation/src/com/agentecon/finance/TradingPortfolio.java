@@ -69,7 +69,7 @@ public class TradingPortfolio extends Portfolio {
 		budget = Math.min(moneyBefore, budget);
 		if (Numbers.isBigger(budget, 0.0)) {
 			Ticker any = strategy.findStockToBuy(stocks);
-			if (any != null) {
+			if (any != null && stocks.hasAsk(any)) {
 				double before = wallet.getAmount();
 				Position pos = getPosition(any);
 				addPosition(stocks.buy(owner, any, pos, wallet, budget));

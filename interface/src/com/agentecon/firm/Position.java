@@ -28,6 +28,10 @@ public class Position extends Stock {
 		return dividends.getGood();
 	}
 	
+	public double getUncollectedDividends() {
+		return dividends.getAmount();
+	}
+	
 	@Override
 	public void transfer(IStock source, double amount) {
 		super.transfer(source, amount);

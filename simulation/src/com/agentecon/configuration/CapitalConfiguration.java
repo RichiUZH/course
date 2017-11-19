@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
 
-import com.agentecon.IAgentFactory;
 import com.agentecon.ReflectiveAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
@@ -20,7 +19,6 @@ import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.consumer.IConsumer;
-import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.InvestingConsumer;
 import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
@@ -32,30 +30,37 @@ import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.Farm;
+import com.agentecon.firm.DefaultFarm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.RealEstateAgent;
 import com.agentecon.firm.production.CobbDouglasProduction;
+import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.firm.production.PersistentProductionFunction;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProductionFunction;
-import com.agentecon.research.IInnovation;
+import com.agentecon.sim.SimulationConfig;
 import com.agentecon.world.ICountry;
 
-public class CapitalConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
+public class CapitalConfiguration extends SimulationConfig implements IUtilityFactory {
 
 	private static final String REAL_ESTATE_AGENT = "com.agentecon.exercise9.RealEstateAgent";
 	private static final String FUND = "com.agentecon.exercise9.InvestmentFund";
 	private static final String FARM_FACTORY = "com.agentecon.exercise9.FarmFactory";
+	
+	public static final Good LAND = FarmingConfiguration.LAND;
+	public static final Good MAN_HOUR = FarmingConfiguration.MAN_HOUR;
+	public static final Good POTATOE = FarmingConfiguration.POTATOE;
 
 	private static final int BASIC_AGENTS = 100;
-
 	public static final double GROWTH_RATE = 0.005;
-
 	private static final int GROW_UNTIL = 350; // day at which growth stops
 	
 	protected static final double START_CAPITAL = 1000;
+	
+	public static final int ROUNDS = 7000;
 
 	private Random rand = new Random(1313);
 	private int maxAge;
@@ -67,18 +72,9 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 	}
 
 	public CapitalConfiguration(int maxAgeParam) throws SocketTimeoutException, IOException {
-		super(new IAgentFactory() {
-
-			private int number = 1;
-
-			@Override
-			public IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility utility) {
-				int maxAge = number++ * maxAgeParam / BASIC_AGENTS;
-				return new InvestingConsumer(id, maxAge, end, utility);
-			}
-		}, BASIC_AGENTS);
+		super(ROUNDS);
 		this.maxAge = maxAgeParam;
-		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, new Weight(MAN_HOUR, 0.8)));
+		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, 0.2, new Weight(MAN_HOUR, 0.8)));
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);
@@ -90,12 +86,17 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
 		addEvent(new CentralBankEvent(POTATOE));
 	}
+	
+	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
+		assert desiredOutput.equals(POTATOE);
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 3, FarmingConfiguration.FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
+	}
 
 	private void addCustomFarms(RemoteLoader parent, String team) throws IOException {
 		try {
 			ClassLoader loader = parent.obtainChildLoader(shouldLoadRemoteTeams() ? new GitSimulationHandle("meisser", team, false) : new LocalSimulationHandle(false));
 			ILandbuyingFarmFactory factory = (ILandbuyingFarmFactory) loader.loadClass(FARM_FACTORY).newInstance();
-			addEvent(new SimEvent(100, 20, 1) {
+			addEvent(new SimEvent(1000, 20, 1) {
 				
 				@Override
 				public void execute(int day, ICountry sim, IStatistics stats) {
@@ -135,7 +136,7 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 			@Override
 			public void execute(int day, ICountry sim) {
 				Endowment end = new Endowment(new Stock(getMoney(), START_CAPITAL));
-				sim.add(factory.createFirm(sim, end, landProduction));
+				sim.add(factory.createFirm(sim, end, prod));
 			}
 		});
 	}
@@ -166,7 +167,8 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 
 	@Override
 	public LogUtilWithFloor create(int number) {
-		return super.create(number).wiggle(rand);
+		LogUtilWithFloor util = new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
+		return util.wiggle(rand);
 	}
 	
 	private void addInitialFarms() {
@@ -175,10 +177,10 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 			@Override
 			public void execute(int day, ICountry sim) {
 				for (int i = 0; i < getCardinality(); i++) {
-					IStock money = new Stock(getMoney(), 1000);
+					IStock money = new Stock(getMoney(), 10000);
 					IStock land = new Stock(LAND, 100);
 					Endowment end = new Endowment(money.getGood(), new IStock[] {money, land}, new IStock[] {} );
-					sim.add(new Farm(sim, end, createProductionFunction(POTATOE)));
+					sim.add(new DefaultFarm(sim, end, createProductionFunction(POTATOE)));
 				}
 			}
 		});		
@@ -199,6 +201,16 @@ public class CapitalConfiguration extends FarmingConfiguration implements IUtili
 	}
 
 	protected void createBasicPopulation(Endowment workerEndowment) {
+		addEvent(new SimEvent(0) {
+			@Override
+			public void execute(int day, ICountry sim) {
+				for (int i=0; i<BASIC_AGENTS; i++) {
+					int maxAge = (i+1) * getMaxAge() / BASIC_AGENTS;
+					IConsumer cons = new InvestingConsumer(sim, maxAge, workerEndowment, create(0));
+					sim.add(cons);
+				}
+			}
+		});
 		addEvent(new GrowthEvent(0, GROWTH_RATE, false) {
 
 			@Override

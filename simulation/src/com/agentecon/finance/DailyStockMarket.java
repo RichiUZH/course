@@ -2,6 +2,7 @@ package com.agentecon.finance;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -45,7 +46,9 @@ public class DailyStockMarket implements IStockMarket {
 
 	@Override
 	public Collection<Ticker> getTradedStocks() {
-		return market.keySet();
+		ArrayList<Ticker> randomList = new ArrayList<>(market.keySet());
+		Collections.shuffle(randomList);
+		return randomList;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.agentecon.metric.variants;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.agentecon.ISimulation;
@@ -15,11 +14,10 @@ import com.agentecon.metric.series.TimeSeriesCollector;
 
 public class WealthStats extends SimStats {
 
-	private TimeSeriesCollector cash, wealth;
+	private TimeSeriesCollector wealth;
 
 	public WealthStats(ISimulation agents, boolean individuals) {
 		super(agents);
-		this.cash = new TimeSeriesCollector(individuals, getMaxDay());
 		this.wealth = new TimeSeriesCollector(individuals, getMaxDay());
 	}
 
@@ -28,7 +26,6 @@ public class WealthStats extends SimStats {
 		super.notifyDayEnded(stats);
 		int day = stats.getDay();
 		for (IAgent a : getAgents().getAgents()) {
-			cash.record(day, a, a.getMoney().getAmount());
 			wealth.record(day, new IAgentType() {
 
 				@Override
@@ -57,16 +54,12 @@ public class WealthStats extends SimStats {
 				}
 			}, a.getWealth(stats));
 		}
-		cash.flushDay(day, true);
 		wealth.flushDay(day, true);
 	}
 
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
-		ArrayList<TimeSeries> all = new ArrayList<>();
-		all.addAll(TimeSeries.prefix("Cash of ", cash.getTimeSeries()));
-		all.addAll(TimeSeries.prefix("Wealth of ", wealth.getTimeSeries()));
-		return all;
+		return wealth.getTimeSeries();
 	}
 
 }

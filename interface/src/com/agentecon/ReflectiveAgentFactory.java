@@ -45,6 +45,7 @@ public class ReflectiveAgentFactory implements IAgentFactory {
 			Constructor<? extends IFirm> con = (Constructor<? extends IFirm>) getAgentClass().getConstructor(IAgentIdGenerator.class, Endowment.class);
 			return (IFirm) con.newInstance(id, end);
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
+			System.err.println("Could not create " + classname + " due to " + e);
 			return createDefaultFirm(id, end, null, e);
 		}
 	}
@@ -58,6 +59,7 @@ public class ReflectiveAgentFactory implements IAgentFactory {
 				Constructor<? extends IFirm> con = (Constructor<? extends IFirm>) getAgentClass().getConstructor(IAgentIdGenerator.class, Endowment.class, IProductionFunction.class);
 				return (IFirm) con.newInstance(id, end, prodFun);
 			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
+				System.err.println("Could not create " + classname + " due to " + e);
 				return createDefaultFirm(id, end, prodFun, e);
 			}
 		}
@@ -74,6 +76,7 @@ public class ReflectiveAgentFactory implements IAgentFactory {
 			Constructor<? extends IConsumer> con = (Constructor<? extends IConsumer>) getAgentClass().getConstructor(IAgentIdGenerator.class, Endowment.class, IUtility.class);
 			return (IConsumer) con.newInstance(id, end, utilityFunction);
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
+			System.err.println("Could not create " + classname + " due to " + e);
 			return createDefaultConsumer(id, Integer.MAX_VALUE, end, utilityFunction, e);
 		}
 	}
@@ -85,6 +88,7 @@ public class ReflectiveAgentFactory implements IAgentFactory {
 			Constructor<? extends IConsumer> con = (Constructor<? extends IConsumer>) getAgentClass().getConstructor(IAgentIdGenerator.class, int.class, Endowment.class, IUtility.class);
 			return (IConsumer) con.newInstance(id, maxAge, endowment, utilityFunction);
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
+			System.err.println("Could not create " + classname + " due to " + e);
 			return createDefaultConsumer(id, maxAge, endowment, utilityFunction, e);
 		}
 	}

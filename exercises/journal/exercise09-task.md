@@ -9,6 +9,10 @@ Depending on which agent you have chosen, you should either implement the [RealE
 
 The agents will be ranked by total dividend paid to consumer shareholders. However, this metric is only useful within an agent type. The ranking based on this metric is not online yet.
 
+## Notes
+
+
+
 ## Deliverables and deadline
 
 The deliverables for your final exercise are the code of your agent as well as the presentation on the scheduled day. The deadline for the presentation is the day on which it is held. It should be clear which author is responsible for which part of the presentation. Computer scientist should focus on the economic aspects and vice versa. The deadline for the code is December 14th.

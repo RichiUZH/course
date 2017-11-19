@@ -105,8 +105,8 @@ public class TimeSeriesCollector {
 			ts.pushSum(day);
 		}
 	}
-
-	public Collection<TimeSeries> getTimeSeries() {
+	
+	public Collection<TimeSeries> getAggregateTimeSeries(){
 		ArrayList<TimeSeries> ts = new ArrayList<>();
 		if (consumers.getTimeSeries().isInteresting()) {
 			ts.add(consumers.getTimeSeries());
@@ -114,6 +114,11 @@ public class TimeSeriesCollector {
 		if (firms.getTimeSeries().isInteresting()) {
 			ts.add(firms.getTimeSeries());
 		}
+		return ts;
+	}
+
+	public Collection<TimeSeries> getTimeSeries() {
+		Collection<TimeSeries> ts = getAggregateTimeSeries();
 		ts.addAll(sort(AveragingTimeSeries.unwrap(type.values())));
 		if (individual != null) {
 			ts.addAll(sort(individual.values()));

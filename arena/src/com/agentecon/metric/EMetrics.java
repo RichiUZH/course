@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.agentecon.ISimulation;
+import com.agentecon.metric.variants.CashStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.Equality;
@@ -31,7 +32,7 @@ import com.agentecon.web.query.AgentQuery;
 
 public enum EMetrics {
 
-	DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, PRODUCTION_DETAILS, RANKING, UTILITY, WEALTH, TYPE;
+	CASH, DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, PRODUCTION_DETAILS, RANKING, UTILITY, WEALTH, TYPE;
 
 	public SimStats createAndRegister(ISimulation sim, List<String> list, boolean details) {
 		ArrayList<AgentQuery> queries = new ArrayList<>();
@@ -45,8 +46,10 @@ public enum EMetrics {
 
 	public String getDescription() {
 		switch (this) {
+		case CASH:
+			return "Nightly cash holdings.";
 		case WEALTH:
-			return "Nightly cash holdings and net worth.";
+			return "Net worth at market prices. Related: cash statistics.";
 		case DEMOGRAPHICS:
 			return "The size of the population and related figures.";
 		case DIVIDENDS:
@@ -98,6 +101,8 @@ public enum EMetrics {
 			return new MarketStats(sim, true);
 		case MARKETMAKER:
 			return new MarketMakerStats(sim);
+		case CASH:
+			return new CashStats(sim, details);
 		case WEALTH:
 			return new WealthStats(sim, details);
 		case MONETARY:

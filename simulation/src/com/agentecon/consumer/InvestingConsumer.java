@@ -111,7 +111,9 @@ public class InvestingConsumer extends MortalConsumer {
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		market.sellSome(this, getMoney(), myLand);
+		if (myLand.hasSome()) {
+			market.sellSome(this, getMoney(), myLand);
+		}
 		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), CAPITAL_BUFFER);
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
 		super.trade(reducedInv, market);

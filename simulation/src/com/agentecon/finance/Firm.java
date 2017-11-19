@@ -57,11 +57,11 @@ public abstract class Firm extends Agent implements IFirm {
 
 	@Override
 	public void raiseCapital(IStockMarket stockmarket) {
-		register.raiseCapital(stockmarket, this, getDividendWallet(), getValuation());
+		raiseCapital(stockmarket, 0.0);
 	}
-
-	protected double getValuation() {
-		return 0.0;
+	
+	public double raiseCapital(IStockMarket stockmarket, double valuation) {
+		return register.raiseCapital(stockmarket, this, getDividendWallet(), valuation);
 	}
 
 	protected abstract double calculateDividends(int day);

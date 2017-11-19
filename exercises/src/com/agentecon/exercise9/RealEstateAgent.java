@@ -49,7 +49,7 @@ public class RealEstateAgent extends Producer {
 		this.input = new SensorInputFactor(getInventory().getStock(manhour), new ExpSearchBelief(10));
 
 		// hard-coded land price. Maybe something dynamic works better?
-		this.landPrice = new Price(prodFun.getOutput(), 1000);
+		this.landPrice = new Price(prodFun.getOutput(), 100);
 
 		this.minCashLevel = getMoney().getAmount() / 2;
 	}

@@ -6,6 +6,7 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.market.IMarketStatistics;
+import com.agentecon.market.IStatistics;
 import com.agentecon.market.MarketStatistics;
 import com.agentecon.sim.SimulationListeners;
 import com.agentecon.world.Agents;
@@ -23,21 +24,22 @@ public class StockMarket {
 		this.stockStats = new MarketStatistics();
 	}
 
-	public void trade(int day) {
+	public void trade(int day, IStatistics stats) {
 		Agents ags = country.getAgents();
 		for (IFirm firm : ags.getFirms()) {
 			firm.payDividends(day);
 		}
 		Collection<IMarketMaker> mms = ags.getRandomMarketMakers();
-		runDailyMarket(day, ags, mms);
+		runDailyMarket(day, ags, mms, stats);
 	}
 
-	protected void runDailyMarket(int day, Agents ags, Collection<IMarketMaker> mms) {
+	protected void runDailyMarket(int day, Agents ags, Collection<IMarketMaker> mms, IStatistics stats) {
 		for (IShareholder shareholder : ags.getShareholders()) {
 			shareholder.getPortfolio().collectDividends();
 		}
-		FinancialMarketData financials = new FinancialMarketData(ags, stockStats);
+		FinancialMarketData financials = new FinancialMarketData(ags, stats);
 		DailyStockMarket dsm = new DailyStockMarket(financials, country.getRand());
+		stockStats.notifyMarketOpened();
 		dsm.addMarketListener(stockStats);
 		listeners.notifyStockMarketOpened(dsm);
 

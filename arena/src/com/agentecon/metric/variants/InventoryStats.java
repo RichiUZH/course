@@ -62,7 +62,7 @@ public class InventoryStats extends SimStats {
 			}
 		}
 		for (TimeSeriesCollector c : inventoriesByGoods.values()) {
-			c.flushDay(day, true);
+			c.flushDay(day, false);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class InventoryStats extends SimStats {
 
 			@Override
 			public void accept(Entry<Good, TimeSeriesCollector> t) {
-				list.addAll(TimeSeries.prefix(t.getKey() + " held by ", t.getValue().getTimeSeries()));
+				list.addAll(TimeSeries.prefix(t.getKey() + " held by ", t.getValue().getAggregateTimeSeries()));
 			}
 		});
 		return list;

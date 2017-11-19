@@ -98,8 +98,9 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 		for (; day < targetDay; day++) {
 			processEvents(day); // must happen before daily endowments
 			world.prepareDay(getStatistics());
-			stocks.trade(day);
+			stocks.trade(day, getStatistics());
 			RepeatedMarket market = new RepeatedMarket(world, listeners, goodsMarketStats);
+			goodsMarketStats.notifyMarketOpened();
 			market.iterate(day, config.getIntradayIterations());
 			for (IProducer firm : world.getAgents().getProducers()) {
 				firm.produce();

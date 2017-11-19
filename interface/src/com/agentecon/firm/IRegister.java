@@ -12,6 +12,10 @@ public interface IRegister {
 		return createPosition();
 	}
 	
+	public default double getLatestDividend() {
+		return getAverageDividend();
+	}
+	
 	public double getAverageDividend();
 	
 	public int getShareholderCount();
@@ -25,7 +29,7 @@ public interface IRegister {
 	}
 
 	public default double getDividendPerShare() {
-		return getAverageDividend() / getTotalShareCount();
+		return getAverageDividend() / getFreeFloatShares();
 	}
 
 }

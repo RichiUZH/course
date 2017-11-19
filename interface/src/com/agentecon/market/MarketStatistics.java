@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.function.BiConsumer;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.production.PriceUnknownException;
 import com.agentecon.util.InstantiatingHashMap;
@@ -15,8 +17,16 @@ import com.agentecon.util.MovingAverage;
 public class MarketStatistics implements IMarketStatistics, IMarketListener {
 
 	private HashMap<Good, GoodStats> prices;
+	private HashMap<Ticker, FirmStats> pending, firms;
 
 	public MarketStatistics() {
+		this.firms = new InstantiatingHashMap<Ticker, FirmStats>() {
+
+			@Override
+			protected FirmStats create(Ticker key) {
+				return new FirmStats();
+			}
+		};
 		this.prices = new InstantiatingHashMap<Good, GoodStats>() {
 
 			@Override
@@ -31,10 +41,26 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 		return prices.keySet();
 	}
 
+	public void notifyMarketOpened() {
+		this.pending = new InstantiatingHashMap<Ticker, FirmStats>() {
+
+			@Override
+			protected FirmStats create(Ticker key) {
+				return new FirmStats();
+			}
+		};
+	}
+
 	@Override
 	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 		assert quantity > 0.0;
 		prices.get(good).notifyTraded(quantity, payment / quantity);
+		if (seller instanceof IFirm) {
+			pending.get(((IFirm) seller).getTicker()).notifySold(good, quantity, payment);
+		}
+		if (buyer instanceof IFirm) {
+			pending.get(((IFirm) buyer).getTicker()).notifyBought(good, quantity, payment);
+		}
 	}
 
 	@Override
@@ -42,18 +68,26 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 		for (GoodStats good : prices.values()) {
 			good.resetCurrent();
 		}
+		firms.clear();
 	}
 
 	@Override
-	public void notifyMarketClosed(int day) {
+	public void notifyMarketClosed(int day, IPriceTakerMarket market) {
 		for (GoodStats good : prices.values()) {
 			good.commitCurrent();
 		}
+		this.firms = pending;
+		this.pending = null;
 	}
 
 	@Override
 	public GoodStats getStats(Good good) {
 		return prices.get(good);
+	}
+
+	@Override
+	public FirmStats getFirmStats(Ticker ticker) {
+		return firms.get(ticker);
 	}
 
 	@Override
@@ -79,7 +113,7 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 	@Override
 	public double getPriceBelief(Good good) throws PriceUnknownException {
 		MovingAverage avg = getStats(good).getMovingAverage();
-		if (avg == null){
+		if (avg == null) {
 			throw new PriceUnknownException();
 		} else {
 			return avg.getAverage();

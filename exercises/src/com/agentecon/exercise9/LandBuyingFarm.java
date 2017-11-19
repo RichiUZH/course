@@ -4,6 +4,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.firm.Farm;
+import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
@@ -13,7 +14,8 @@ import com.agentecon.market.IStatistics;
 
 public class LandBuyingFarm extends Farm implements IMarketParticipant {
 	
-	private static double MINIMUM_AMOUNT_OF_LAND = 50;
+	private static double MINIMUM_AMOUNT_OF_LAND = 10;
+	private static double VALUATION = 5000;
 	
 	/**
 	 * Your farms start with an empty inventory. No land. No money.
@@ -47,8 +49,14 @@ public class LandBuyingFarm extends Farm implements IMarketParticipant {
 	 * raising capital might fail.
 	 */
 	@Override
-	protected double getValuation() {
-		return 5000;
+	public double raiseCapital(IStockMarket stockmarket, double valuation) {
+		double ownSharesBefore = getShareRegister().getTotalShareCount() - getShareRegister().getFreeFloatShares();
+		double raised = super.raiseCapital(stockmarket, VALUATION);
+		double ownSharesAfter = getShareRegister().getTotalShareCount() - getShareRegister().getFreeFloatShares();
+		if (ownSharesAfter != ownSharesBefore) {
+			System.out.println("Raised " + raised + " by selling own " + (ownSharesBefore - ownSharesAfter) +" shares");
+		}
+		return raised;
 	}
 	
 	@Override
@@ -69,6 +77,7 @@ public class LandBuyingFarm extends Farm implements IMarketParticipant {
 			return super.calculateDividends(day);
 		} else {
 			// no dividend until we have acquired some land
+			// or maybe we should to lure value investors into buying out stock so we can raise more money?
 			return 0.0;
 		}
 	}

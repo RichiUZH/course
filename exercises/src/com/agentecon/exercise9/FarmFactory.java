@@ -21,7 +21,7 @@ public class FarmFactory implements ILandbuyingFarmFactory {
 	 * Return a new farm if you want to create one given the market statistics.
 	 */
 	public LandBuyingFarm considerCreatingNewFarm(IAgentIdGenerator id, Endowment end, CobbDouglasProductionWithFixedCost prodFun, IStatistics stats) {
-		if (id.getRand().nextDouble() < 0.1 && farmsCreated < 10) {
+		if (id.getRand().nextDouble() < 0.1 && farmsCreated < 1000) {
 			this.farmsCreated++;
 			// create a farm with a probability of 1%, so every 2000 days...
 			// you should change this...
