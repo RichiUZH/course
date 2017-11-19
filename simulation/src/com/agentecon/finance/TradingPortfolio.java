@@ -59,7 +59,7 @@ public class TradingPortfolio extends Portfolio {
 			
 			@Override
 			public Ticker findStockToBuy(IStockMarket stocks) {
-				return stocks.getRandomStock(false);
+				return stocks.getRandomStock(true);
 			}
 		}, stocks, owner, budget);
 	}

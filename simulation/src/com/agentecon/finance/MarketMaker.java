@@ -112,12 +112,12 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	@Override
 	protected double calculateDividends(int day) {
 		double cash = getMoney().getAmount();
-		if (cash < 10000) {
+		if (cash < 500000) {
 			return 0.0;
-		} else if (cash < 100000){
+		} else if (cash < 1000000){
 			return cash * 0.01;
 		} else {
-			return cash - 100000;
+			return cash * 0.05;
 		}
 //		double receivedDividend = getPortfolio().getLatestDividendIncome();
 //		double portfolioValue = getPortfolio().calculateValue(this);

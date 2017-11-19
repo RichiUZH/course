@@ -74,7 +74,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 	public CapitalConfiguration(int maxAgeParam) throws SocketTimeoutException, IOException {
 		super(ROUNDS);
 		this.maxAge = maxAgeParam;
-		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, 0.2, new Weight(MAN_HOUR, 0.8)));
+		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, 0.3, new Weight(MAN_HOUR, 0.8)));
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);

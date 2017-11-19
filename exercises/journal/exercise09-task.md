@@ -11,7 +11,25 @@ The agents will be ranked by total dividend paid to consumer shareholders. Howev
 
 ## Notes
 
+I have refined the basic scenario to make sure the default implementation of every agent does something reasonable.
 
+Here is a number of comments and modifications I made:
+
+* My provided DefaultFarm exists from the beginning as before, but now it also trades some land (selling it for too cheap). This helps establishing a market for land.
+* Your custom farm, the LandBuyingFarm, do not enter the simulation before day 1000. At this point in time, the funds and the real estate agents should already be active, making decision taking easier.
+* The provided implementation is far from optimal, but it manages to overtake the DefaultFarm quickly when looking at production:
+![production](images/ex9-production.jpg "Production")
+* I made the raising of money more explicit in the raiseCapital function.
+* In order to make ensure a basic level of demand for the stocks of the new farms, I let the investment funds invest 10% of their budget into young firms.
+* As inspired by a student, the funds now have much more information available to base their investment decision on (see sample code in the latest version).
+* I adjusted the parameters of production function of the real estate agent, it is now: $0.3 h^{0.8}$. The curve is now flatter in the beginning, but less flat later. Total land production in the base case is about 35000 units:
+![land](images/ex9-land.jpg "Land")
+* The default land price of the real estate agent now is only 100 - way too cheap. There is some land production for a while, but it dies off later. This should change one the farms start to invest more heavily into land.
+* When looking at the stock market, you see that the consumers, who follow a yield-based strategy, only manage to push up the price of the market maker, implying that there is ample room for improvement.
+![stocks](images/ex9-stocks.jpg "Stock Market")
+* The available statistics are not optimal yet. I plan to improve them over the course of the week. Let me know if you want some particular data that is currently not readily available.
+
+As discussed, half of the next lecture will be dedicated to discussing your ideas and helping you with your agents. Getting a simulation (or any larger software) running nicely with so many contributing parties is not trivial. But I am here to help.
 
 ## Deliverables and deadline
 

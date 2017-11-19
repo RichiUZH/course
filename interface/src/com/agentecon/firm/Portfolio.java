@@ -58,6 +58,10 @@ public class Portfolio implements Cloneable {
 			}
 		}
 	}
+	
+	public Collection<Ticker> getPositionTickers(){
+		return inv.keySet();
+	}
 
 	public Collection<Position> getPositions() {
 		return inv.values();

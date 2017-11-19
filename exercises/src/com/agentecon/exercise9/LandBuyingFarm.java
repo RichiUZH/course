@@ -42,7 +42,7 @@ public class LandBuyingFarm extends Farm implements IMarketParticipant {
 	/**
 	 * After having been founded, the farm is owned by itself.
 	 * In order to get any money so it can buy land and start its production, it sells its own shares
-	 * (see Firm.raiseCapital()). The valuation is the minimal price the farm is willing to start selling its
+	 * The valuation is the minimal price the farm is willing to start selling its
 	 * shares. As there are 100 shares per form, a valuation of 2000 would imply a share price of 20.
 	 * Thus, the valuation is the minimum amount of money you get if you succeed in selling all shares.
 	 * However, if you set the valuation too high or if the investment funds do not choose to buy any shares,
@@ -54,7 +54,7 @@ public class LandBuyingFarm extends Farm implements IMarketParticipant {
 		double raised = super.raiseCapital(stockmarket, VALUATION);
 		double ownSharesAfter = getShareRegister().getTotalShareCount() - getShareRegister().getFreeFloatShares();
 		if (ownSharesAfter != ownSharesBefore) {
-			System.out.println("Raised " + raised + " by selling own " + (ownSharesBefore - ownSharesAfter) +" shares");
+//			System.out.println("Raised " + raised + " by selling own " + (ownSharesBefore - ownSharesAfter) +" shares");
 		}
 		return raised;
 	}

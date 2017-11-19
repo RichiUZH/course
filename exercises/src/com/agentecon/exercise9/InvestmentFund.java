@@ -35,7 +35,7 @@ public class InvestmentFund extends Firm implements IShareholder, IMarketPartici
 		// 2a. invest in some startups (if available)
 		investInYoungFirms(dsm, money, money.getAmount() / 10);
 		// 2b. spend the rest on some random shares (random choice weighted by market cap)
-		portfolio.invest(dsm, this, money.getAmount());
+		portfolio.invest(new DefaultStockPickingStrategy(getPortfolio().getPositionTickers()), dsm, this, money.getAmount());
 		
 		// 3. sell 1% of our shares again
 		portfolio.sell(dsm, this, 0.01);
