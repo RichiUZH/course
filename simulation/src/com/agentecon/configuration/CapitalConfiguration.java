@@ -29,8 +29,8 @@ import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
-import com.agentecon.firm.Farm;
 import com.agentecon.firm.DefaultFarm;
+import com.agentecon.firm.Farm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.RealEstateAgent;
 import com.agentecon.firm.production.CobbDouglasProduction;
@@ -106,7 +106,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 					}
 				}
 			});
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | RuntimeException e) {
 			System.err.println("Could not load custom farms due to " + e);
 		}
 	}
