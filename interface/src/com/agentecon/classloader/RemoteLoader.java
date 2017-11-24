@@ -9,6 +9,7 @@
 package com.agentecon.classloader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ public abstract class RemoteLoader extends ClassLoader {
 	private HashMap<String, ByteCodeSource> bytecode;
 
 	protected SimulationHandle source;
-	protected HashMap<SimulationHandle, RemoteLoader> subLoaderCache;
+	private HashMap<SimulationHandle, RemoteLoader> subLoaderCache;
 
 	public RemoteLoader(ClassLoader parent, SimulationHandle source) throws IOException {
 		super(parent);
@@ -29,23 +30,27 @@ public abstract class RemoteLoader extends ClassLoader {
 		this.bytecode = new HashMap<>();
 		this.subLoaderCache = new HashMap<>();
 	}
-	
-	public synchronized RemoteLoader obtainChildLoader(SimulationHandle source) throws IOException {
-		RemoteLoader existing = subLoaderCache.get(source);
-		if (existing == null) {
-			CompilingClassLoader loader = new CompilingClassLoader(this, source, true);
-			RemoteLoader prev = subLoaderCache.put(source, loader);
-			assert prev == null;
-			return loader;
-		} else {
-			return existing;
+
+	public RemoteLoader obtainChildLoader(SimulationHandle source) throws IOException {
+		synchronized (subLoaderCache) {
+			RemoteLoader existing = subLoaderCache.get(source);
+			if (existing == null) {
+				CompilingClassLoader loader = new CompilingClassLoader(this, source, true);
+				RemoteLoader prev = subLoaderCache.put(source, loader);
+				assert prev == null;
+				return loader;
+			} else {
+				return existing;
+			}
 		}
 	}
-	
+
 	@Deprecated
-	public void ensureRegistered(CompilingClassLoader loader) {
-		RemoteLoader prev = subLoaderCache.put(source, loader);
-		assert prev == null || prev == loader;
+	public void registerSubloader(RemoteLoader loader) {
+		synchronized (subLoaderCache) {
+			RemoteLoader prev = subLoaderCache.put(loader.getSource(), loader);
+			assert prev == null || prev == loader;
+		}
 	}
 
 	protected byte[] loadBytecode(String classname) throws ClassNotFoundException {
@@ -62,33 +67,41 @@ public abstract class RemoteLoader extends ClassLoader {
 		if (source.getRepo().equals(repo)) {
 			return true;
 		} else {
-			for (SimulationHandle handle : subLoaderCache.keySet()) {
-				if (handle.getRepo().equals(repo)) {
-					return true;
+			synchronized (subLoaderCache) {
+				for (SimulationHandle handle : subLoaderCache.keySet()) {
+					if (handle.getRepo().equals(repo)) {
+						return true;
+					}
 				}
 			}
 			return false;
 		}
 	}
-	
+
 	public boolean refreshSubloaders() throws IOException {
-		Iterator<RemoteLoader> iter = subLoaderCache.values().iterator();
-		boolean changed = false;
-		while (iter.hasNext()) {
-			if (!iter.next().isUptoDate()) {
-				iter.remove();
-				changed = true;
+		synchronized (subLoaderCache) {
+			Iterator<RemoteLoader> iter = subLoaderCache.values().iterator();
+			boolean changed = false;
+			while (iter.hasNext()) {
+				if (!iter.next().isUptoDate()) {
+					iter.remove();
+					changed = true;
+				}
 			}
+			return changed;
 		}
-		return changed;
 	}
 
 	public Collection<RemoteLoader> getCachedSubloaders() {
-		return subLoaderCache.values();
+		synchronized (subLoaderCache) {
+			return new ArrayList<RemoteLoader>(subLoaderCache.values());
+		}
 	}
-	
+
 	public RemoteLoader getSubloader(SimulationHandle handle) {
-		return this.subLoaderCache.get(handle);
+		synchronized (subLoaderCache) {
+			return this.subLoaderCache.get(handle);
+		}
 	}
 
 	public String getVersionString() {
@@ -106,13 +119,13 @@ public abstract class RemoteLoader extends ClassLoader {
 	public SimulationHandle getSource() {
 		return source;
 	}
-	
-	public synchronized ByteCodeSource getByteCodeSource(String name){
+
+	public synchronized ByteCodeSource getByteCodeSource(String name) {
 		ByteCodeSource data = this.bytecode.get(name);
 		if (data == null) {
-			data = new ByteCodeSource(name){
+			data = new ByteCodeSource(name) {
 				@Override
-				protected byte[] loadData() throws ClassNotFoundException{
+				protected byte[] loadData() throws ClassNotFoundException {
 					return RemoteLoader.this.loadBytecode(name);
 				}
 			};
@@ -123,7 +136,7 @@ public abstract class RemoteLoader extends ClassLoader {
 
 	public void forEach(String packageName, BiConsumer<String, ByteCodeSource> biConsumer) throws IOException {
 		bytecode.forEach(new BiConsumer<String, ByteCodeSource>() {
-			
+
 			private final boolean recurse = false;
 
 			@Override

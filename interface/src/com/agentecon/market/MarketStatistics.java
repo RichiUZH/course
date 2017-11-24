@@ -55,6 +55,9 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 		assert quantity > 0.0;
 		prices.get(good).notifyTraded(quantity, payment / quantity);
+		if (pending == null) {
+			notifyMarketOpened();
+		}
 		if (seller instanceof IFirm) {
 			pending.get(((IFirm) seller).getTicker()).notifySold(good, quantity, payment);
 		}
@@ -68,7 +71,7 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 		for (GoodStats good : prices.values()) {
 			good.resetCurrent();
 		}
-		firms.clear();
+		pending.clear();
 	}
 
 	@Override

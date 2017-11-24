@@ -11,7 +11,7 @@ public abstract class SimulationHandle {
 
 	public static final String JAVA_SUFFIX = ".java";
 
-	private String owner, name;
+	private final String owner, name;
 	private String[] projects;
 
 	public SimulationHandle(String owner, String repo, boolean simulation) {

@@ -58,7 +58,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 	public static final double GROWTH_RATE = 0.005;
 	private static final int GROW_UNTIL = 350; // day at which growth stops
 	
-	protected static final double START_CAPITAL = 1000;
+	protected static final double START_CAPITAL = 10000;
 	
 	public static final int ROUNDS = 7000;
 

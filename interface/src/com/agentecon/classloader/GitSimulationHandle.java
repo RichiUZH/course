@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 public class GitSimulationHandle extends SimulationHandle {
 
-	private String branch;
+	private final String branch;
 	private HashMap<String, ProjectFileCache> cache;
 	
 	@Deprecated

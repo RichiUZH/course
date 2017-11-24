@@ -24,6 +24,10 @@ public interface IRegister {
 		return SHARES_PER_COMPANY;
 	}
 	
+	public default double getConsumerOwnedShare() {
+		return getFreeFloatShares();
+	}
+	
 	public default double getFreeFloatShares() {
 		return getTotalShareCount();
 	}

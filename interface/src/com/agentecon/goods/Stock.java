@@ -38,16 +38,6 @@ public class Stock implements IStock {
 		}
 	}
 	
-	@Override
-	public IStock hide(double amount) {
-		return new HiddenStock(this, amount);
-	}
-	
-	@Override
-	public IStock hideRelative(double fraction) {
-		return new RelativeHiddenStock(this, fraction);
-	}
-	
 	public IStock duplicate() {
 		return new Stock(good, amount);
 	}
@@ -88,22 +78,6 @@ public class Stock implements IStock {
 	}
 	
 	@Override
-	public void transfer(IStock source, double amount) {
-		assert source.getGood().equals(getGood());
-		assert this != source : "You cannot transfer/sell " + getGood() + " to yourself";
-		assert source.getAmount() - amount >= -Numbers.EPSILON;
-		assert this.getAmount() + amount >= -Numbers.EPSILON;
-		this.amount = Math.max(0.0, this.amount + amount);
-		if (amount > 0){
-			source.remove(amount);
-		} else {
-			source.add(-amount);
-		}
-		assert source.getAmount() < 10000000;
-		assert getAmount() < 10000000;
-	}
-	
-	@Override
 	public void absorb(IStock s) {
 		assert s.getGood() == getGood();
 		assert this != s;
@@ -111,24 +85,8 @@ public class Stock implements IStock {
 	}
 
 	@Override
-	public final boolean isEmpty() {
-		return !hasSome();
-	}
-	
-	@Override
 	public String toString(){
 		return Numbers.toString(amount) + " " + good.toString();
-	}
-
-	@Override
-	public Quantity getQuantity() {
-		return new Quantity(good, amount);
-	}
-
-	@Override
-	public boolean hasSome() {
-		assert amount >= 0.0;
-		return amount > Numbers.EPSILON;
 	}
 
 }

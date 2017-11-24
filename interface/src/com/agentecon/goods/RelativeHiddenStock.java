@@ -39,9 +39,4 @@ public class RelativeHiddenStock extends HiddenStock {
 		super.absorb(s);
 	}
 
-	@Override
-	public IStock duplicate() {
-		return new RelativeHiddenStock(wrapped.duplicate(), hidden, fraction);
-	}
-	
 }

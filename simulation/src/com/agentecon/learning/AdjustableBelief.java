@@ -84,7 +84,7 @@ public abstract class AdjustableBelief implements IBelief {
 
 	@Override
 	public String toString() {
-		return Numbers.toString(price) + "$";
+		return Numbers.toString(price);
 	}
 
 }

@@ -21,7 +21,7 @@ public class CompilingClassLoader extends RemoteLoader {
 	public CompilingClassLoader(RemoteLoader parent, SimulationHandle source) throws SocketTimeoutException, IOException {
 		super(parent, source);
 		this.compiler = new AgentCompiler(parent, source);
-		parent.ensureRegistered(this);
+		parent.registerSubloader(this);
 	}
 	
 	CompilingClassLoader(RemoteLoader parent, SimulationHandle source, boolean dummy) throws SocketTimeoutException, IOException {

@@ -1,5 +1,7 @@
 package com.agentecon.agent;
 
+import java.util.Arrays;
+
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
@@ -40,6 +42,11 @@ public class Endowment {
 			copy[i] = daily[i].duplicate();
 		}
 		return copy;
+	}
+	
+	@Override
+	public String toString() {
+		return "Initial: " + Arrays.toString(initial) + ", daily: " + Arrays.toString(daily);
 	}
 
 }

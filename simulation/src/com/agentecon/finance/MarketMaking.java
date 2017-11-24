@@ -43,10 +43,10 @@ public class MarketMaking extends AbstractMarketMaking {
 	@Override
 	public void trade(IPriceMakerMarket market, IAgent owner) {
 		if (prevAsk != null) {
-			askSizeInMoney.adapt(prevAsk.isUsed());
+			adjustAskSize(prevAsk.isUsed());
 		}
 		if (prevBid != null) {
-			bidSizeInShares.adapt(prevBid.isUsed());
+			adjustBidSize(prevBid.isUsed());
 		}
 		ensurePositiveSpread();
 		double bid = getBid(); // use the value before placing the ask, as the ask might lead to a change
@@ -54,11 +54,32 @@ public class MarketMaking extends AbstractMarketMaking {
 		prevBid = super.placeBid(market, owner, bidSizeInShares.getValue(), bid);
 	}
 
-	protected void ensurePositiveSpread() {
-		while (getBid() > getAsk()) {
-			askSizeInMoney.adapt(true);
-			bidSizeInShares.adapt(true);
+	protected void adjustAskSize(boolean upwards) {
+		askSizeInMoney.adapt(upwards);
+	}
+
+	protected void adjustBidSize(boolean upwards) {
+		bidSizeInShares.adaptWithFloor(upwards, 0.01);
+	}
+
+	private void ensurePositiveSpread() {
+		double bid = getBid();
+		double ask = getAsk();
+		while (bid > ask) {
+			adjustAskSize(true);
+			ask = getAsk();
+			bid = getBid();
+			increaseSpreadSomeMore();
+			ask = getAsk();
+			bid = getBid();
+			adjustBidSize(true);
+			ask = getAsk();
+			bid = getBid();
 		}
+	}
+
+	protected void increaseSpreadSomeMore() {
+		bidSizeInShares.adapt(true);
 	}
 
 	@Override
