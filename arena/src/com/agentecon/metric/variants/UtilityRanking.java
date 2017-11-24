@@ -101,7 +101,7 @@ public class UtilityRanking extends SimStats {
 					rank = new Rank(listener.getType(), listener.getAgent());
 					ranking.put(listener.getType(), rank);
 				}
-				rank.add(listener.getAverage());
+				rank.add(listener.getAverage(), true);
 			}
 		}
 		ArrayList<Rank> list = new ArrayList<>(ranking.values());

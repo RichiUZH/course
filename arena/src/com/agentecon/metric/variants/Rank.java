@@ -13,44 +13,55 @@ import java.net.URL;
 import com.agentecon.agent.Agent;
 
 public class Rank implements Comparable<Rank> {
-	
+
 	private String type;
 	private String version;
 	private String url;
+
+	@Deprecated
 	private double averageUtility;
+
+	private double score;
 	private transient int instances;
 
-	public Rank(String type, Agent agent){
+	public Rank(String type, Agent agent) {
 		this.type = type;
 		this.version = agent.getVersion();
 		URL source = agent.getSourceUrl();
 		if (source == null) {
 			url = "local";
-//		} else if (source.getProtocol().equals("file")) {
-//			url = source.getPath();
 		} else {
 			url = source.toExternalForm();
 		}
 	}
 	
-	public String getType(){
+	public void roundScore() {
+		this.score = Math.round(score);
+	}
+
+	public String getType() {
 		return type;
 	}
-	
-	public void add(double score){
-		this.averageUtility *= instances++;
-		this.averageUtility += score;
-		this.averageUtility /= instances;
+
+	public void add(double score, boolean average) {
+		if (average) {
+			this.score *= instances++;
+			this.score += score;
+			this.score /= instances;
+			this.averageUtility = score;
+		} else {
+			this.score += score;
+		}
 	}
-	
+
 	@Override
 	public int compareTo(Rank o) {
-		return -Double.compare(averageUtility, o.averageUtility);
+		return -Double.compare(score, o.score);
 	}
-	
+
 	@Override
 	public String toString() {
-		return getType() + "\t" + averageUtility;
+		return getType() + "\t" + score;
 	}
-	
+
 }

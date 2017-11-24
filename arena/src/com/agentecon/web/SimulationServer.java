@@ -11,6 +11,7 @@ import com.agentecon.web.methods.AgentsMethod;
 import com.agentecon.web.methods.ChartMethod;
 import com.agentecon.web.methods.ChildrenMethod;
 import com.agentecon.web.methods.DownloadCSVMethod;
+import com.agentecon.web.methods.FirmRankingMethod;
 import com.agentecon.web.methods.GithubeventMethod;
 import com.agentecon.web.methods.InfoMethod;
 import com.agentecon.web.methods.ListMethod;
@@ -74,6 +75,7 @@ public class SimulationServer extends VisServer {
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));
 		this.methods.add(new RankingMethod(this.simulations));
+		this.methods.add(new FirmRankingMethod(this.simulations));
 		this.methods.add(new ChartMethod(this.simulations));
 		this.methods.add(new DownloadCSVMethod(this.simulations));
 		this.methods.add(new MiniChartMethod(this.simulations));

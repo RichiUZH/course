@@ -73,7 +73,7 @@ public class InventoryStats extends SimStats {
 
 			@Override
 			public void accept(Entry<Good, TimeSeriesCollector> t) {
-				list.addAll(TimeSeries.prefix(t.getKey() + " held by ", t.getValue().getAggregateTimeSeries()));
+				list.addAll(TimeSeries.prefix(t.getKey() + " held by ", t.getValue().getTimeSeries()));
 			}
 		});
 		return list;

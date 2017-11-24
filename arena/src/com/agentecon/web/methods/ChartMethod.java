@@ -107,14 +107,14 @@ public class ChartMethod extends SimSpecificMethod {
 					validSelection.add(sel);
 				}
 			}
-			while (options.size() > MAX_OPTIONS) {
-				options.remove(options.size() - 1);
-			}
 			if (validSelection.isEmpty() && options.isEmpty()) {
 				data = new TimeSeriesData[] { new TimeSeriesData("No data", Arrays.asList(new Point(0, 1.0f), new Point(1000, 1.0f)), 1000) };
 			} else {
 				if (validSelection.isEmpty()) {
 					validSelection = Arrays.asList(options.get(0));
+				}
+				if (options.size() > MAX_OPTIONS) {
+					trimOptions(validSelection.get(validSelection.size() - 1));
 				}
 				ArrayList<TimeSeriesData> data = new ArrayList<>();
 				// make sure that time series have same order as selection
@@ -128,6 +128,17 @@ public class ChartMethod extends SimSpecificMethod {
 					}
 				}
 				this.data = data.toArray(new TimeSeriesData[data.size()]);
+			}
+		}
+
+		protected void trimOptions(String lastSelected) {
+			int start = Math.max(0, options.indexOf(lastSelected) - MAX_OPTIONS / 2);
+			while (start > 0) {
+				options.remove(0);
+				start--;
+			}
+			while (options.size() > MAX_OPTIONS) {
+				options.remove(options.size() - 1);
 			}
 		}
 	}

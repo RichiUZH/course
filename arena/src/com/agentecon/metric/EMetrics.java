@@ -16,6 +16,7 @@ import com.agentecon.metric.variants.CashStats;
 import com.agentecon.metric.variants.Demographics;
 import com.agentecon.metric.variants.DividendStats;
 import com.agentecon.metric.variants.Equality;
+import com.agentecon.metric.variants.FirmRanking;
 import com.agentecon.metric.variants.InventoryStats;
 import com.agentecon.metric.variants.MarketMakerStats;
 import com.agentecon.metric.variants.MarketStats;
@@ -32,7 +33,7 @@ import com.agentecon.web.query.AgentQuery;
 
 public enum EMetrics {
 
-	CASH, DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, PRODUCTION_DETAILS, RANKING, UTILITY, WEALTH, TYPE;
+	CASH, DEMOGRAPHICS, DIVIDENDS, EQUALITY, INVENTORY, MARKET, MARKETMAKER, MONETARY, OWNERSHIP, STOCKMARKET, PRODUCTION, PRODUCTION_DETAILS, RANKING_CONSUMERS, RANKING_FIRMS, UTILITY, WEALTH, TYPE;
 
 	public SimStats createAndRegister(ISimulation sim, List<String> list, boolean details) {
 		ArrayList<AgentQuery> queries = new ArrayList<>();
@@ -56,8 +57,10 @@ public enum EMetrics {
 			return "Average dividend payments of firms.";
 		case EQUALITY:
 			return "Gini co-efficient for various cohorts over time. A low value implies more equality.";
-		case RANKING:
-			return "The agent ranking over time.";
+		case RANKING_CONSUMERS:
+			return "The consumer ranking over time.";
+		case RANKING_FIRMS:
+			return "The firm ranking over time.";
 //		case FIRM:
 		case INVENTORY:
 			return "Average amount of goods held by firms and consumers after trading (before consumption and before production).";
@@ -115,8 +118,10 @@ public enum EMetrics {
 			return new ProductionDetailStats(sim);
 		case STOCKMARKET:
 			return new StockMarketStats(sim, true);
-		case RANKING:
+		case RANKING_CONSUMERS:
 			return new UtilityRanking(sim, true);
+		case RANKING_FIRMS:
+			return new FirmRanking(sim, true);
 		case UTILITY:
 			return new UtilityStats(sim);
 		case TYPE:
