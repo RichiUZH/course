@@ -35,10 +35,6 @@ public class ReflectiveAgentFactory implements IAgentFactory {
 		return loader.loadClass(classname);
 	}
 
-	public IFirm createFirm(IAgentIdGenerator id, IStock money) {
-		return createFirm(id, new Endowment(money));
-	}
-
 	public IFirm createFirm(IAgentIdGenerator id, Endowment end) {
 		try {
 			@SuppressWarnings("unchecked")

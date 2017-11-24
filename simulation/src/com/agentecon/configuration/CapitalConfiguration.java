@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
 
+import com.agentecon.IAgentFactory;
 import com.agentecon.ReflectiveAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
@@ -27,6 +28,7 @@ import com.agentecon.events.IUtilityFactory;
 import com.agentecon.events.SimEvent;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
+import com.agentecon.finance.DefaultInvestmentFund;
 import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.DefaultFarm;
@@ -46,10 +48,12 @@ import com.agentecon.world.ICountry;
 
 public class CapitalConfiguration extends SimulationConfig implements IUtilityFactory {
 
+	private static final boolean BASIC_CONFIGURATION = true;
+
 	private static final String REAL_ESTATE_AGENT = "com.agentecon.exercise9.RealEstateAgent";
 	private static final String FUND = "com.agentecon.exercise9.InvestmentFund";
 	private static final String FARM_FACTORY = "com.agentecon.exercise9.FarmFactory";
-	
+
 	public static final Good LAND = FarmingConfiguration.LAND;
 	public static final Good MAN_HOUR = FarmingConfiguration.MAN_HOUR;
 	public static final Good POTATOE = FarmingConfiguration.POTATOE;
@@ -57,14 +61,14 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 	private static final int BASIC_AGENTS = 100;
 	public static final double GROWTH_RATE = 0.005;
 	private static final int GROW_UNTIL = 350; // day at which growth stops
-	
+
 	protected static final double START_CAPITAL = 10000;
-	
+
 	public static final int ROUNDS = 7000;
 
 	private Random rand = new Random(1313);
 	private int maxAge;
-	
+
 	private IProductionFunction landProduction;
 
 	public CapitalConfiguration() throws SocketTimeoutException, IOException {
@@ -82,11 +86,13 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		addInitialFarms();
 		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
 		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
-		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
+		if (!BASIC_CONFIGURATION) {
+			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
+			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
+		}
 		addEvent(new CentralBankEvent(POTATOE));
 	}
-	
+
 	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
 		assert desiredOutput.equals(POTATOE);
 		return new CobbDouglasProductionWithFixedCost(POTATOE, 3, FarmingConfiguration.FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
@@ -97,7 +103,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 			ClassLoader loader = parent.obtainChildLoader(shouldLoadRemoteTeams() ? new GitSimulationHandle("meisser", team, false) : new LocalSimulationHandle(false));
 			ILandbuyingFarmFactory factory = (ILandbuyingFarmFactory) loader.loadClass(FARM_FACTORY).newInstance();
 			addEvent(new SimEvent(1000, 20, 1) {
-				
+
 				@Override
 				public void execute(int day, ICountry sim, IStatistics stats) {
 					Farm farm = factory.considerCreatingNewFarm(sim, new Endowment(getMoney()), createProductionFunction(POTATOE), stats);
@@ -112,7 +118,15 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 	}
 
 	private void addRealEstateAgents(ClassLoader loader) throws IOException {
-		if (shouldLoadRemoteTeams()) {
+		if (BASIC_CONFIGURATION) {
+			IAgentFactory factory = new IAgentFactory() {
+				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+					return new RealEstateAgent(id, end, prodFun);
+				}
+			};
+			addCustomFirm(factory, 500, landProduction);
+			addCustomFirm(factory, 500, landProduction);
+		} else if (shouldLoadRemoteTeams()) {
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team005"), 500, landProduction);
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
 		} else {
@@ -129,10 +143,10 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 			}
 		};
 	}
-	
-	private void addCustomFirm(ReflectiveAgentFactory factory, int time, IProductionFunction prod) {
+
+	private void addCustomFirm(IAgentFactory factory, int time, IProductionFunction prod) {
 		addEvent(new SimEvent(time) {
-			
+
 			@Override
 			public void execute(int day, ICountry sim) {
 				Endowment end = new Endowment(new Stock(getMoney(), START_CAPITAL));
@@ -140,9 +154,17 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 			}
 		});
 	}
-	
+
 	private void addInvestmentFunds(ClassLoader loader) throws IOException {
-		if (shouldLoadRemoteTeams()) {
+		if (BASIC_CONFIGURATION) {
+			IAgentFactory factory = new IAgentFactory() {
+				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+					return new DefaultInvestmentFund(id, end);
+				}
+			};
+			addCustomFirm(factory, 500, null);
+			addCustomFirm(factory, 500, null);
+		} else if (shouldLoadRemoteTeams()) {
 			addCustomFirm(createFundFactory((RemoteLoader) loader, "team001"), 500, null);
 			addCustomFirm(createFundFactory((RemoteLoader) loader, "team010"), 500, null);
 		} else {
@@ -170,7 +192,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		LogUtilWithFloor util = new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
 		return util.wiggle(rand);
 	}
-	
+
 	private void addInitialFarms() {
 		addEvent(new SimEvent(0, 0, 10) {
 
@@ -179,13 +201,12 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 				for (int i = 0; i < getCardinality(); i++) {
 					IStock money = new Stock(getMoney(), 10000);
 					IStock land = new Stock(LAND, 100);
-					Endowment end = new Endowment(money.getGood(), new IStock[] {money, land}, new IStock[] {} );
+					Endowment end = new Endowment(money.getGood(), new IStock[] { money, land }, new IStock[] {});
 					sim.add(new DefaultFarm(sim, end, createProductionFunction(POTATOE)));
 				}
 			}
-		});		
+		});
 	}
-
 
 	protected void addMarketMakers() {
 		addEvent(new SimEvent(0, 0, 10) {
@@ -204,8 +225,8 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		addEvent(new SimEvent(0) {
 			@Override
 			public void execute(int day, ICountry sim) {
-				for (int i=0; i<BASIC_AGENTS; i++) {
-					int maxAge = (i+1) * getMaxAge() / BASIC_AGENTS;
+				for (int i = 0; i < BASIC_AGENTS; i++) {
+					int maxAge = (i + 1) * getMaxAge() / BASIC_AGENTS;
 					IConsumer cons = new InvestingConsumer(sim, maxAge, workerEndowment, create(0));
 					sim.add(cons);
 				}
