@@ -1,6 +1,5 @@
 package com.agentecon.metric.variants;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.agentecon.ISimulation;
@@ -10,14 +9,15 @@ import com.agentecon.market.IStatistics;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.metric.series.TimeSeriesCollector;
-import com.agentecon.web.query.AgentQuery;
 
 public class DividendStats extends SimStats {
 
 	private TimeSeriesCollector collector;
+	private boolean consumer;
 
-	public DividendStats(ISimulation agents, ArrayList<AgentQuery> selection) {
+	public DividendStats(ISimulation agents, boolean consumer) {
 		super(agents);
+		this.consumer = consumer;
 		this.collector = new TimeSeriesCollector(getMaxDay());
 	}
 
@@ -27,7 +27,11 @@ public class DividendStats extends SimStats {
 
 			@Override
 			public void reportDividend(IFirm comp, double amount) {
-				collector.record(getDay(), comp, amount);
+				if (consumer) {
+					collector.record(getDay(), comp, amount * comp.getShareRegister().getConsumerOwnedShare());
+				} else {
+					collector.record(getDay(), comp, amount);
+				}
 			}
 
 		});
