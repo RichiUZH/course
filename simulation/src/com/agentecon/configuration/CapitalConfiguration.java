@@ -48,7 +48,10 @@ import com.agentecon.world.ICountry;
 
 public class CapitalConfiguration extends SimulationConfig implements IUtilityFactory {
 
-	private static final boolean BASIC_CONFIGURATION = true;
+	// If true, only the default agents are being loaded
+	// Alternatively, you can also simply delete the agents you do not want being loaded
+	// from the exercises project.
+	private static final boolean BASIC_CONFIGURATION = false;
 
 	private static final String REAL_ESTATE_AGENT = "com.agentecon.exercise9.RealEstateAgent";
 	private static final String FUND = "com.agentecon.exercise9.InvestmentFund";
