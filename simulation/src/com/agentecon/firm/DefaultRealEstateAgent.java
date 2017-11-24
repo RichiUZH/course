@@ -32,7 +32,7 @@ import com.agentecon.production.PriceUnknownException;
  * 
  * All four real estate agents share the same production function, and the production function has a memory! So production gets harder and harder with every function call...
  */
-public class RealEstateAgent extends Producer {
+public class DefaultRealEstateAgent extends Producer {
 
 	private static final double DISTRIBUTION_RATIO = 0.02;
 
@@ -41,7 +41,7 @@ public class RealEstateAgent extends Producer {
 
 	private Price landPrice;
 
-	public RealEstateAgent(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+	public DefaultRealEstateAgent(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
 		super(id, end, prodFun);
 
 		assert prodFun.getInputs().length == 1;

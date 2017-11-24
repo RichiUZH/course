@@ -34,7 +34,7 @@ import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.DefaultFarm;
 import com.agentecon.firm.Farm;
 import com.agentecon.firm.IFirm;
-import com.agentecon.firm.RealEstateAgent;
+import com.agentecon.firm.DefaultRealEstateAgent;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.firm.production.PersistentProductionFunction;
@@ -121,7 +121,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		if (BASIC_CONFIGURATION) {
 			IAgentFactory factory = new IAgentFactory() {
 				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
-					return new RealEstateAgent(id, end, prodFun);
+					return new DefaultRealEstateAgent(id, end, prodFun);
 				}
 			};
 			addCustomFirm(factory, 500, landProduction);
@@ -139,7 +139,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		return new ReflectiveAgentFactory((RemoteLoader) loader, source, REAL_ESTATE_AGENT) {
 			@Override
 			protected IFirm createDefaultFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun, Exception e) {
-				return new RealEstateAgent(id, end, prodFun);
+				return new DefaultRealEstateAgent(id, end, prodFun);
 			}
 		};
 	}
