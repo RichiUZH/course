@@ -16,11 +16,11 @@ public interface IPriceTakerMarket extends IMarket {
 	public Collection<IOffer> getAsks();
 
 	public Collection<IOffer> getOffers(IPriceFilter bidAskFilter);
-	
+
 	public default Ask getAsk(Good good) {
 		return (Ask) getOffer(good, false);
 	}
-	
+
 	public default Bid getBid(Good good) {
 		return (Bid) getOffer(good, true);
 	}
@@ -28,7 +28,7 @@ public interface IPriceTakerMarket extends IMarket {
 	public default IOffer getOffer(Good good, boolean bid) {
 		return bid ? getBid(good) : getAsk(good);
 	}
-	
+
 	public default void sellSome(IAgent who, IStock wallet, IStock good) {
 		sellSome(who, wallet, good, 1.0);
 	}
@@ -49,11 +49,9 @@ public interface IPriceTakerMarket extends IMarket {
 	 * Convenience method to buy some of the good if possible
 	 */
 	public default void buySome(IAgent who, IStock wallet, IStock good) {
-		if (good.hasSome()) {
-			IOffer offer = getOffer(good.getGood(), false);
-			if (offer != null) {
-				offer.accept(who, wallet, good, good.getQuantity());
-			}
+		IOffer offer = getOffer(good.getGood(), false);
+		if (offer != null) {
+			offer.accept(who, wallet, good, good.getQuantity());
 		}
 	}
 

@@ -47,7 +47,7 @@ public class DailyStockMarket implements IStockMarket {
 	@Override
 	public Collection<Ticker> getTradedStocks() {
 		ArrayList<Ticker> randomList = new ArrayList<>(market.keySet());
-		Collections.shuffle(randomList);
+		Collections.shuffle(randomList, rand);
 		return randomList;
 	}
 
