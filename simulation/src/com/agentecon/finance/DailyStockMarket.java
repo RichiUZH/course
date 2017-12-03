@@ -220,7 +220,7 @@ public class DailyStockMarket implements IStockMarket {
 	}
 
 	public void close(int day) {
-		listeners.notifyMarketClosed(day);
+		listeners.notifyMarketClosed(day, null);
 	}
 
 }
