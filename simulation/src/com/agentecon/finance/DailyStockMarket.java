@@ -3,7 +3,6 @@ package com.agentecon.finance;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +25,7 @@ public class DailyStockMarket implements IStockMarket {
 
 	private Random rand;
 	private MarketListeners listeners;
-	private HashMap<Ticker, BestPriceMarket> market;
+	private InstantiatingHashMap<Ticker, BestPriceMarket> market;
 	private IFinancialMarketData bloomberg;
 
 	private ArrayList<BestPriceMarket> marketCache;
@@ -182,13 +181,13 @@ public class DailyStockMarket implements IStockMarket {
 
 	@Override
 	public AskFin getAsk(Ticker ticker) {
-		BestPriceMarket best = market.get(ticker);
+		BestPriceMarket best = market.getWithoutCreating(ticker);
 		return (AskFin) best.getAsk();
 	}
 
 	@Override
 	public BidFin getBid(Ticker ticker) {
-		BestPriceMarket best = market.get(ticker);
+		BestPriceMarket best = market.getWithoutCreating(ticker);
 		return (BidFin) best.getBid();
 	}
 

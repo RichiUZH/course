@@ -4,7 +4,6 @@ import com.agentecon.firm.FirmFinancials;
 import com.agentecon.firm.IFinancialMarketData;
 import com.agentecon.firm.Ticker;
 import com.agentecon.market.IStatistics;
-import com.agentecon.market.MarketStatistics;
 import com.agentecon.world.Agents;
 
 public class FinancialMarketData implements IFinancialMarketData {

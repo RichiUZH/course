@@ -12,8 +12,12 @@ public abstract class InstantiatingHashMap<K, V> extends HashMap<K, V> {
 		super();
 	}
 	
+	public final V getWithoutCreating(Object key) {
+		return super.get(key);
+	}
+	
 	@SuppressWarnings("unchecked")
-	public V get(Object key){
+	public final V get(Object key){
 		V val = super.get(key);
 		if (val == null){
 			val = create((K)key);
