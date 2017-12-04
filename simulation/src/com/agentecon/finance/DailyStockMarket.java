@@ -182,13 +182,13 @@ public class DailyStockMarket implements IStockMarket {
 	@Override
 	public AskFin getAsk(Ticker ticker) {
 		BestPriceMarket best = market.getWithoutCreating(ticker);
-		return (AskFin) best.getAsk();
+		return best == null ? null : (AskFin) best.getAsk();
 	}
 
 	@Override
 	public BidFin getBid(Ticker ticker) {
 		BestPriceMarket best = market.getWithoutCreating(ticker);
-		return (BidFin) best.getBid();
+		return best == null ? null : (BidFin) best.getBid();
 	}
 
 	@Override
