@@ -13,7 +13,7 @@ public class GoodStats {
 	public GoodStats() {
 		this.current = new Average();
 		this.yesterday = new Average();
-		this.moving = null;
+		this.moving = new MovingAverage(0.95);
 	}
 
 	public MovingAverage getMovingAverage() {
@@ -30,11 +30,7 @@ public class GoodStats {
 
 	void commitCurrent() {
 		if (current.hasValue()) {
-			if (moving == null){
-				this.moving = new MovingAverage(0.95);
-			} else {
-				this.moving.add(current.getAverage());
-			}
+			this.moving.add(current.getAverage());
 		}
 		this.yesterday = current;
 		this.current = new Average();
