@@ -20,7 +20,9 @@ public class ProjectFileCache {
 
 	public boolean isClassPresent(String classname) throws IOException {
 		String packageName = getPackage(classname);
-		assert !classname.contains("$") : "TODO";
+		if (packageName.contains("$")) {
+			classname = classname.substring(0, classname.indexOf("$"));
+		}
 		return listSourceFiles(packageName).contains(classname);
 	}
 	
