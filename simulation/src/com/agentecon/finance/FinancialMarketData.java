@@ -21,5 +21,10 @@ public class FinancialMarketData implements IFinancialMarketData {
 		Firm firm = (Firm) ags.getAgent(ticker.getNumer());
 		return new FirmFinancials(firm, stats);
 	}
+	
+	@Override
+	public boolean hasData(Ticker t) {
+		return ags.getAgent(t.getNumer()) != null;
+	}
 
 }

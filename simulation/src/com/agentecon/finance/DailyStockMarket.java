@@ -45,7 +45,14 @@ public class DailyStockMarket implements IStockMarket {
 
 	@Override
 	public Collection<Ticker> getTradedStocks() {
-		ArrayList<Ticker> randomList = new ArrayList<>(market.keySet());
+		ArrayList<Ticker> randomList = new ArrayList<>(market.size());
+		for (Ticker t: market.keySet()) {
+			if (hasData(t)) {
+				randomList.add(t);
+			} else {
+				new Exception("Asked for firm data of non-existing firm " + t).printStackTrace();;
+			}
+		}
 		Collections.shuffle(randomList, rand);
 		return randomList;
 	}
@@ -53,6 +60,11 @@ public class DailyStockMarket implements IStockMarket {
 	@Override
 	public FirmFinancials getFirmData(Ticker ticker) {
 		return bloomberg.getFirmData(ticker);
+	}
+	
+	@Override
+	public boolean hasData(Ticker t) {
+		return bloomberg.hasData(t);
 	}
 
 	@Override

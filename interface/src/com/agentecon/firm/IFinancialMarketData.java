@@ -6,4 +6,8 @@ public interface IFinancialMarketData {
 		throw new RuntimeException("Not implemented");
 	}
 
+	public default boolean hasData(Ticker t) {
+		return true;
+	}
+
 }
