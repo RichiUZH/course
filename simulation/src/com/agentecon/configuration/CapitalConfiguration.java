@@ -131,7 +131,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 			addCustomFirm(factory, 500, landProduction);
 		} else if (shouldLoadRemoteTeams()) {
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team005"), 500, landProduction);
-//			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
+			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
 		} else {
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
