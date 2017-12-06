@@ -40,8 +40,8 @@ public interface IStock {
 			this.remove(-amount);
 			source.add(-amount);
 		}
-		assert source.getAmount() < 10000000;
-		assert getAmount() < 10000000;
+		assert source.getAmount() < 100000000;
+		assert getAmount() < 100000000;
 	}
 
 	/**
