@@ -22,7 +22,7 @@ public class VisServer extends BasicServer {
 	@Override
 	public Response serve(IHTTPSession session) {
 		Method method = session.getMethod();
-		assert method == Method.GET;
+		assert method == Method.GET : session.getUri();
 		String uri = session.getUri();
 		if (uri.startsWith(VIS_DIR)) {
 			return serve(session, uri.substring(VIS_DIR.length()));
