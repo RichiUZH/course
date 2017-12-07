@@ -89,10 +89,10 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		addInitialFarms();
 		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
 		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-//		if (!BASIC_CONFIGURATION) {
-//			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
-//			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
-//		}
+		if (!BASIC_CONFIGURATION) {
+			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
+			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
+		}
 		addEvent(new CentralBankEvent(POTATOE));
 	}
 
