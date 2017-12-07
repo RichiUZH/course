@@ -16,7 +16,7 @@ import com.agentecon.world.Country;
 
 public class StockMarket {
 	
-	private static final boolean ALLOW_FUNDS_BUYING_FUNDS = true;
+	private static final boolean ALLOW_FUNDS_BUYING_FUNDS = false;
 
 	private Country country;
 	private MarketStatistics stockStats;
