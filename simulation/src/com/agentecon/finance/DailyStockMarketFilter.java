@@ -61,7 +61,7 @@ public class DailyStockMarketFilter implements IStockMarket {
 
 	public Ticker getRandomStock(boolean marketCapWeight) {
 		Ticker random = findAnyAsk(getTradedStocks(), marketCapWeight);
-		if (typeFilter.test(random)) {
+		if (random == null || typeFilter.test(random)) {
 			return null;
 		} else {
 			return random;
