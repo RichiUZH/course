@@ -11,7 +11,7 @@ import com.agentecon.market.IStatistics;
 
 public class DefaultFarm extends Farm implements IMarketParticipant {
 	
-	protected static final double DISCOUNT_RATE = 0.1;
+	protected static final double DISCOUNT_RATE = 0.005;
 	
 	private InvestmentStrategy investments;
 
