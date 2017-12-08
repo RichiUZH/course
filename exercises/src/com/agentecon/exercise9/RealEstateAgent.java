@@ -41,6 +41,8 @@ public class RealEstateAgent extends Producer {
 
 	private IBelief priceBelief;
 
+	private Ask prevAsk;
+
 	public RealEstateAgent(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
 		super(id, end, prodFun);
 
@@ -70,7 +72,8 @@ public class RealEstateAgent extends Producer {
 		if (land.hasSome()) {
 			// try to sell the land we have 10% above our guess for the right land price
 			Price askPrice = new Price(CapitalConfiguration.LAND, priceBelief.getValue());
-			market.offer(new Ask(this, money, land, askPrice, land.getAmount() * 0.01));
+			prevAsk = new Ask(this, money, land, askPrice, land.getAmount() * 0.01);
+			market.offer(prevAsk);
 		}
 
 		// buy some man-hours to produce additional land
@@ -98,6 +101,9 @@ public class RealEstateAgent extends Producer {
 	@Override
 	public void adaptPrices() {
 		input.adaptPrice();
+		if (prevAsk != null) {
+			priceBelief.adapt(prevAsk.isUsed());
+		}
 
 		// market making already adapts prices during offer phase, no need to act here
 	}

@@ -115,20 +115,20 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 
 	private void addRealEstateAgents(ClassLoader loader) throws IOException {
 //		if (BASIC_CONFIGURATION) {
-//			IAgentFactory factory = new IAgentFactory() {
-//				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
-//					return new DefaultRealEstateAgent(id, end, prodFun);
-//				}
-//			};
-//			addCustomFirm(factory, 500, landProduction);
-//			addCustomFirm(factory, 500, landProduction);
-		if (shouldLoadRemoteTeams()) {
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team005"), 500, landProduction);
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
-		} else {
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
-		}
+			IAgentFactory factory = new IAgentFactory() {
+				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+					return new DefaultRealEstateAgent(id, end, prodFun);
+				}
+			};
+			addCustomFirm(factory, 500, landProduction);
+			addCustomFirm(factory, 500, landProduction);
+//		if (shouldLoadRemoteTeams()) {
+//			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team005"), 500, landProduction);
+//			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
+//		} else {
+//			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
+//			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
+//		}
 	}
 
 	protected ReflectiveAgentFactory createRealEstateFirmFactory(RemoteLoader loader, String source) throws IOException {
