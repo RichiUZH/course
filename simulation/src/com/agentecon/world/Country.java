@@ -77,8 +77,12 @@ public class Country implements ICountry {
 						totalshares -= shares;
 					}
 				}
-				last.getInventory().absorb(inv);
-				last.getPortfolio().absorb(port);
+				if (last != null) {
+					last.getInventory().absorb(inv);
+					last.getPortfolio().absorb(port);
+				} else {
+					// TEMP
+				}
 				port.dispose();
 			}
 		}
@@ -108,25 +112,25 @@ public class Country implements ICountry {
 
 	public void finishDay(IStatistics stats) {
 		consume();
-		
+
 		dismantleFirms(stats);
-		
+
 		handleDeath();
 
 		listeners.notifyDayEnded(stats);
 	}
-	
+
 	protected void consume() {
 		utility = new Average();
-		for (IConsumer c: agents.getConsumers()) {
+		for (IConsumer c : agents.getConsumers()) {
 			assert c.isAlive();
 			double util = c.consume();
 			utility.add(util);
 		}
 	}
-	
+
 	protected void handleDeath() {
-		for (IConsumer c: agents.getConsumers()) {
+		for (IConsumer c : agents.getConsumers()) {
 			assert c.isAlive();
 			Inheritance left = c.considerDeath();
 			if (left != null) {
@@ -135,26 +139,26 @@ public class Country implements ICountry {
 		}
 	}
 
-//	protected void handleDeath() {
-//		IStock inheritedMoney = new Stock(money);
-//		Portfolio inheritance = new Portfolio(inheritedMoney);
-//		Collection<IConsumer> consumers = agents.getConsumers();
-//		Iterator<IConsumer> iter = consumers.iterator();
-//		utility = new Average();
-//		while (iter.hasNext()) {
-//			IConsumer c = iter.next();
-//			assert c.isAlive();
-//			double util = c.consume();
-//			utility.add(util);
-//			c.considerDeath(inheritance);
-//		}
-//		for (Position pos : inheritance.getPositions()) {
-//			agents.getCompany(pos.getTicker()).inherit(pos);
-//		}
-//		if (inheritedMoney.getAmount() > 0) {
-//			agents.getRandomConsumer().getMoney().absorb(inheritedMoney);
-//		}
-//	}
+	// protected void handleDeath() {
+	// IStock inheritedMoney = new Stock(money);
+	// Portfolio inheritance = new Portfolio(inheritedMoney);
+	// Collection<IConsumer> consumers = agents.getConsumers();
+	// Iterator<IConsumer> iter = consumers.iterator();
+	// utility = new Average();
+	// while (iter.hasNext()) {
+	// IConsumer c = iter.next();
+	// assert c.isAlive();
+	// double util = c.consume();
+	// utility.add(util);
+	// c.considerDeath(inheritance);
+	// }
+	// for (Position pos : inheritance.getPositions()) {
+	// agents.getCompany(pos.getTicker()).inherit(pos);
+	// }
+	// if (inheritedMoney.getAmount() > 0) {
+	// agents.getRandomConsumer().getMoney().absorb(inheritedMoney);
+	// }
+	// }
 
 	public void startTransaction() {
 		this.backup = agents.duplicate();

@@ -130,7 +130,7 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	public Inventory dispose() {
 		assert isAlive();
-		assert age > 0;
+		assert age >= 0;
 		age = -age;
 		Inventory old = this.inv;
 		Inventory newInventory = new Inventory(old.getMoney().getGood());

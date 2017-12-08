@@ -139,6 +139,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		return false;
 	}
 
+	@Override
 	public Inheritance considerDeath() {
 		super.age();
 		return null;

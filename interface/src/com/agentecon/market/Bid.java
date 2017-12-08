@@ -16,7 +16,7 @@ public class Bid extends AbstractOffer {
 	public Bid(IAgent initiator, IStock wallet, IStock stock, Price price, double quantity){
 		super(initiator, wallet, stock, price, quantity);
 		assert wallet.getAmount() - getAmount() * getPrice().getPrice() >= -Numbers.EPSILON;
-		assert quantity > 0;
+//		assert quantity > 0;
 	}
 	
 	@Override

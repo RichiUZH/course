@@ -7,13 +7,15 @@ import com.agentecon.util.Numbers;
 
 public class Price implements Comparable<Price> {
 	
+	public static final double MIN_PRICE = Numbers.EPSILON;
+	
 	private Good good;
 	private double price;
 	
 	public Price(Good good, double price) {
 		assert good != null;
 		this.good = good;
-		this.price = price;
+		this.price = Math.max(price, MIN_PRICE);
 	}
 
 	public double getAmountAt(double money) {
