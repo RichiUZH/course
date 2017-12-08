@@ -28,8 +28,9 @@ public class Bid extends AbstractOffer {
 	@Override
 	public double accept(IAgent acceptingAgent, IStock seller, IStock sellerStock, Quantity targetAmount){
 		assert sellerStock.getGood().equals(targetAmount.getGood());
-		assert sellerStock.getAmount() >= targetAmount.getAmount();
+//		assert sellerStock.getAmount() >= targetAmount.getAmount(); TEMP
 		double amount = Math.min(targetAmount.getAmount(), getAmount());
+		amount = Math.min(amount, sellerStock.getAmount());
 		assert amount >= 0;
 		double total = amount * getPrice().getPrice();
 		transfer(acceptingAgent, seller, -total, sellerStock, amount);
