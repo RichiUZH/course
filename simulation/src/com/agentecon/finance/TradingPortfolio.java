@@ -64,6 +64,16 @@ public class TradingPortfolio extends Portfolio {
 		}, stocks, owner, budget);
 	}
 	
+	public double invest(Ticker t, IStockMarket dsm, DefaultInvestmentFund owner, double budget) {
+		return invest(new IStockPickingStrategy() {
+			
+			@Override
+			public Ticker findStockToBuy(IStockMarket stocks) {
+				return t;
+			}
+		}, dsm, owner, budget);
+	}
+	
 	public double invest(IStockPickingStrategy strategy, IStockMarket stocks, IAgent owner, double budget) {
 		double moneyBefore = wallet.getAmount();
 		budget = Math.min(moneyBefore, budget);

@@ -10,6 +10,7 @@ package com.agentecon.exercise9;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.configuration.CapitalConfiguration;
 import com.agentecon.finance.Producer;
 import com.agentecon.firm.InputFactor;
 import com.agentecon.firm.sensor.SensorInputFactor;
@@ -17,13 +18,12 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Quantity;
 import com.agentecon.learning.ExpSearchBelief;
+import com.agentecon.learning.IBelief;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
-import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.IProductionFunction;
-import com.agentecon.production.PriceUnknownException;
 
 /**
  * There are only four real estate agent in the simulation, two for each team.
@@ -39,7 +39,7 @@ public class RealEstateAgent extends Producer {
 	private double minCashLevel;
 	private InputFactor input;
 
-	private Price landPrice;
+	private IBelief priceBelief;
 
 	public RealEstateAgent(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
 		super(id, end, prodFun);
@@ -48,31 +48,13 @@ public class RealEstateAgent extends Producer {
 		Good manhour = prodFun.getInputs()[0];
 		this.input = new SensorInputFactor(getInventory().getStock(manhour), new ExpSearchBelief(10));
 
-		// hard-coded land price. Maybe something dynamic works better?
-		this.landPrice = new Price(prodFun.getOutput(), 100);
+		this.priceBelief = new ExpSearchBelief(100);
 
 		this.minCashLevel = getMoney().getAmount() / 2;
 	}
 
 	private IStock getLand() {
-		return getInventory().getStock(landPrice.getGood());
-	}
-
-	// calculate the value of our inventory (money, land, man-hours)
-	private double calculateCapital() {
-		return getInventory().calculateValue(new IPriceProvider() {
-
-			@Override
-			public double getPriceBelief(Good good) throws PriceUnknownException {
-				if (input.getGood().equals(good)) {
-					return input.getPrice();
-				} else if (landPrice.getGood().equals(good)) {
-					return landPrice.getPrice();
-				} else {
-					throw new PriceUnknownException();
-				}
-			}
-		});
+		return getInventory().getStock(CapitalConfiguration.LAND);
 	}
 
 	@Override
@@ -82,13 +64,13 @@ public class RealEstateAgent extends Producer {
 		if (money.getAmount() > 100) {
 			// if we have a minimal amount of money, we bid for land others might want to sell
 			double landBudget = (money.getAmount() - 100) / 10;
-			Price bidPrice = new Price(landPrice.getGood(), landPrice.getPrice() * 0.9);
+			Price bidPrice = new Price(CapitalConfiguration.LAND, priceBelief.getValue() * 0.8);
 			market.offer(new Bid(this, money, land, bidPrice, bidPrice.getAmountAt(landBudget)));
 		}
 		if (land.hasSome()) {
 			// try to sell the land we have 10% above our guess for the right land price
-			Price askPrice = new Price(landPrice.getGood(), landPrice.getPrice() * 1.1);
-			market.offer(new Ask(this, money, land, askPrice, land.getAmount()));
+			Price askPrice = new Price(CapitalConfiguration.LAND, priceBelief.getValue());
+			market.offer(new Ask(this, money, land, askPrice, land.getAmount() * 0.01));
 		}
 
 		// buy some man-hours to produce additional land
@@ -108,8 +90,8 @@ public class RealEstateAgent extends Producer {
 		Quantity manhours = new Quantity(input.getGood(), potentialInvestment / manHourPrice);
 		IProductionFunction prodFun = getProductionFunction();
 		Quantity landWeCouldProduce = prodFun.calculateOutput(manhours);
-		double landValue = landWeCouldProduce.getAmount() * landPrice.getPrice();
-		boolean shouldProduce = landValue > manHourPrice;
+		double landValue = landWeCouldProduce.getAmount() * priceBelief.getValue();
+		boolean shouldProduce = landValue > potentialInvestment;
 		return shouldProduce;
 	}
 

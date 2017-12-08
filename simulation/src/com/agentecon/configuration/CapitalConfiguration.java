@@ -48,11 +48,6 @@ import com.agentecon.world.ICountry;
 
 public class CapitalConfiguration extends SimulationConfig implements IUtilityFactory {
 
-	// If true, only the default agents are being loaded
-	// Alternatively, you can also simply delete the agents you do not want being loaded
-	// from the exercises project.
-	private static final boolean BASIC_CONFIGURATION = false;
-
 	private static final String REAL_ESTATE_AGENT = "com.agentecon.exercise9.RealEstateAgent";
 	private static final String FUND = "com.agentecon.exercise9.InvestmentFund";
 	private static final String FARM_FACTORY = "com.agentecon.exercise9.FarmFactory";
@@ -89,10 +84,8 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 		addInitialFarms();
 		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
 		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-		if (!BASIC_CONFIGURATION) {
-			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
-			addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
-		}
+		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
+		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
 		addEvent(new CentralBankEvent(POTATOE));
 	}
 
@@ -121,15 +114,15 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 	}
 
 	private void addRealEstateAgents(ClassLoader loader) throws IOException {
-		if (BASIC_CONFIGURATION) {
-			IAgentFactory factory = new IAgentFactory() {
-				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
-					return new DefaultRealEstateAgent(id, end, prodFun);
-				}
-			};
-			addCustomFirm(factory, 500, landProduction);
-			addCustomFirm(factory, 500, landProduction);
-		} else if (shouldLoadRemoteTeams()) {
+//		if (BASIC_CONFIGURATION) {
+//			IAgentFactory factory = new IAgentFactory() {
+//				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+//					return new DefaultRealEstateAgent(id, end, prodFun);
+//				}
+//			};
+//			addCustomFirm(factory, 500, landProduction);
+//			addCustomFirm(factory, 500, landProduction);
+		if (shouldLoadRemoteTeams()) {
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team005"), 500, landProduction);
 			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
 		} else {
@@ -159,7 +152,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 	}
 
 	private void addInvestmentFunds(ClassLoader loader) throws IOException {
-		if (BASIC_CONFIGURATION) {
+//		if (BASIC_CONFIGURATION) {
 			IAgentFactory factory = new IAgentFactory() {
 				public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
 					return new DefaultInvestmentFund(id, end);
@@ -167,13 +160,13 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 			};
 			addCustomFirm(factory, 500, null);
 			addCustomFirm(factory, 500, null);
-		} else if (shouldLoadRemoteTeams()) {
-			addCustomFirm(createFundFactory((RemoteLoader) loader, "team001"), 500, null);
-			addCustomFirm(createFundFactory((RemoteLoader) loader, "team010"), 500, null);
-		} else {
-			addCustomFirm(createFundFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, null);
-			addCustomFirm(createFundFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, null);
-		}
+//		} else if (shouldLoadRemoteTeams()) {
+//			addCustomFirm(createFundFactory((RemoteLoader) loader, "team001"), 500, null);
+//			addCustomFirm(createFundFactory((RemoteLoader) loader, "team010"), 500, null);
+//		} else {
+//			addCustomFirm(createFundFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, null);
+//			addCustomFirm(createFundFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, null);
+//		}
 	}
 
 	protected ReflectiveAgentFactory createFundFactory(RemoteLoader loader, String source) throws IOException {

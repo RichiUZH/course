@@ -12,7 +12,6 @@ import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.firm.IFirm;
-import com.agentecon.goods.IStock;
 import com.agentecon.production.IProductionFunction;
 
 public class ReflectiveAgentFactory implements IAgentFactory {
