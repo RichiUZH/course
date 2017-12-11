@@ -49,7 +49,12 @@ public class Stock implements IStock {
 	
 	@Override
 	public double getAmount() {
-		return amount;
+		// TEMP
+		if (amount < 0.00000000001d) {
+			return 0.0;
+		} else {
+			return amount;
+		}
 	}
 	
 	@Override

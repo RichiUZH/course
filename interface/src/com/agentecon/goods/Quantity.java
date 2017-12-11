@@ -22,9 +22,13 @@ public class Quantity {
 		return good;
 	}
 	
+	public boolean hasSome() {
+		return amount > Numbers.EPSILON;
+	}
+	
 	@Override
 	public String toString(){
 		return Numbers.toString(amount) + " " + good;
 	}
-	
+
 }

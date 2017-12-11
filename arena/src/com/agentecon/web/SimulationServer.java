@@ -54,14 +54,16 @@ public class SimulationServer extends VisServer {
 				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-basic-4", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-competitive-3", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-only-default-farms-2", true));
-				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-consumer-owned-funds-3", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-consumer-owned-funds-4", true));
 			} catch (IOException e) {
 				System.out.println("Disabled remote repositories. " + e.getMessage());
 			}
 		} else {
 			this.simulations.add(new LocalSimulationHandle());
 			if (SimulationConfig.shouldLoadRemoteTeams()) {
-				// only start local reloaded if we don't have remote teams in order to save github api calls
+				// only start local reloader if we don't have remote teams in order to save github api calls
+				// note that we cannot refresh the main simulation alone, as the classes loaded by the sub class
+				// loaders still refer to classes loaded by the main one
 			} else {
 				new LocalSimulationUpdater(this.simulations).start();
 			}

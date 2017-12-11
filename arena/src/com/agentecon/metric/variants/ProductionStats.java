@@ -63,7 +63,7 @@ public class ProductionStats extends SimStats {
 	protected void includeInput(Quantity[] inputs, Quantity output) {
 		MarketStatistics stats = usedInputs.get(output.getGood());
 		for (Quantity input : inputs) {
-			if (input.getAmount() > 0.0) {
+			if (input.hasSome()) {
 				stats.notifyTraded(null, null, input.getGood(), input.getAmount(), 1.0);
 			}
 		}

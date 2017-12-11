@@ -37,9 +37,9 @@ public class SimulationLoader {
 				throw new NothingChangedException();
 			}
 		} else {
-			this.classLoader = new CompilingClassLoader(handle);
 			// Do not recycle the sub-loaders, as their loaded classes still
 			// refer to superclasses from the old simulation loader
+			this.classLoader = new CompilingClassLoader(handle);
 		}
 	}
 

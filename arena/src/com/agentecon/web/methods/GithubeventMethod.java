@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -34,14 +33,13 @@ public class GithubeventMethod extends WebApiMethod {
 
 	@Override
 	public Response execute(IHTTPSession session, Parameters params) throws IOException {
-		System.out.println("Received github event with the following parameters: " + params.toString());
-
 		if (session.getMethod() == Method.POST) {
 			// note: stream should not be closed, otherwise we can't send back an answer
 			InputStream inputStream = session.getInputStream();
 			byte[] data = new byte[inputStream.available()];
 			inputStream.read(data);
 			String content = new String(data);
+			System.out.println("Received github event with the following content\n" + content);
 			JsonObject object = new Gson().fromJson(content, JsonObject.class);
 			JsonObject repository = object.getAsJsonObject("repository");
 			JsonPrimitive repoName = repository.getAsJsonPrimitive("name");
@@ -50,15 +48,20 @@ public class GithubeventMethod extends WebApiMethod {
 			if (headcommit instanceof JsonObject && commits.size() == 1) {
 				JsonArray changeList = ((JsonObject) headcommit).getAsJsonArray("modified");
 				if (hasChangeJavaFiles(changeList)) {
+					System.out.println("Updating repository " + repoName.getAsString());
 					simulations.notifyRepositoryChanged(repoName.getAsString());
+				} else {
+					System.out.println("No relevant change found.");
 				}
 			} else {
-				// if the latest commit is not described or if there were 
+				// if the latest commit is not described or if there were
 				// multiple commits, just assume the worst. :)
+				System.out.println("Triggering update because of multiple changes.");
 				simulations.notifyRepositoryChanged(repoName.getAsString());
 			}
-		} else if (params.getParam("repo") != null){
+		} else if (params.getParam("repo") != null) {
 			// for local testing
+			System.out.println("Received github test event");
 			simulations.notifyRepositoryChanged(params.getParam("repo"));
 		}
 
