@@ -220,9 +220,9 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
 		list.addAll(TimeSeries.prefix("Price", prices.values()));
-//		ArrayList<TimeSeries> logReturns = TimeSeries.logReturns(list);
-//		list.addAll(logReturns);
-//		list.addAll(TimeSeries.prefix("Volume", volumes.values()));
+		// ArrayList<TimeSeries> logReturns = TimeSeries.logReturns(list);
+		// list.addAll(logReturns);
+		// list.addAll(TimeSeries.prefix("Volume", volumes.values()));
 		list.addAll(TimeSeries.prefix("Dividend yield", dividendYield.values()));
 		if (includeIndex) {
 			list.add(createTotalReturnIndex(prices.get(index), dividendYield.get(index)));
@@ -240,9 +240,11 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 		TimeSeries totalReturnIndex = new TimeSeries("Total return index (logarithmic)", getMaxDay());
 		double current = Math.E;
 		totalReturnIndex.set(0, current);
-		for (int i=1; i<=returns.getEnd(); i++) {
+		for (int i = 1; i <= returns.getEnd(); i++) {
 			current *= returns.get(i);
-			totalReturnIndex.set(i, Math.log(current));
+			if (current > 0.0) {
+				totalReturnIndex.set(i, Math.log(current));
+			}
 		}
 		return totalReturnIndex;
 	}
