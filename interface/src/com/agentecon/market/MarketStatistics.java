@@ -11,11 +11,13 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.production.PriceUnknownException;
+import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.MovingAverage;
 
 public class MarketStatistics implements IMarketStatistics, IMarketListener {
 
+	private Average index;
 	private HashMap<Good, GoodStats> prices;
 	private HashMap<Ticker, FirmStats> pending, firms;
 
@@ -81,6 +83,7 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 		}
 		this.firms = pending;
 		this.pending = null;
+		this.index = null;
 	}
 
 	@Override
@@ -121,6 +124,26 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 		} else {
 			return avg.getAverage();
 		}
+	}
+
+	@Override
+	public double getPriceIndex() {
+		if (index == null) {
+			index = new Average();
+			prices.forEach(new BiConsumer<Good, GoodStats>() {
+
+				@Override
+				public void accept(Good t, GoodStats u) {
+					if (t.getPersistence() < 1.0) {
+						Average avg = u.getYesterday();
+						if (avg.hasValue()) {
+							index.add(avg.getTotWeight() * avg.getAverage(), avg.getAverage());
+						}
+					}
+				}
+			});
+		}
+		return index.getAverage();
 	}
 
 }
