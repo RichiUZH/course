@@ -119,10 +119,10 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 	@Override
 	public double getPriceBelief(Good good) throws PriceUnknownException {
 		MovingAverage avg = getStats(good).getMovingAverage();
-		if (avg == null) {
-			throw new PriceUnknownException();
-		} else {
+		if (avg.hasSamples()) {
 			return avg.getAverage();
+		} else {
+			throw new PriceUnknownException();
 		}
 	}
 

@@ -44,6 +44,10 @@ public class MovingAverage implements Cloneable, IAverage {
 	public String normalize(double f) {
 		return getAverage() / f + " (" + Math.sqrt(getVariance()) / f + ")";
 	}
+	
+	public boolean hasSamples() {
+		return samples > 0;
+	}
 
 	@Override
 	public MovingAverage clone() {
