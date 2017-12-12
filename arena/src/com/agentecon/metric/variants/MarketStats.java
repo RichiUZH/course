@@ -115,7 +115,7 @@ public class MarketStats extends SimStats implements IMarketListener {
 			Average avg = e.getValue();
 			double price = avg.getAverage();
 			double vol = avg.getTotWeight();
-			indexValue.add(vol, price);
+			indexValue.add(price * vol, price);
 			prices.get(e.getKey()).set(day, price); // , avg.getMin(), avg.getMax());
 			if (volume != null) {
 				volume.get(e.getKey()).set(day, vol);
