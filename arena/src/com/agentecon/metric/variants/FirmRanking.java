@@ -50,6 +50,10 @@ public class FirmRanking extends SimStats {
 		};
 	}
 
+	public double getPriceIndex() {
+		return getStats().getGoodsMarketStats().getPriceIndex();
+	}
+
 	@Override
 	public void notifyFirmCreated(IFirm firm) {
 		FirmListener listener = new FirmListener(firm);
@@ -95,7 +99,7 @@ public class FirmRanking extends SimStats {
 		}
 		ArrayList<Rank> list = new ArrayList<>(ranking.values());
 		Collections.sort(list);
-		for (Rank rank: list) {
+		for (Rank rank : list) {
 			rank.roundScore();
 		}
 		return list;
@@ -126,7 +130,10 @@ public class FirmRanking extends SimStats {
 		@Override
 		public void reportDividend(IFirm inst, double amount) {
 			double consumerOwnership = inst.getShareRegister().getConsumerOwnedShare();
-			this.totalDividends += consumerOwnership * amount;
+			double weightedDividend = consumerOwnership * amount / getPriceIndex();
+			if (Double.isFinite(weightedDividend)) {
+				this.totalDividends += weightedDividend;
+			}
 		}
 
 		@Override
