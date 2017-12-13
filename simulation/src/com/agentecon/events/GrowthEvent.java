@@ -22,10 +22,14 @@ public abstract class GrowthEvent extends RandomEvent {
 		this.births = 0;
 		this.probabilistic = probabilistic;
 	}
+	
+	protected int getPopulation(ICountry sim) {
+		return sim.getAgents().getConsumers().size();
+	}
 
 	@Override
 	public void execute(int day, ICountry sim) {
-		int population = sim.getAgents().getConsumers().size();
+		int population = getPopulation(sim);
 		if (probabilistic) {
 			for (int i=0; i<population; i++) {
 				double random = rand.nextDouble();

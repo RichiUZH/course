@@ -29,7 +29,7 @@ public abstract class Agent implements IAgent, Cloneable {
 		this.number = agentRegistry.createUniqueAgentId();
 		this.type = inferType(getClass());
 		this.end = end;
-		this.age = 0;
+		this.age = 1;
 		this.ref = new AgentRef(this);
 		assert type != null;
 	}
@@ -96,7 +96,7 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public boolean isAlive() {
-		return age >= 0;
+		return age > 0;
 	}
 
 	public void age() {
@@ -130,7 +130,7 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	public Inventory dispose() {
 		assert isAlive();
-		assert age >= 0;
+		assert age > 0;
 		age = -age;
 		Inventory old = this.inv;
 		Inventory newInventory = new Inventory(old.getMoney().getGood());
