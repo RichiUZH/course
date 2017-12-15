@@ -51,7 +51,7 @@ public class FirmRanking extends SimStats {
 	}
 
 	public double getPriceIndex() {
-		return 1.0; // getStats().getGoodsMarketStats().getPriceIndex();
+		return getStats().getGoodsMarketStats().getPriceIndex();
 	}
 
 	@Override
