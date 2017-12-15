@@ -67,7 +67,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 
 	protected static final double START_CAPITAL = 10000;
 
-	public static final int ROUNDS = 7000;
+	public static final int ROUNDS = 10000;
 
 	private Random rand = new Random(1313);
 	private int maxAge;
@@ -248,7 +248,7 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 			}
 
 		});
-		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / getMaxAge(), false) {
+		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / getMaxAge(), true) {
 
 			@Override
 			protected void execute(ICountry sim) {
