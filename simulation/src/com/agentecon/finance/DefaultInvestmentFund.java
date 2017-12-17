@@ -27,38 +27,9 @@ public class DefaultInvestmentFund extends Firm implements IShareholder, IMarket
 	}
 
 	public void managePortfolio(IStockMarket dsm) {
-		// really simple basic strategy:
-
-		// 1. hide some money as reserve
 		IStock money = getMoney().hide(reserve);
-
-		// 2a. invest in some startups (if available)
-//		investIn(dsm, money, "LandBuyingFarm", money.getAmount() / 10);
-//		investIn(dsm, money, "RealEstate", money.getAmount() / 10);
-		
-		// 2b. spend the rest on some random shares (random choice weighted by market cap)
-		portfolio.invest(dsm, this, money.getAmount() / 5);
-
-		// 3. sell 0.5% of our shares again
+		portfolio.invest(dsm, this, money.getAmount() * 0.05);
 		portfolio.sell(dsm, this, 0.005);
-
-//		// Knowledge you might want to use:
-//		for (Ticker firm : dsm.getTradedStocks()) {
-//			if (firm.getType().startsWith("team003")) {
-//				// this firm was implemented by team003
-//				// possible values are: local, course, team001, team002, team003, team005, team007, team010
-//				// when running locally, the type starts with "local"
-//				// the source is followed by a dash, so the complete type looks like course-RealEstateAgent
-//			}
-//			if (firm.getType().contains("RealEstateAgent")) {
-//				// this is a real estate agent
-//			}
-//			// here, you get all kinds of data that might be of interest
-//			FirmFinancials financials = dsm.getFirmData(firm);
-//
-//			// however, if you want to know how something changed over time, you need to track that yourself
-//
-//		}
 	}
 
 	protected void investIn(IStockMarket dsm, IStock money, String type, double totalBudget) {
@@ -90,9 +61,9 @@ public class DefaultInvestmentFund extends Firm implements IShareholder, IMarket
 		if (cash < 10000) {
 			return 0.0;
 		} else if (cash < 50000) {
-			return cash * 0.01;
+			return (cash - 10000) * 0.01;
 		} else {
-			return cash * 0.1;
+			return 400 + (cash - 50000) * 0.05;
 		}
 	}
 
@@ -107,5 +78,5 @@ public class DefaultInvestmentFund extends Firm implements IShareholder, IMarket
 	public String toString() {
 		return getTicker() + " with " + portfolio;
 	}
-
+	
 }

@@ -13,7 +13,6 @@ import java.net.SocketTimeoutException;
 import java.util.Random;
 
 import com.agentecon.IAgentFactory;
-import com.agentecon.ReflectiveAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.classloader.GitSimulationHandle;
@@ -29,12 +28,11 @@ import com.agentecon.events.SimEvent;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.DefaultInvestmentFund;
-import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.DefaultFarm;
+import com.agentecon.firm.DefaultRealEstateAgent;
 import com.agentecon.firm.Farm;
 import com.agentecon.firm.IFirm;
-import com.agentecon.firm.DefaultRealEstateAgent;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.firm.production.PersistentProductionFunction;
@@ -46,10 +44,8 @@ import com.agentecon.production.IProductionFunction;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.world.ICountry;
 
-public class CapitalConfiguration extends SimulationConfig implements IUtilityFactory {
+public class BasicCapitalConfiguration extends SimulationConfig implements IUtilityFactory {
 
-	private static final String REAL_ESTATE_AGENT = "com.agentecon.exercise9.RealEstateAgent";
-	private static final String FUND = "com.agentecon.exercise9.InvestmentFund";
 	private static final String FARM_FACTORY = "com.agentecon.exercise9.FarmFactory";
 
 	public static final Good LAND = FarmingConfiguration.LAND;
@@ -62,30 +58,22 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 
 	protected static final double START_CAPITAL = 10000;
 
-	public static final int ROUNDS = 7000;
-
 	private Random rand = new Random(1313);
-	private int maxAge;
 
 	private IProductionFunction landProduction;
 
-	public CapitalConfiguration() throws SocketTimeoutException, IOException {
-		this(500);
-	}
-
-	public CapitalConfiguration(int maxAgeParam) throws SocketTimeoutException, IOException {
-		super(ROUNDS);
-		this.maxAge = maxAgeParam;
+	public BasicCapitalConfiguration() throws SocketTimeoutException, IOException {
+		super(10000);
 		this.landProduction = new PersistentProductionFunction(new CobbDouglasProduction(LAND, 0.3, new Weight(MAN_HOUR, 0.8)));
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);
 		addMarketMakers();
 		addInitialFarms();
-		addRealEstateAgents(CapitalConfiguration.class.getClassLoader());
-		addInvestmentFunds(CapitalConfiguration.class.getClassLoader());
-		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team002");
-		addCustomFarms((RemoteLoader) CapitalConfiguration.class.getClassLoader(), "team003");
+		addRealEstateAgents(BasicCapitalConfiguration.class.getClassLoader());
+		addInvestmentFunds(BasicCapitalConfiguration.class.getClassLoader());
+//		addCustomFarms((RemoteLoader) DemoCapitalConfiguration.class.getClassLoader(), "team002");
+//		addCustomFarms((RemoteLoader) DemoCapitalConfiguration.class.getClassLoader(), "team003");
 		addEvent(new CentralBankEvent(POTATOE));
 	}
 
@@ -119,23 +107,9 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 				return new DefaultRealEstateAgent(id, end, prodFun);
 			}
 		};
-		if (shouldLoadRemoteTeams()) {
-			addCustomFirm(factory, 500, landProduction);
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team005"), 500, landProduction);
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, "team007"), 500, landProduction);
-		} else {
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
-			addCustomFirm(createRealEstateFirmFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, landProduction);
-		}
-	}
-
-	protected ReflectiveAgentFactory createRealEstateFirmFactory(RemoteLoader loader, String source) throws IOException {
-		return new ReflectiveAgentFactory((RemoteLoader) loader, source, REAL_ESTATE_AGENT) {
-			@Override
-			protected IFirm createDefaultFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun, Exception e) {
-				return new DefaultRealEstateAgent(id, end, prodFun);
-			}
-		};
+		addCustomFirm(factory, 500, landProduction);
+		addCustomFirm(factory, 500, landProduction);
+		addCustomFirm(factory, 500, landProduction);
 	}
 
 	private void addCustomFirm(IAgentFactory factory, int time, IProductionFunction prod) {
@@ -155,28 +129,13 @@ public class CapitalConfiguration extends SimulationConfig implements IUtilityFa
 				return new DefaultInvestmentFund(id, end);
 			}
 		};
-		if (shouldLoadRemoteTeams()) {
-			addCustomFirm(factory, 500, null);
-			addCustomFirm(createFundFactory((RemoteLoader) loader, "team001"), 500, null);
-			// addCustomFirm(createFundFactory((RemoteLoader) loader, "team010"), 500, null);
-		} else {
-			addCustomFirm(createFundFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, null);
-			addCustomFirm(createFundFactory((RemoteLoader) loader, ReflectiveAgentFactory.LOCAL), 500, null);
-		}
-	}
-
-	protected ReflectiveAgentFactory createFundFactory(RemoteLoader loader, String source) throws IOException {
-		return new ReflectiveAgentFactory((RemoteLoader) loader, source, FUND) {
-			@Override
-			protected IFirm createDefaultFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun, Exception e) {
-				return new Fundamentalist(id, end);
-			}
-		};
+		addCustomFirm(factory, 500, null);
+		addCustomFirm(factory, 500, null);
 	}
 
 	@Override
 	public int getMaxAge() {
-		return maxAge;
+		return 500;
 	}
 
 	@Override
